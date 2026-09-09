@@ -1,5 +1,12 @@
 import type { Role } from './common'
 
+/** `ImageDto` — rasm ma'lumotlari DTO. */
+export interface ImageDto {
+    id: string
+    imageUrl: string
+    originalFileName?: string
+}
+
 /** `UserDto` — diqqat: maydon nomi `imageUrl` (`imgUrl` emas). */
 export interface UserDto {
     id?: string

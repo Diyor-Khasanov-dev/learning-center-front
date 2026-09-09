@@ -31,6 +31,18 @@ export const settings = {
     'settings.passwordChanged': 'Parol o‘zgartirildi.',
     'settings.passwordEmpty': 'Hamma maydonni to‘ldiring.',
     'settings.passwordTooShort': 'Yangi parol kamida 8 belgidan iborat bo‘lsin.',
+    'settings.images': 'Mening rasmlarim',
+    'settings.imagesHint': 'Profilingiz uchun rasmlarni boshqaring. Yuklangan rasmlardan birini asosiy rasm qilib belgilashingiz mumkin.',
+    'settings.uploadImage': 'Rasm yuklash',
+    'settings.setAsMain': 'Asosiy qilish',
+    'settings.mainImageBadge': 'Asosiy',
+    'settings.deleteImage': 'O‘chirish',
+    'settings.invalidFileType': 'Faqat JPG, JPEG yoki PNG formatdagi rasmlar ruxsat etiladi.',
+    'settings.fileTooLarge': 'Fayl hajmi 5 MB dan oshmasligi kerak.',
+    'settings.noImages': 'Hozircha rasmlar yuklanmagan.',
+    'settings.uploadSuccess': 'Rasm yuklandi va asosiy rasm qilib belgilandi.',
+    'settings.setMainSuccess': 'Asosiy rasm o‘zgartirildi.',
+    'settings.deleteSuccess': 'Rasm o‘chirildi.',
 } as const
 
 export type SettingsKeys = keyof typeof settings

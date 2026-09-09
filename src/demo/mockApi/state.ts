@@ -23,12 +23,13 @@ import type {
     OrganizationDto,
     StudentDto,
     TeacherDto,
+    UserDto,
 } from '@/shared/types'
 
 export type Row = Record<string, unknown> & { id: string }
 
 /** `GET /auth/me` javobi — demo foydalanuvchisi. */
-export const demoUser = {
+export const demoUser: UserDto = {
     id: 'u-demo',
     // Sozlamalardagi markaz bloki shu filialni yuklaydi.
     branchId: 'b1',

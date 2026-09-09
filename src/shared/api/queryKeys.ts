@@ -12,6 +12,7 @@ export const queryKeys = {
     entityCount: (entity: string) => ['entity', entity, 'count'] as const,
 
     me: () => ['auth', 'me'] as const,
+    images: () => ['image', 'list'] as const,
     myStudentRecord: (groupId: string) => ['student', 'me', groupId] as const,
     myGroups: () => ['group', 'my'] as const,
     /** `previousMonths` ham kalitga kiradi — oy almashsa alohida so'rov/keshlanadi. */

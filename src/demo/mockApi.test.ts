@@ -134,4 +134,30 @@ describe('mockApi', () => {
             expect(typeof data).toBe('object')
         }
     })
+
+    it('handles /image endpoints correctly', async () => {
+        // GET /image
+        const pageRes = await apiFetch<Record<string, unknown>>('/image', { token: 'demo' })
+        expect(pageRes).not.toBeNull()
+        const content = pageRes?.content as Array<Record<string, unknown>>
+        expect(content.length).toBeGreaterThan(0)
+
+        // POST /image/upload
+        const uploadRes = await apiFetch<Record<string, unknown>>('/image/upload', {
+            method: 'POST',
+            token: 'demo',
+            body: new FormData(),
+        })
+        expect(uploadRes).not.toBeNull()
+        expect(uploadRes?.imageUrl).toHaveProperty('id')
+
+        const imageObj = uploadRes?.imageUrl as Record<string, unknown>
+        const newId = imageObj.id as string
+
+        // PUT /image/main/:id
+        await expect(apiFetch(`/image/main/${newId}`, { method: 'PUT', token: 'demo' })).resolves.toBeNull()
+
+        // DELETE /image/:id
+        await expect(apiFetch(`/image/${newId}`, { method: 'DELETE', token: 'demo' })).resolves.toBeNull()
+    })
 })

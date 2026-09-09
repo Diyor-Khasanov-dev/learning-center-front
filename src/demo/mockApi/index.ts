@@ -4,6 +4,7 @@ import { handleAuth } from './auth'
 import { handleCrud } from './crud'
 import { handleEnrollments } from './enrollments'
 import { handleGroupLevels } from './groupLevels'
+import { handleImages } from './images'
 import { handleInvoices } from './invoices'
 import { handleLeads } from './leads'
 import { isInstalled, resetMockApiInstalledFlag, setDemoRole, setInstalled } from './state'
@@ -32,7 +33,14 @@ export function installMockApi() {
         const url = new URL(raw, origin)
         const path = url.pathname.replace('/api/v1', '')
         const method = (init?.method ?? 'GET').toUpperCase()
-        const body = init?.body ? (JSON.parse(String(init.body)) as Record<string, unknown>) : {}
+        let body: Record<string, unknown> = {}
+        if (init?.body && typeof init.body === 'string') {
+            try {
+                body = JSON.parse(init.body) as Record<string, unknown>
+            } catch {
+                body = {}
+            }
+        }
 
         // Haqiqiy tarmoqqa o'xshasin — spinner'lar ko'rinib qolsin.
         await new Promise((resolve) => setTimeout(resolve, 180))
@@ -63,6 +71,9 @@ export function installMockApi() {
 
         const superAdminRes = handleSuperAdmin(path, method, url, body)
         if (superAdminRes) return superAdminRes
+
+        const imagesRes = handleImages(path, method, url)
+        if (imagesRes) return imagesRes
 
         const invoicesRes = handleInvoices(path, method, url, body)
         if (invoicesRes) return invoicesRes

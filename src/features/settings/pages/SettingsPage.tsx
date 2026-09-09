@@ -5,6 +5,7 @@ import { useT } from '@/shared/i18n'
 import { AppShell, Button } from '@/shared/ui'
 import { AppearanceSection } from '../components/AppearanceSection'
 import { CentreSection } from '../components/CentreSection'
+import { ImagesSection } from '../components/ImagesSection'
 import { PasswordSection } from '../components/PasswordSection'
 import { ProfileSection } from '../components/ProfileSection'
 
@@ -34,6 +35,7 @@ export function SettingsPage() {
             <div className="mx-auto max-w-2xl">
                 <AppearanceSection />
                 <ProfileSection />
+                <ImagesSection />
                 <PasswordSection />
                 {isAdmin && <CentreSection />}
             </div>
