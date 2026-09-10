@@ -37,7 +37,7 @@ export function GroupTabs({ groups, selectedId, onSelect }: GroupTabsProps) {
                         aria-selected={isActive}
                         onClick={() => onSelect(group.id)}
                         className={cn(
-                            'flex shrink-0 cursor-pointer items-center gap-2 rounded-md px-4 py-2 transition-colors',
+                            'flex shrink-0 cursor-pointer items-center gap-2 rounded-md px-4 py-2 max-sm:py-3 max-sm:min-h-11 transition-colors',
                             isActive ? 'bg-purple-soft' : 'hover:bg-surface-hover'
                         )}
                     >

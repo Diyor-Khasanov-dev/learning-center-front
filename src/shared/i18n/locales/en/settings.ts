@@ -42,4 +42,5 @@ export const settings: Record<SettingsKeys, string> = {
     'settings.uploadError': 'An error occurred while uploading the image.',
     'settings.setMainError': 'An error occurred while setting the main image.',
     'settings.deleteError': 'An error occurred while deleting the image.',
+    'settings.uploadedProfileImage': 'Uploaded profile image',
 }
