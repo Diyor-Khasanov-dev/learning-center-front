@@ -47,7 +47,7 @@ export function AttendanceCell({ studentName, status, reason, onChange }: Attend
                 onClick={toggle}
                 aria-label={`${studentName}: ${t(`attendance.${status}`)}`}
                 className={cn(
-                    'size-9 cursor-pointer rounded-md font-mono text-sm font-bold transition-colors',
+                    'size-9 max-sm:size-11 cursor-pointer rounded-md font-mono text-sm font-bold transition-colors',
                     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
                     STATUS_SQUARE[status]
                 )}
@@ -61,8 +61,9 @@ export function AttendanceCell({ studentName, status, reason, onChange }: Attend
                 onClick={() => setIsNoteOpen((open) => !open)}
                 aria-label={t('attendance.addExcuse', { name: studentName })}
                 className={cn(
-                    'absolute -top-1 -right-1 flex size-4 cursor-pointer items-center justify-center',
+                    'absolute -top-1 -right-1 flex size-4 max-sm:size-6 cursor-pointer items-center justify-center',
                     'rounded-full border border-border-base bg-surface-card text-[0.6rem] leading-none text-fg-muted',
+                    'before:absolute before:-inset-2 max-sm:before:-inset-3 before:content-[""]',
                     'hover:bg-surface-hover'
                 )}
             >
