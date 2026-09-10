@@ -162,7 +162,7 @@ export function AdminDashboardPage() {
                                 {activeTab === 'groups' && (
                                     <Select
                                         aria-label={t('admin.filterStatus')}
-                                        className="w-auto"
+                                        className="w-full sm:w-auto"
                                         options={GROUP_STATUSES.map((status) => ({
                                             value: status,
                                             label: t(`status.${status}`),

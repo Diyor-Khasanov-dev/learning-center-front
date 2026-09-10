@@ -95,7 +95,7 @@ export function AdminTabStrip({ entities, activeTab, onTabChange, links }: Admin
                     type="button"
                     onClick={() => onTabChange(entity.key)}
                     className={cn(
-                        'shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 text-xs whitespace-nowrap transition-colors',
+                        'shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 max-sm:py-2.5 max-sm:min-h-11 text-xs whitespace-nowrap transition-colors',
                         activeTab === entity.key
                             ? 'bg-fg font-semibold text-fg-inverted'
                             : 'border border-border-base text-fg-muted hover:bg-surface-hover'
@@ -112,7 +112,7 @@ export function AdminTabStrip({ entities, activeTab, onTabChange, links }: Admin
                             key={link.key}
                             type="button"
                             onClick={link.onClick}
-                            className="shrink-0 cursor-pointer rounded-full border border-border-base px-3.5 py-1.5 text-xs whitespace-nowrap text-fg-muted transition-colors hover:bg-surface-hover hover:text-fg"
+                            className="shrink-0 cursor-pointer rounded-full border border-border-base px-3.5 py-1.5 max-sm:py-2.5 max-sm:min-h-11 text-xs whitespace-nowrap text-fg-muted transition-colors hover:bg-surface-hover hover:text-fg"
                         >
                             {t(link.labelKey)}
                         </button>

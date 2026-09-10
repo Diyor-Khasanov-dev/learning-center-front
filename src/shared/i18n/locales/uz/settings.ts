@@ -45,6 +45,7 @@ export const settings = {
     'settings.uploadError': 'Rasmni yuklashda xatolik yuz berdi.',
     'settings.setMainError': 'Asosiy rasmni o‘zgartirishda xatolik yuz berdi.',
     'settings.deleteError': 'Rasmni o‘chirishda xatolik yuz berdi.',
+    'settings.uploadedProfileImage': 'Yuklangan profil rasmi',
 } as const
 
 export type SettingsKeys = keyof typeof settings

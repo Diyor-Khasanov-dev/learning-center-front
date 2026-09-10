@@ -166,7 +166,7 @@ export function ImageGallery({ token: propToken }: ImageGalleryProps) {
                                     <div className="relative w-full h-36 rounded-md overflow-hidden bg-surface-elevated">
                                         <img
                                             src={img.imageUrl}
-                                            alt={img.originalFileName ?? 'Uploaded profile image'}
+                                            alt={img.originalFileName ?? t('settings.uploadedProfileImage')}
                                             className="h-full w-full object-cover"
                                         />
                                         {isMain && (
