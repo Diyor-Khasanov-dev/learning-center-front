@@ -42,4 +42,5 @@ export const settings: Record<SettingsKeys, string> = {
     'settings.uploadError': 'Произошла ошибка при загрузке изображения.',
     'settings.setMainError': 'Произошла ошибка при изменении основного изображения.',
     'settings.deleteError': 'Произошла ошибка при удалении изображения.',
+    'settings.uploadedProfileImage': 'Загруженное изображение профиля',
 }
