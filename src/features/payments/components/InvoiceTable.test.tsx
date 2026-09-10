@@ -10,30 +10,32 @@ const invoices: InvoiceDto[] = [
         invoiceNumber: 'INV-001',
         amount: 450000,
         issuedAt: '2026-07-01T09:00:00',
-        enrollmentDto: { id: 'e1', studentId: 'st-1' },
+        paymentStatus: 'OVERDUE',
+        enrollmentDto: { id: 'e1', studentId: 'st-1', studentFullName: 'Aziza Karimova' },
     },
 ]
 
-const studentOptions = [{ value: 'st-1', label: 'Aziza Karimova' }]
-
 describe('InvoiceTable', () => {
-    // `InvoiceDto` da o'quvchi ismi yo'q — u faqat `studentId` bo'yicha topiladi.
-    it('o‘quvchi ismini id bo‘yicha ro‘yxatdan topadi', () => {
-        renderWithProviders(
-            <InvoiceTable invoices={invoices} isLoading={false} studentOptions={studentOptions} onDelete={vi.fn()} />
-        )
+    it('o‘quvchi ismini javobning o‘zidan oladi', () => {
+        renderWithProviders(<InvoiceTable invoices={invoices} isLoading={false} onDelete={vi.fn()} />)
 
         const row = screen.getByRole('row', { name: /INV-001/ })
         expect(within(row).getByText('Aziza Karimova')).toBeInTheDocument()
     })
 
-    // Ro'yxat hali yuklanmagan bo'lsa bo'sh katakdan ko'ra id foydaliroq.
-    it('ro‘yxat bo‘sh bo‘lsa id ko‘rsatadi', () => {
-        renderWithProviders(
-            <InvoiceTable invoices={invoices} isLoading={false} studentOptions={[]} onDelete={vi.fn()} />
-        )
+    it('hisob holatini ko‘rsatadi', () => {
+        renderWithProviders(<InvoiceTable invoices={invoices} isLoading={false} onDelete={vi.fn()} />)
 
         const row = screen.getByRole('row', { name: /INV-001/ })
-        expect(within(row).getByText('st-1')).toBeInTheDocument()
+        expect(within(row).getByText(/muddati/i)).toBeInTheDocument()
+    })
+
+    // Ro'yxat so'rovida ism keladi, lekin bitta hisobni olganda kelmasligi mumkin.
+    it('ism bo‘lmasa chiziqcha qo‘yadi', () => {
+        const withoutName: InvoiceDto[] = [{ ...invoices[0], enrollmentDto: { id: 'e1', studentId: 'st-1' } }]
+        renderWithProviders(<InvoiceTable invoices={withoutName} isLoading={false} onDelete={vi.fn()} />)
+
+        const row = screen.getByRole('row', { name: /INV-001/ })
+        expect(within(row).getAllByText('—').length).toBeGreaterThan(0)
     })
 })

@@ -48,7 +48,7 @@ export function PaymentsPage() {
 
     const list = useInvoices(session.token, { page, search, status, from, to })
     const transactions = useTransactions(session.token, txPage, search)
-    const studentOptions = useStudentOptions(session.token)
+    const studentOptions = useStudentOptions(session.token, isModalOpen)
     const groupOptions = useGroupOptions(session.token)
     const invoices = useInvoiceMutations(session.token)
     const payments = useTransactionMutations(session.token)
@@ -73,17 +73,14 @@ export function PaymentsPage() {
     function handleExportCsv() {
         if (list.invoices.length === 0) return
 
-        const nameById = new Map(studentOptions.map((option) => [option.value, option.label]))
         const exportColumns: CsvColumn<InvoiceDto>[] = [
             { header: t('invoice.number'), accessor: (inv) => inv.invoiceNumber ?? '' },
-            {
-                header: t('invoice.student'),
-                accessor: (inv) => {
-                    const studentId = inv.enrollmentDto?.studentId
-                    return studentId ? (nameById.get(studentId) ?? studentId) : ''
-                },
-            },
+            { header: t('invoice.student'), accessor: (inv) => inv.enrollmentDto?.studentFullName ?? '' },
             { header: t('invoice.amount'), accessor: (inv) => (inv.amount != null ? formatAmount(inv.amount) : '') },
+            {
+                header: t('field.status'),
+                accessor: (inv) => (inv.paymentStatus ? t(`invoice.status.${inv.paymentStatus}`) : ''),
+            },
             { header: t('invoice.issuedAt'), accessor: (inv) => formatDate(inv.issuedAt) },
         ]
 
@@ -151,12 +148,7 @@ export function PaymentsPage() {
                 )}
 
                 {!list.error && (
-                    <InvoiceTable
-                        invoices={list.invoices}
-                        isLoading={list.isLoading}
-                        studentOptions={studentOptions}
-                        onDelete={handleDeleteInvoice}
-                    />
+                    <InvoiceTable invoices={list.invoices} isLoading={list.isLoading} onDelete={handleDeleteInvoice} />
                 )}
 
                 <Pagination

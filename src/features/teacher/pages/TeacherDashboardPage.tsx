@@ -145,6 +145,7 @@ export function TeacherDashboardPage() {
                     <AttendanceTable
                         students={students}
                         pastColumns={pastColumns}
+                        plannedLessonCount={group.level?.lessonCount}
                         onSelectStudent={setSelectedStudent}
                     />
                 </section>

@@ -1,24 +1,23 @@
 import { useT } from '@/shared/i18n'
 import { formatAmount, formatDate } from '@/shared/lib'
-import { DataTable, IconButton, TrashIcon } from '@/shared/ui'
-import type { DataTableColumn, SelectOption } from '@/shared/ui'
-import type { InvoiceDto } from '@/shared/types'
+import { Badge, DataTable, IconButton, TrashIcon } from '@/shared/ui'
+import type { BadgeTone, DataTableColumn } from '@/shared/ui'
+import type { InvoiceDto, InvoiceStatus } from '@/shared/types'
+
+const STATUS_TONE: Record<InvoiceStatus, BadgeTone> = {
+    PAID: 'success',
+    PENDING: 'warning',
+    OVERDUE: 'danger',
+}
 
 interface InvoiceTableProps {
     invoices: InvoiceDto[]
     isLoading: boolean
-    /**
-     * O'quvchilar ro'yxati — `InvoiceDto` da faqat `studentId` bor, ism yo'q.
-     * Ismni shu ro'yxatdan topamiz.
-     */
-    studentOptions: SelectOption[]
     onDelete: (invoice: InvoiceDto) => void
 }
 
-export function InvoiceTable({ invoices, isLoading, studentOptions, onDelete }: InvoiceTableProps) {
+export function InvoiceTable({ invoices, isLoading, onDelete }: InvoiceTableProps) {
     const { t } = useT()
-
-    const nameById = new Map(studentOptions.map((option) => [option.value, option.label]))
 
     const columns: DataTableColumn<InvoiceDto>[] = [
         {
@@ -30,13 +29,9 @@ export function InvoiceTable({ invoices, isLoading, studentOptions, onDelete }: 
         {
             key: 'student',
             header: t('invoice.student'),
-            render: (invoice) => {
-                const studentId = invoice.enrollmentDto?.studentId
-                if (!studentId) return '—'
-                // Ro'yxat hali yuklanmagan bo'lsa id ko'rsatiladi — bo'sh
-                // katakdan ko'ra id foydaliroq, hech bo'lmasa qidirsa bo'ladi.
-                return nameById.get(studentId) ?? studentId
-            },
+            // Ism javobning o'zida keladi. Ilgari u yo'q edi va jadval uni
+            // topish uchun butun o'quvchilar ro'yxatini yuklardi.
+            render: (invoice) => invoice.enrollmentDto?.studentFullName ?? '—',
         },
         {
             key: 'amount',
@@ -44,6 +39,18 @@ export function InvoiceTable({ invoices, isLoading, studentOptions, onDelete }: 
             align: 'right',
             className: 'tabular-nums',
             render: (invoice) => formatAmount(invoice.amount),
+        },
+        {
+            key: 'paymentStatus',
+            header: t('field.status'),
+            render: (invoice) =>
+                invoice.paymentStatus ? (
+                    <Badge tone={STATUS_TONE[invoice.paymentStatus]}>
+                        {t(`invoice.status.${invoice.paymentStatus}`)}
+                    </Badge>
+                ) : (
+                    '—'
+                ),
         },
         {
             key: 'issuedAt',

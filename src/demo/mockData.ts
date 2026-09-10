@@ -94,10 +94,10 @@ export const lessons: LessonDto[] = [
 // Hisobda o'quvchi endi `enrollmentDto.studentId` orqali — backend
 // `student` obyektini qaytarmaydi.
 export const invoices: InvoiceDto[] = [
-    { id: 'i1', invoiceNumber: 'INV-001', amount: 450000, issuedAt: '2026-07-01T09:00:00', enrollmentDto: { id: 'e1', studentId: students[0].id, groupId: 'g1' } },
-    { id: 'i2', invoiceNumber: 'INV-002', amount: 450000, issuedAt: '2026-08-01T09:00:00', enrollmentDto: { id: 'e2', studentId: students[1].id, groupId: 'g1' } },
-    { id: 'i3', invoiceNumber: 'INV-003', amount: 600000, issuedAt: '2026-06-01T09:00:00', enrollmentDto: { id: 'e3', studentId: students[2].id, groupId: 'g2' } },
-    { id: 'i4', invoiceNumber: 'INV-004', amount: 450000, issuedAt: '2026-08-05T09:00:00', enrollmentDto: { id: 'e4', studentId: students[3].id, groupId: 'g2' } },
+    { id: 'i1', invoiceNumber: 'INV-001', amount: 450000, issuedAt: '2026-07-01T09:00:00', paymentStatus: 'PAID', enrollmentDto: { id: 'e1', studentId: students[0].id, studentFullName: students[0].userDto?.fullName, groupId: 'g1' } },
+    { id: 'i2', invoiceNumber: 'INV-002', amount: 450000, issuedAt: '2026-08-01T09:00:00', paymentStatus: 'PENDING', enrollmentDto: { id: 'e2', studentId: students[1].id, studentFullName: students[1].userDto?.fullName, groupId: 'g1' } },
+    { id: 'i3', invoiceNumber: 'INV-003', amount: 600000, issuedAt: '2026-06-01T09:00:00', paymentStatus: 'OVERDUE', enrollmentDto: { id: 'e3', studentId: students[2].id, studentFullName: students[2].userDto?.fullName, groupId: 'g2' } },
+    { id: 'i4', invoiceNumber: 'INV-004', amount: 450000, issuedAt: '2026-08-05T09:00:00', paymentStatus: 'PENDING', enrollmentDto: { id: 'e4', studentId: students[3].id, studentFullName: students[3].userDto?.fullName, groupId: 'g2' } },
 ]
 
 export const transactions: TransactionDto[] = [

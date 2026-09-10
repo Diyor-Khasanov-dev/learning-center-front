@@ -7,6 +7,8 @@ export type InvoiceStatus = (typeof INVOICE_STATUSES)[number]
 export interface EnrollmentDto {
     id: string
     studentId?: string
+    /** Ro'yxat so'rovida keladi; bitta hisobni olganda bo'sh bo'lishi mumkin. */
+    studentFullName?: string
     groupId?: string
     reason?: string
 }
@@ -18,11 +20,9 @@ export interface EnrollmentDto {
  * keyin avtomatik yaratiladi va summasi o'zgarmaydi), to'lovlar esa alohida
  * `TransactionDto` yozuvlari bo'lib unga bog'lanadi.
  *
- * Shu sababli DTO'dan `student`, `status` va `type` maydonlari OLIB
- * TASHLANDI. O'quvchi endi `enrollmentDto.studentId` orqali bilinadi —
- * ismini ko'rsatish uchun mijoz tomonda o'quvchilar ro'yxatidan qidiriladi.
- * Holat (`status`) esa hali ham server tomonda filtr sifatida ishlaydi,
- * lekin javobda qaytmaydi.
+ * Shu sababli eski `student` va `type` maydonlari yo'q: o'quvchi endi
+ * `enrollmentDto` ichida, holat esa `paymentStatus` deb ataladi (entity'dagi
+ * nom bilan bir xil, eski `status` emas).
  *
  * `amount` `BigDecimal` — JSON'da son bo'lib keladi, lekin tiyin/so'm
  * aniqligini yo'qotmaslik uchun biz uni HISOBLASHDA ishlatmaymiz, faqat
@@ -35,6 +35,7 @@ export interface InvoiceDto {
     /** `LocalDateTime` — "yyyy-MM-ddTHH:mm:ss". */
     issuedAt?: string
     enrollmentDto?: EnrollmentDto
+    paymentStatus?: InvoiceStatus
 }
 
 /**

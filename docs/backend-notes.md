@@ -672,7 +672,15 @@ so'rov) musbat son yuborsa, qaytarim qarzni kamaytirish o'rniga
 **oshiradi** va buni hech narsa to'xtatmaydi. Ishorani `TransactionService`
 ning o'zi turga qarab qo'ysa ishonchli bo'lardi.
 
-### 3. 🟠 `InvoiceDto` da holat ham, o'quvchi ham yo'q
+### 3. ✅ `InvoiceDto` da holat va o'quvchi ismi — qo'shildi
+
+**2026-09-10:** `InvoiceDto` ga `paymentStatus`, `EnrollmentDto` ga
+`studentFullName` qo'shildi. Front o'shanga o'tkazildi: jadval endi
+o'quvchilar ro'yxatini yuklamaydi va holat ustuni qaytdi.
+
+Quyidagi eski yozuv tarix uchun qoldirildi.
+
+#### (eski) `InvoiceDto` da holat ham, o'quvchi ham yo'q edi
 
 `GET /invoice?status=…` filtri ishlaydi, lekin javobda `status` qaytmaydi —
 ya'ni foydalanuvchi nima bo'yicha filtrlaganini jadvalda ko'rmaydi.

@@ -15,9 +15,9 @@ export function handleInvoices(
     body: Record<string, unknown>
 ): Response | null {
     if (path === '/invoice' && method === 'GET') {
-        // Holat filtri: `InvoiceDto` da `status` yo'q, u faqat server tomonda
-        // tekshiriladi — demo'da esa tekshiradigan narsa yo'q, hammasi qaytadi.
-        return page(db.invoices as unknown as Row[], url)
+        const status = url.searchParams.get('status')
+        const rows = status ? db.invoices.filter((invoice) => invoice.paymentStatus === status) : db.invoices
+        return page(rows as unknown as Row[], url)
     }
     // Guruhga qo'lda hisob yaratish. Ikkinchi marta chaqirilsa haqiqiy
     // backend 409 qaytaradi — demo'da ham shunday, tugmaning xato holati
@@ -32,7 +32,13 @@ export function handleInvoices(
             invoiceNumber: `INV-${String(db.invoices.length + index + 1).padStart(3, '0')}`,
             amount: 450000,
             issuedAt: new Date().toISOString().slice(0, 19),
-            enrollmentDto: { id: nextId('e'), studentId: student.id, groupId },
+            paymentStatus: 'PENDING' as const,
+            enrollmentDto: {
+                id: nextId('e'),
+                studentId: student.id,
+                studentFullName: student.userDto?.fullName,
+                groupId,
+            },
         }))
         db.invoices = [...db.invoices, ...created]
         return noContent()
