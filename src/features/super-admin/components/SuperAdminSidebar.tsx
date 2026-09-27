@@ -3,6 +3,7 @@ import type { TranslationKey } from '@/shared/i18n'
 import { cn } from '@/shared/lib'
 
 export type SuperAdminSection =
+    | 'analytics'
     | 'students'
     | 'teachers'
     | 'administrators'
@@ -22,6 +23,7 @@ interface SectionItem {
  * ochadi.
  */
 const PEOPLE: SectionItem[] = [
+    { key: 'analytics', labelKey: 'superAdmin.section.analytics' },
     { key: 'students', labelKey: 'superAdmin.section.students' },
     { key: 'teachers', labelKey: 'superAdmin.section.teachers' },
     { key: 'administrators', labelKey: 'superAdmin.section.administrators' },

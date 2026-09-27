@@ -83,6 +83,13 @@ export function fetchAnalytics(token: string, category: AnalyticsCategory) {
     return apiFetch<AnalyticsStatDto>(`${ANALYTICS}/${category}`, { token })
 }
 
+export function fetchInvoiceAnalyticsRange(token: string, from: string, to: string) {
+    return apiFetch<AnalyticsStatDto>(`${ANALYTICS}/invoice`, {
+        token,
+        params: { from, to },
+    })
+}
+
 /**
  * Markazning o'z obunasi.
  *

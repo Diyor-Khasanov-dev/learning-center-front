@@ -7,6 +7,7 @@ export const superAdmin: Record<SuperAdminKeys, string> = {
     'superAdmin.needsAttention': 'Needs attention',
     'superAdmin.group.people': 'People',
     'superAdmin.group.settings': 'Settings',
+    'superAdmin.section.analytics': 'Statistics',
     'superAdmin.section.students': 'Students',
     'superAdmin.section.teachers': 'Teachers',
     'superAdmin.section.administrators': 'Administrators',
