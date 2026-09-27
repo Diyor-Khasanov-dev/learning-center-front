@@ -20,6 +20,7 @@ export const queryKeys = {
 
     teacherOptions: () => ['teacher', 'options'] as const,
     groupOptions: () => ['group', 'options'] as const,
+    branchOptions: () => ['branch', 'options'] as const,
     groupLevels: () => ['group-level', 'list'] as const,
     groupLevelNameOptions: () => ['group-level', 'name-options'] as const,
 

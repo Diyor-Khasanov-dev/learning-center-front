@@ -114,10 +114,10 @@ describe('fetchAnalytics', () => {
 })
 
 describe('fetchAdminCount', () => {
-    it('GET /user?role=ADMINISTRATOR yuboradi va totalElements ni qaytaradi', async () => {
+    it('GET /user/admins yuboradi (role filtrisiz) va totalElements ni qaytaradi', async () => {
         const fetchMock = mockFetch({ text: '{"content":[{"id":"u1"}],"totalElements":5}' })
         const count = await fetchAdminCount(TOKEN)
-        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/user?page=0&size=1&role=ADMINISTRATOR')
+        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/user/admins?page=0&size=1')
         expect(count).toBe(5)
     })
 })

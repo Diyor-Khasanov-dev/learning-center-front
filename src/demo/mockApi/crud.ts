@@ -15,6 +15,12 @@ export function handleCrud(
         return json(demoUser)
     }
 
+    // Super-admin paneldagi administratorlar ro'yxati (2026-09-27: backend
+    // `/user` dan `/user/admins` ga ko'chirdi).
+    if (resource === 'user' && tail === 'admins' && method === 'GET') {
+        return page(db.administrators as unknown as Row[], url)
+    }
+
     // Telefon bo'yicha qidiruv. Demo'da bitta raqam "topiladi", shunda
     // tasdiq oynasini ko'rish mumkin bo'ladi.
     if (resource === 'user' && tail === 'phone' && method === 'GET') {

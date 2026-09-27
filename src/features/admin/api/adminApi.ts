@@ -1,5 +1,5 @@
 import { apiFetch } from '@/shared/api'
-import type { GroupOverviewDto, Page, TeacherDto, UserDto } from '@/shared/types'
+import type { BranchDto, GroupOverviewDto, Page, TeacherDto, UserDto } from '@/shared/types'
 import type { AdminRow } from '../types'
 
 export interface EntityListParams {
@@ -60,6 +60,21 @@ export async function fetchGroupOptions(token: string) {
     return (data?.content ?? []).map((group) => ({
         value: group.id,
         label: group.name || group.id,
+    }))
+}
+
+/**
+ * Yaratish formasidagi "Filial" tanlagichi uchun.
+ *
+ * O'quvchi, o'qituvchi va administrator yaratishda filial tanlanadi
+ * (`UserCreateDto.branchId`). Tahrirlashda yo'q — `UserUpdateDto` da bu
+ * maydon umuman yo'q, backend uni almashtirishga ruxsat bermaydi.
+ */
+export async function fetchBranchOptions(token: string) {
+    const data = await apiFetch<Page<BranchDto>>('/branch', { token, params: { page: 0, size: 200 } })
+    return (data?.content ?? []).map((branch) => ({
+        value: branch.id,
+        label: branch.name || branch.id,
     }))
 }
 

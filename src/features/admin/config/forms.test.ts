@@ -37,9 +37,11 @@ describe('students form config', () => {
         })
     })
 
-    it('create payload rolni STUDENT qilib qo’yadi', () => {
-        expect(config.buildCreatePayload({ fullName: 'A', phone: 'p', birthDate: 'd', parentPhone: 'pp' })).toEqual({
-            userCreateDto: { fullName: 'A', phone: 'p', birthDate: 'd', role: 'STUDENT' },
+    it('create payload rolni STUDENT qilib qo’yadi va branchId ni qo’shadi', () => {
+        expect(
+            config.buildCreatePayload({ fullName: 'A', phone: 'p', birthDate: 'd', parentPhone: 'pp', branchId: 'b1' })
+        ).toEqual({
+            userCreateDto: { fullName: 'A', phone: 'p', birthDate: 'd', role: 'STUDENT', branchId: 'b1' },
             parentPhone: 'pp',
         })
     })
@@ -50,6 +52,46 @@ describe('students form config', () => {
             user: { fullName: 'A', phone: 'p', birthDate: 'd' },
             parentPhone: 'pp',
         })
+    })
+
+    it('yaratishda filial serverdan kelgan ro’yxatdan tanlanadi', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('create') : config.fields
+        const branchField = fields.find((field) => field.key === 'branchId')
+        expect(branchField?.type).toBe('select')
+        expect(branchField?.optionsSource).toBe('branches')
+    })
+
+    it('tahrirlashda filial maydoni ko’rsatilmaydi', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('edit') : config.fields
+        expect(fields.map((field) => field.key)).not.toContain('branchId')
+    })
+})
+
+describe('teachers form config', () => {
+    const config = FORM_CONFIGS.teachers!
+
+    it('create payload rolni TEACHER qilib qo’yadi va branchId ni qo’shadi', () => {
+        expect(config.buildCreatePayload({ fullName: 'A', phone: 'p', birthDate: 'd', branchId: 'b2' })).toEqual({
+            user: { fullName: 'A', phone: 'p', birthDate: 'd', role: 'TEACHER', branchId: 'b2' },
+        })
+    })
+
+    it('update payload rol va branchId yubormaydi', () => {
+        expect(config.buildUpdatePayload({ fullName: 'A', phone: 'p', birthDate: 'd', branchId: 'b2' })).toEqual({
+            user: { fullName: 'A', phone: 'p', birthDate: 'd' },
+        })
+    })
+
+    it('yaratishda filial serverdan kelgan ro’yxatdan tanlanadi', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('create') : config.fields
+        const branchField = fields.find((field) => field.key === 'branchId')
+        expect(branchField?.type).toBe('select')
+        expect(branchField?.optionsSource).toBe('branches')
+    })
+
+    it('tahrirlashda filial maydoni ko’rsatilmaydi', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('edit') : config.fields
+        expect(fields.map((field) => field.key)).not.toContain('branchId')
     })
 })
 

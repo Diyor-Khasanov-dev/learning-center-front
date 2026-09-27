@@ -13,6 +13,7 @@ import type {
     TransactionDto,
     PlanDto,
     SubscriptionDto,
+    UserDto,
 } from '@/shared/types'
 
 /**
@@ -111,6 +112,12 @@ export const transactions: TransactionDto[] = [
 export const organizations: OrganizationDto[] = [
     { id: 'o1', name: 'Cornerstone Education', phone: '+998 71 200 10 10', email: 'info@cornerstone.uz', website: 'cornerstone.uz' },
     { id: 'o2', name: 'Bright Minds', phone: '+998 71 200 20 20', email: 'hello@brightminds.uz' },
+]
+
+// `GET /user/admins` — super-admin paneldagi administratorlar ro'yxati.
+export const administrators: UserDto[] = [
+    { id: 'a1', fullName: 'Kamola Rustamova', phone: '+998 90 500 10 01', birthDate: '1991-03-18', role: 'ADMINISTRATOR', branchId: 'b1' },
+    { id: 'a2', fullName: 'Sardor Mirzayev', phone: '+998 90 500 10 02', birthDate: '1989-10-02', role: 'ADMINISTRATOR', branchId: 'b2' },
 ]
 
 export const branches: BranchDto[] = [

@@ -53,6 +53,7 @@ export const admin = {
     'field.studentCount': "O'quvchilar",
     'field.room': 'Xona',
     'field.teacher': "O'qituvchi",
+    'field.branch': 'Filial',
     'field.days': 'Kunlar',
     'field.startTime': 'Boshlanish vaqti',
     'field.endTime': 'Tugash vaqti',

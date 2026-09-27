@@ -73,7 +73,7 @@ export interface FormField {
     type: FormFieldType
     options?: { value: string; labelKey: TranslationKey }[]
     /** Variantlar serverdan kelsa (masalan o'qituvchilar yoki guruhlar ro'yxati). */
-    optionsSource?: 'teachers' | 'groups'
+    optionsSource?: 'teachers' | 'groups' | 'branches'
 }
 
 export type ModalMode = 'create' | 'edit'

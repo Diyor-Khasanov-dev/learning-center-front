@@ -18,6 +18,7 @@ interface EntityFormModalProps {
     fallbackColumns: string[]
     teacherOptions: SelectOption[]
     groupOptions: SelectOption[]
+    branchOptions: SelectOption[]
     isSaving: boolean
     error: unknown
     onSubmit: (values: FormValues) => void
@@ -38,6 +39,7 @@ export function EntityFormModal({
     fallbackColumns,
     teacherOptions,
     groupOptions,
+    branchOptions,
     isSaving,
     error,
     onSubmit,
@@ -102,7 +104,17 @@ export function EntityFormModal({
     const SERVER_OPTIONS: Record<NonNullable<FormField['optionsSource']>, SelectOption[]> = {
         teachers: teacherOptions,
         groups: groupOptions,
+        branches: branchOptions,
     }
+
+    /*
+     * Filial bitta bo'lsa tanlov ma'nosiz — administrator bitta variantni
+     * bosib o'tirmasin. Forma tanlagichni yashiradi (pastda, `fields.map`
+     * ichida) va qiymatni faqat YUBORISHDA qo'yadi — `values` state'iga
+     * yozilmaydi, aks holda maydon hali ko'rinmayotgan paytda ham (variantlar
+     * hali yuklanayotganda) noto'g'ri qiymat "muzlab" qolishi mumkin edi.
+     */
+    const soleBranchId = branchOptions.length === 1 ? branchOptions[0].value : undefined
 
     function setValue(key: string, value: unknown) {
         // Raqam o'zgarsa oldingi qaror kuchini yo'qotadi — boshqa odam
@@ -118,6 +130,7 @@ export function EntityFormModal({
         // bo'lib qoladi va yagonalik sharti ishlamaydi.
         onSubmit({
             ...values,
+            ...(soleBranchId ? { branchId: soleBranchId } : {}),
             ...(values.phone ? { phone: normalizePhone(String(values.phone)) } : {}),
             ...(values.parentPhone
                 ? { parentPhone: normalizePhone(String(values.parentPhone)) }
@@ -142,7 +155,12 @@ export function EntityFormModal({
         <Modal eyebrow={eyebrow} title={title} onClose={onClose}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
                 {formConfig
-                    ? fields.map((field) => (
+                    ? fields
+                          // Bitta filial bo'lsa (yoki umuman bo'lmasa) tanlagich
+                          // yashiriladi — qiymat yuqoridagi `useEffect` orqali
+                          // avtomatik qo'yiladi (yoki bo'sh qoladi).
+                          .filter((field) => field.optionsSource !== 'branches' || branchOptions.length > 1)
+                          .map((field) => (
                           <div key={field.key} className="flex flex-col gap-1.5">
                               <Field label={t(field.labelKey)}>
                                   {renderControl(field)}
