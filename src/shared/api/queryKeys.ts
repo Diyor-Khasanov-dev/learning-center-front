@@ -48,6 +48,7 @@ export const queryKeys = {
     leads: (params: Record<string, unknown>) => ['lead', 'list', params] as const,
 
     analytics: (category: string) => ['analytics', category] as const,
+    analyticsInvoiceRange: (from: string, to: string) => ['analytics', 'invoice', 'range', { from, to }] as const,
 
     groupStats: () => ['group', 'stats'] as const,
     userByPhone: (phone: string) => ['user', 'byPhone', phone] as const,

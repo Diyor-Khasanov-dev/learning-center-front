@@ -4,13 +4,12 @@ import { useTheme } from '@/app/providers/useTheme'
 import { useMyOrganization } from '@/shared/hooks'
 import { useT } from '@/shared/i18n'
 import { AppShell } from '@/shared/ui'
-import { AnalyticsStatsRow } from '../components/AnalyticsStatsRow'
+import { AnalyticsPanel } from '../components/AnalyticsPanel'
 import { BranchesPanel } from '../components/BranchesPanel'
 import { MySubscriptionPanel } from '../components/MySubscriptionPanel'
 import { OrganizationPanel } from '../components/OrganizationPanel'
 import { PeoplePanel } from '../components/PeoplePanel'
 import { SuperAdminSidebar, type SuperAdminSection } from '../components/SuperAdminSidebar'
-import { useAnalytics } from '../hooks/useAnalytics'
 import { useAdminCount, useBranches } from '../hooks/useSuperAdminData'
 import { useMySubscription } from '../hooks/useMySubscription'
 
@@ -27,13 +26,12 @@ export function SuperAdminDashboardPage() {
     const { signOut } = useAuth()
     const { theme, toggleTheme } = useTheme()
 
-    const [section, setSection] = useState<SuperAdminSection>('students')
+    const [section, setSection] = useState<SuperAdminSection>('analytics')
     const [page, setPage] = useState(0)
     const [search, setSearch] = useState('')
 
     const organizationId = session.claims?.organizationId
     const { data: organization } = useMyOrganization(session.token, organizationId)
-    const analytics = useAnalytics(session.token)
     const mySubscription = useMySubscription(session.token)
     const branches = useBranches(session.token, 0, '')
     const adminCount = useAdminCount(session.token)
@@ -75,8 +73,6 @@ export function SuperAdminDashboardPage() {
                 isLoading={mySubscription.isLoading}
             />
 
-            <AnalyticsStatsRow items={analytics.items} />
-
             <div className="flex gap-6">
                 <SuperAdminSidebar
                     active={activeSection}
@@ -107,23 +103,27 @@ export function SuperAdminDashboardPage() {
                         />
                     )}
 
+                    {activeSection === 'analytics' && <AnalyticsPanel token={session.token} />}
+
                     {activeSection === 'organization' && (
                         <OrganizationPanel token={session.token} organizationId={organizationId} />
                     )}
 
-                    {activeSection !== 'branches' && activeSection !== 'organization' && (
-                        <PeoplePanel
-                            token={session.token}
-                            kind={activeSection}
-                            page={page}
-                            search={search}
-                            onPageChange={setPage}
-                            onSearchChange={(next) => {
-                                setSearch(next)
-                                setPage(0)
-                            }}
-                        />
-                    )}
+                    {activeSection !== 'analytics' &&
+                        activeSection !== 'branches' &&
+                        activeSection !== 'organization' && (
+                            <PeoplePanel
+                                token={session.token}
+                                kind={activeSection}
+                                page={page}
+                                search={search}
+                                onPageChange={setPage}
+                                onSearchChange={(next) => {
+                                    setSearch(next)
+                                    setPage(0)
+                                }}
+                            />
+                        )}
                 </div>
             </div>
         </AppShell>
