@@ -10,6 +10,7 @@ export const superAdmin = {
     'superAdmin.needsAttention': 'Diqqat talab qiladi',
     'superAdmin.group.people': 'Odamlar',
     'superAdmin.group.settings': 'Sozlamalar',
+    'superAdmin.section.analytics': 'Statistika',
     'superAdmin.section.students': 'O‘quvchilar',
     'superAdmin.section.teachers': 'O‘qituvchilar',
     'superAdmin.section.administrators': 'Administratorlar',
