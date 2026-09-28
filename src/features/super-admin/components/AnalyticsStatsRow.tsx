@@ -23,13 +23,20 @@ export function AnalyticsStatsRow({
         <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {ANALYTICS_CATEGORIES.map((category) => {
                 const item = items[category]
-                const totalText =
-                    item?.total === null ? '—' : item?.total === undefined ? '···' : String(item.total)
+                const hasError = Boolean(item?.error)
+                const totalText = hasError
+                    ? t('analytics.error')
+                    : item?.total === null
+                      ? '—'
+                      : item?.total === undefined
+                        ? '···'
+                        : String(item.total)
 
-                const thisMonthText =
-                    item?.thisMonth === null || item?.thisMonth === undefined
-                        ? null
-                        : t('analytics.thisMonth', { count: item.thisMonth })
+                const thisMonthText = hasError
+                    ? null
+                    : item?.thisMonth === null || item?.thisMonth === undefined
+                      ? null
+                      : t('analytics.thisMonth', { count: item.thisMonth })
 
                 return (
                     <div
@@ -44,7 +51,12 @@ export function AnalyticsStatsRow({
                             <div className="mb-1 truncate font-mono text-[0.62rem] tracking-[0.06em] text-fg-faint uppercase">
                                 {t(`analytics.${category}` as Parameters<typeof t>[0])}
                             </div>
-                            <div className="font-display text-2xl font-semibold tabular-nums text-fg sm:text-3xl">
+                            <div
+                                className={cn(
+                                    'font-display text-2xl font-semibold tabular-nums text-fg sm:text-3xl',
+                                    hasError && 'text-xs font-normal text-error-fg'
+                                )}
+                            >
                                 {totalText}
                             </div>
                         </div>

@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useAuth, useSession } from '@/app/providers/useAuth'
 import { useTheme } from '@/app/providers/useTheme'
 import { useMyOrganization } from '@/shared/hooks'
 import { useT } from '@/shared/i18n'
 import { AppShell } from '@/shared/ui'
-import { AnalyticsPanel } from '../components/AnalyticsPanel'
+
+const AnalyticsPanel = lazy(() => import('../components/AnalyticsPanel'))
 import { BranchesPanel } from '../components/BranchesPanel'
 import { MySubscriptionPanel } from '../components/MySubscriptionPanel'
 import { OrganizationPanel } from '../components/OrganizationPanel'
@@ -103,7 +104,17 @@ export function SuperAdminDashboardPage() {
                         />
                     )}
 
-                    {activeSection === 'analytics' && <AnalyticsPanel token={session.token} />}
+                    {activeSection === 'analytics' && (
+                        <Suspense
+                            fallback={
+                                <div className="flex h-64 items-center justify-center text-sm text-fg-muted">
+                                    ···
+                                </div>
+                            }
+                        >
+                            <AnalyticsPanel token={session.token} />
+                        </Suspense>
+                    )}
 
                     {activeSection === 'organization' && (
                         <OrganizationPanel token={session.token} organizationId={organizationId} />

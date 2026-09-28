@@ -7,6 +7,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
+import { useT } from '@/shared/i18n'
 import { formatAmount } from '@/shared/lib'
 import { AnalyticsStatsRow } from './AnalyticsStatsRow'
 import { useAnalytics } from '../hooks/useAnalytics'
@@ -16,9 +17,10 @@ interface AnalyticsPanelProps {
     token: string
 }
 
-export function AnalyticsPanel({ token }: AnalyticsPanelProps) {
+export default function AnalyticsPanel({ token }: AnalyticsPanelProps) {
+    const { t } = useT()
     const analytics = useAnalytics(token)
-    const { chartData, isLoading: isChartLoading } = useMonthlyInvoiceRevenue(token)
+    const { chartData, isLoading: isChartLoading, isError: isChartError } = useMonthlyInvoiceRevenue(token)
 
     return (
         <div className="space-y-6">
@@ -28,10 +30,10 @@ export function AnalyticsPanel({ token }: AnalyticsPanelProps) {
                 <div className="mb-4 flex items-center justify-between">
                     <div>
                         <h3 className="font-display text-base font-semibold text-fg">
-                            Tushum dinamikasi (oxirgi 6 oy)
+                            {t('analytics.revenueDynamics')}
                         </h3>
                         <p className="text-xs text-fg-muted">
-                            Hisob-fakturalar bo‘yicha oylik daromad miqdori
+                            {t('analytics.monthlyInvoiceRevenue')}
                         </p>
                     </div>
                 </div>
@@ -40,6 +42,10 @@ export function AnalyticsPanel({ token }: AnalyticsPanelProps) {
                     {isChartLoading ? (
                         <div className="flex h-full items-center justify-center text-sm text-fg-muted">
                             ···
+                        </div>
+                    ) : isChartError ? (
+                        <div className="flex h-full items-center justify-center text-sm text-error-fg">
+                            {t('analytics.error')}
                         </div>
                     ) : (
                         <ResponsiveContainer width="100%" height="100%">
@@ -72,7 +78,7 @@ export function AnalyticsPanel({ token }: AnalyticsPanelProps) {
                                     }}
                                     formatter={(value: unknown) => [
                                         formatAmount(typeof value === 'number' ? value : 0),
-                                        'Daromad',
+                                        t('analytics.revenue'),
                                     ]}
                                     labelStyle={{ color: 'var(--color-fg-muted)' }}
                                 />
@@ -92,3 +98,5 @@ export function AnalyticsPanel({ token }: AnalyticsPanelProps) {
         </div>
     )
 }
+
+export { AnalyticsPanel }
