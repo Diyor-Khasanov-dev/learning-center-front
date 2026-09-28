@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '@/test/renderWithProviders'
 import { AnalyticsPanel } from './AnalyticsPanel'
 
@@ -22,18 +22,10 @@ vi.mock('../hooks/useAnalytics', async (importOriginal) => {
     }
 })
 
+const mockUseMonthlyInvoiceRevenue = vi.fn()
+
 vi.mock('../hooks/useMonthlyInvoiceRevenue', () => ({
-    useMonthlyInvoiceRevenue: () => ({
-        chartData: [
-            { monthLabel: 'Nov', from: '2025-11-01', to: '2025-11-30', amount: 1000000, isLoading: false },
-            { monthLabel: 'Dec', from: '2025-12-01', to: '2025-12-31', amount: 1500000, isLoading: false },
-            { monthLabel: 'Jan', from: '2026-01-01', to: '2026-01-31', amount: 2000000, isLoading: false },
-            { monthLabel: 'Feb', from: '2026-02-01', to: '2026-02-28', amount: 1800000, isLoading: false },
-            { monthLabel: 'Mar', from: '2026-03-01', to: '2026-03-31', amount: 2500000, isLoading: false },
-            { monthLabel: 'Apr', from: '2026-04-01', to: '2026-04-30', amount: 3000000, isLoading: false },
-        ],
-        isLoading: false,
-    }),
+    useMonthlyInvoiceRevenue: (...args: unknown[]) => mockUseMonthlyInvoiceRevenue(...args),
 }))
 
 // ResponsiveContainer size mock
@@ -48,11 +40,38 @@ vi.mock('recharts', async () => {
 })
 
 describe('AnalyticsPanel', () => {
+    beforeEach(() => {
+        mockUseMonthlyInvoiceRevenue.mockReturnValue({
+            chartData: [
+                { monthLabel: 'Nov', from: '2025-11-01', to: '2025-11-30', amount: 1000000, isLoading: false },
+                { monthLabel: 'Dec', from: '2025-12-01', to: '2025-12-31', amount: 1500000, isLoading: false },
+                { monthLabel: 'Jan', from: '2026-01-01', to: '2026-01-31', amount: 2000000, isLoading: false },
+                { monthLabel: 'Feb', from: '2026-02-01', to: '2026-02-28', amount: 1800000, isLoading: false },
+                { monthLabel: 'Mar', from: '2026-03-01', to: '2026-03-31', amount: 2500000, isLoading: false },
+                { monthLabel: 'Apr', from: '2026-04-01', to: '2026-04-30', amount: 3000000, isLoading: false },
+            ],
+            isLoading: false,
+            isError: false,
+        })
+    })
+
     it('renders stats row items and revenue chart title properly', () => {
         renderWithProviders(<AnalyticsPanel token="fake-token" />)
 
         expect(screen.getByText('150')).toBeInTheDocument()
         expect(screen.getByText('20')).toBeInTheDocument()
         expect(screen.getByText('Tushum dinamikasi (oxirgi 6 oy)')).toBeInTheDocument()
+    })
+
+    it('renders error message when chart data fails', () => {
+        mockUseMonthlyInvoiceRevenue.mockReturnValue({
+            chartData: [],
+            isLoading: false,
+            isError: true,
+        })
+
+        renderWithProviders(<AnalyticsPanel token="fake-token" />)
+
+        expect(screen.getByText('Ma’lumotlarni yuklashda xatolik yuz berdi')).toBeInTheDocument()
     })
 })
