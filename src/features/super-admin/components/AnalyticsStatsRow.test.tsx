@@ -63,4 +63,14 @@ describe('AnalyticsStatsRow', () => {
 
         expect(screen.getByText('—')).toBeInTheDocument()
     })
+
+    it('renders error message when request fails', () => {
+        const items = mockItems({
+            student: { error: new Error('Failed to fetch') },
+        })
+
+        renderWithProviders(<AnalyticsStatsRow items={items} />)
+
+        expect(screen.getByText('Ma’lumotlarni yuklashda xatolik yuz berdi')).toBeInTheDocument()
+    })
 })
