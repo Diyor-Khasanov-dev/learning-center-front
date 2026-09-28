@@ -6,6 +6,8 @@ import type {
     OrganizationDto,
     Page,
     SubscriptionDto,
+    UserCreatePayload,
+    UserCreatedResponseDto,
     UserDto,
 } from '@/shared/types'
 
@@ -163,4 +165,18 @@ export async function fetchPeople(
 /** Super-admin o'z tashkilotini tahrirlaydi. */
 export function updateOwnOrganization(token: string, id: string, body: OrganizationPayload) {
     return apiFetch<OrganizationDto>(`${ORGANIZATIONS}/${id}`, { method: 'PUT', token, body })
+}
+
+/**
+ * Yangi administrator.
+ *
+ * `UserController.create` — class darajasidagi rol tekshiruvidan tashqari
+ * o'zining `hasRole('SUPER_ADMIN') or hasAuthority('EMPLOYEE_MANAGEMENT')`
+ * qoidasi ham bor; super-admin panelidan chaqirilgani uchun har doim o'tadi.
+ * Telefon allaqachon tizimda bo'lsa, backend uni shu tashkilotga
+ * administrator sifatida biriktiradi (yangi parol yaratmaydi) — o'quvchi va
+ * o'qituvchidagi "mavjud odam" oqimi bilan bir xil mexanizm.
+ */
+export function createAdmin(token: string, body: UserCreatePayload) {
+    return apiFetch<UserCreatedResponseDto>('/user', { method: 'POST', token, body })
 }

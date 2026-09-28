@@ -1,4 +1,14 @@
 /**
+ * `people(kind, params)` ning prefiksi — `invalidateQueries` sahifa/qidiruv
+ * holatidan qat'i nazar butun bo'limni eskirgan deb belgilashi uchun shu
+ * qisqa kalitni ishlatadi. Alohida funksiya: obyekt ichida o'zini-o'ziga
+ * murojaat qilib bo'lmaydi.
+ */
+function peopleKindKey(kind: string) {
+    return ['people', kind] as const
+}
+
+/**
  * TanStack Query kalitlari — bitta joyda.
  *
  * Nega markazlashtirildi: mutatsiyadan keyin `invalidateQueries` chaqirganda
@@ -57,7 +67,9 @@ export const queryKeys = {
     plans: (params: Record<string, unknown>) => ['plan', 'list', params] as const,
     subscriptions: (params: Record<string, unknown>) => ['subscription', 'list', params] as const,
     mySubscription: () => ['subscription', 'my'] as const,
-    people: (kind: string, params: Record<string, unknown>) => ['people', kind, params] as const,
+    people: (kind: string, params: Record<string, unknown>) => [...peopleKindKey(kind), params] as const,
+    /** `invalidateQueries`da params bilmasdan butun `kind`ni eskirtirish uchun. */
+    peopleKind: peopleKindKey,
 
     images: (params?: Record<string, unknown>) => ['images', params] as const,
 

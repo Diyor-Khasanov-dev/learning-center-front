@@ -57,4 +57,13 @@ export const superAdmin: Record<SuperAdminKeys, string> = {
     'superAdmin.onboarding.step.organization': 'Fill in organization information',
     'superAdmin.onboarding.step.branch': 'Add a branch',
     'superAdmin.onboarding.step.admin': 'Add an administrator',
+    'superAdmin.admin.new': '+ Administrator',
+    'superAdmin.admin.newTitle': 'New administrator',
+    'superAdmin.admin.permissions': 'Permissions',
+    'superAdmin.admin.existingAccount': 'This person already has an account — they sign in with their old password.',
+    'superAdmin.permission.LEAD_MANAGEMENT': 'Leads',
+    'superAdmin.permission.EMPLOYEE_MANAGEMENT': 'Employees',
+    'superAdmin.permission.TEACHER_MANAGEMENT': 'Teachers',
+    'superAdmin.permission.STUDENT_MANAGEMENT': 'Students',
+    'superAdmin.permission.INVOICE_MANAGEMENT': 'Payments',
 }

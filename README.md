@@ -10,7 +10,7 @@ ishlaydi va rolga qarab har xil panel ko'rsatadi:
 | `ADMINISTRATOR` | Students / Teachers / Groups / Lessons CRUD + guruhga o'quvchi biriktirish + **To'lovlar** |
 | `TEACHER`       | O'z guruhlari, ro'yxat, "Start lesson", davomat                    |
 | `STUDENT`       | O'z profili; davomat va guruh — endpoint kutilmoqda                |
-| `SUPER_ADMIN`   | Tashkilotlar va filiallar (branch) CRUD                             |
+| `SUPER_ADMIN`   | Tashkilot va filiallar (branch) CRUD, statistika, odamlar ro'yxati + administrator qo'shish |
 | hamma rol       | **Sozlamalar**: til, tema, profil, parol (markaz bloki — `/auth/me` da filial yo'q) |
 | boshqa          | Tushunarli xabar bilan placeholder                                 |
 

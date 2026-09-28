@@ -60,6 +60,15 @@ export const superAdmin = {
     'superAdmin.onboarding.step.organization': 'Tashkilot ma’lumotlarini to‘ldirish',
     'superAdmin.onboarding.step.branch': 'Filial qo‘shish',
     'superAdmin.onboarding.step.admin': 'Administrator qo‘shish',
+    'superAdmin.admin.new': '+ Administrator',
+    'superAdmin.admin.newTitle': 'Yangi administrator',
+    'superAdmin.admin.permissions': 'Ruxsatlar',
+    'superAdmin.admin.existingAccount': 'Bu odamning akkaunti bor — u eski paroli bilan kiradi.',
+    'superAdmin.permission.LEAD_MANAGEMENT': 'Lidlar',
+    'superAdmin.permission.EMPLOYEE_MANAGEMENT': 'Xodimlar',
+    'superAdmin.permission.TEACHER_MANAGEMENT': 'O‘qituvchilar',
+    'superAdmin.permission.STUDENT_MANAGEMENT': 'O‘quvchilar',
+    'superAdmin.permission.INVOICE_MANAGEMENT': 'To‘lovlar',
 } as const
 
 export type SuperAdminKeys = keyof typeof superAdmin
