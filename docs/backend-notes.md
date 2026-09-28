@@ -989,7 +989,7 @@ Spring'da u meros bo'lib o'tadi.
 
 ---
 
-## 2026-09-23 — 🔴 `lower(bytea)`: tarif va obuna ro'yxati yiqiladi
+## 2026-09-23 — ✅ `lower(bytea)`: tarif va obuna ro'yxati yiqiladi — tuzatildi
 
 Dasturchi panelida "Obunalar" tabi qizil xato bilan ochiladi:
 
@@ -1019,10 +1019,20 @@ where (:search is null or lower(o.name) like lower(concat('%', cast(:search as s
 
 Front tomonda vaqtinchalik chora qo'yildi: `search` endi bo'sh satr
 bo'lib yuboriladi (`usePlans.ts`, `useSubscriptions.ts`). Shunda tur
-aniq bo'ladi va `like '%%'` hammasini qaytaradi. Backend tuzatilgach bu
-chorani olib tashlash mumkin, lekin zarari yo'q.
+aniq bo'ladi va `like '%%'` hammasini qaytaradi.
 
-### 🟠 Yonida: tashkilot qidiruvi teskari yozilgan
+> **2026-09-27: tasdiqlandi — tuzatilgan.** `nurulloh-coder-dev/learning-center@main`
+> (`ca53469`) da `SubscriptionRepository.findAll` va `PlanRepository.findAll`
+> ikkalasida ham endi `cast(:search as string)` bor:
+> ```sql
+> where (:search is null or lower(o.name) like lower(concat('%', cast(:search as string), '%')))
+> ```
+> `null` bo'lganda parametr turi endi aniq — `lower(bytea)` xatosi
+> chiqmaydi. Frontenddagi `search: ''` chorasi (`usePlans.ts`,
+> `useSubscriptions.ts`) zarar qilmagani uchun **olib tashlanmadi** —
+> ikkalasi ham bir vaqtda ishlashi mumkin.
+
+### ✅ Yonida: tashkilot qidiruvi teskari yozilgan — tuzatildi
 
 `OrganizationRepository`:
 
@@ -1030,9 +1040,66 @@ chorani olib tashlash mumkin, lekin zarari yo'q.
 where (:search is null or :search ilike o.name)
 ```
 
-Taqqoslash teskari: naqsh sifatida FOYDALANUVCHI kiritgan satr
+Taqqoslash teskari edi: naqsh sifatida FOYDALANUVCHI kiritgan satr
 ishlatilyapti, ustun esa qiymat. To'g'risi `o.name ilike :search`
-bo'lishi kerak, va naqsh `%…%` bilan o'ralishi kerak.
+bo'lishi kerak edi, va naqsh `%…%` bilan o'ralishi kerak edi.
 
-Hozir yiqilmaydi (shuning uchun tashkilotlar tabi ochilyapti), lekin
-qidiruv ishlamaydi: "org" deb yozilsa hech nima topilmaydi.
+Hozir yiqilmasdi (shuning uchun tashkilotlar tabi ochilardi), lekin
+qidiruv ishlamasdi: "org" deb yozilsa hech nima topilmasdi.
+
+> **2026-09-27: tasdiqlandi — yo'nalish tuzatilgan, lekin yangi xato
+> chiqqan.** `nurulloh-coder-dev/learning-center@main` (`ca53469`) da:
+> ```sql
+> where (:search is null or o.name ilike concat('%',cast(:search as string),'%s'))
+> ```
+> Yo'nalish to'g'irlandi (`o.name ilike ...`) va `cast` bilan tur ham
+> aniqlashtirilgan — yiqilish yo'q. Lekin oxirgi bo'lak `'%'` emas,
+> **`'%s'`** — ya'ni naqsh `%<qidiruv>%s` bo'lib chiqadi: nomi harfiy
+> **`s` bilan tugagan** tashkilotlar bundan mustasno, boshqalari hech
+> qanday qidiruv so'zi bilan topilmaydi. Ehtimol `'%'` yozmoqchi bo'lib,
+> qo'lda "s" harfi qo'shilib qolgan (typo). Yangi topilgan xato sifatida
+> shu yerga yozib qo'yildi — frontendda hech narsa o'zgartirilmadi (bu
+> band faqat mavjud ikkitasini "tuzatilgan" deb belgilashni so'ragandi).
+
+---
+
+## 2026-09-27 — administratorlar ro'yxati va filial tanlovi
+
+### ✅ `GET /user` → `GET /user/admins`
+
+`UserController` da administratorlar ro'yxati alohida yo'lga ko'chgan:
+
+```java
+@GetMapping("admins")
+public ResponseEntity<Page<UserDto>> getAll(Pageable pageable, @RequestParam(required = false) String search)
+```
+
+Class darajasidagi `@PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMINISTRATOR')")`
+shu metodga ham tegishli. Javob — oddiy `Page<UserDto>`, avvalgi `/user`
+kabi (yassi, `role` filtrisiz — endpoint o'zi faqat adminlarni qaytaradi).
+Frontend `superAdminApi.ts` (`PEOPLE_ENDPOINT.administrators`,
+`fetchAdminCount`) shu yo'lga o'tkazildi, `role: 'ADMINISTRATOR'` query
+parametri endi yuborilmaydi (kerak emas).
+
+### ✅ `branchId` — o'quvchi, o'qituvchi, administrator yaratishda bor
+
+`UserCreateDto.branchId` (ixtiyoriy `String`, `UserService.createUserOrganization`
+da `null`/bo'sh bo'lsa filial biriktirilmaydi) — `StudentCreateDto.userCreateDto`
+va `TeacherCreateDto.user` ham shu tipdan foydalanadi, ya'ni uchala
+yaratish yo'li (`/student`, `/teacher`, `/user`) bir xil maydonni oladi.
+`UserUpdateDto`da bu maydon **yo'q** — tahrirlashda filialni almashtirib
+bo'lmaydi (backend qarori, frontend qarori emas).
+
+Frontend admin panelidagi o'quvchi va o'qituvchi yaratish formalariga
+filial tanlagichi qo'shildi (`admin/config/forms.ts`, faqat yaratishda —
+`optionsSource: 'branches'`). Bitta filial bo'lsa `EntityFormModal`
+tanlagichni yashiradi va qiymatni o'zi qo'yadi (`superAdmin.branchRequired`
+komentariga mos: "o'quvchi ham, o'qituvchi ham, administrator ham
+filialga biriktiriladi").
+
+**Diqqat:** administrator yaratish formasi admin panelida hali umuman
+yo'q (`FORM_CONFIGS`/`ENTITIES` da `administrators` yo'q) — super-admin
+paneli faqat administratorlar RO'YXATINI ko'rsatadi
+(`PeoplePanel.tsx`: "qo'shish va tahrirlash administrator panelida").
+Ya'ni filial avtomatik tanlanishi hozircha faqat o'quvchi va o'qituvchi
+formalariga tegishli; administrator yaratish formasi alohida vazifa.

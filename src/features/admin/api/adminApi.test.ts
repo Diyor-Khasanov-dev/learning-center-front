@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     createEntity,
     deleteEntity,
+    fetchBranchOptions,
     fetchEntityCount,
     fetchEntityPage,
     fetchGroupOptions,
@@ -124,5 +125,20 @@ describe('fetchGroupOptions', () => {
         mockFetch({ text: '{"content":[{"id":"g2","name":""}]}' })
         const options = await fetchGroupOptions(TOKEN)
         expect(options).toEqual([{ value: 'g2', label: 'g2' }])
+    })
+})
+
+describe('fetchBranchOptions', () => {
+    it('/branch ga sahifalash parametrlarini yuborib, {value,label} ro‘yxatiga o‘giradi', async () => {
+        const fetchMock = mockFetch({ text: '{"content":[{"id":"b1","name":"Chilonzor"}]}' })
+        const options = await fetchBranchOptions(TOKEN)
+        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/branch?page=0&size=200')
+        expect(options).toEqual([{ value: 'b1', label: 'Chilonzor' }])
+    })
+
+    it('name bo‘lmasa id ni label sifatida ishlatadi', async () => {
+        mockFetch({ text: '{"content":[{"id":"b2","name":""}]}' })
+        const options = await fetchBranchOptions(TOKEN)
+        expect(options).toEqual([{ value: 'b2', label: 'b2' }])
     })
 })

@@ -25,12 +25,20 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
     students: {
         createHintKey: 'admin.initialPasswordHint',
         lookupByPhone: true,
-        fields: [
-            { key: 'fullName', labelKey: 'field.fullName', type: 'text' },
-            { key: 'phone', labelKey: 'field.phone', type: 'tel' },
-            { key: 'birthDate', labelKey: 'field.birthDate', type: 'date' },
-            { key: 'parentPhone', labelKey: 'field.parentPhone', type: 'tel' },
-        ],
+        // Filial faqat yaratishda tanlanadi — `UserUpdateDto`da `branchId`
+        // umuman yo'q, backend uni tahrirlashda almashtirishga ruxsat bermaydi.
+        fields: (mode) => {
+            const base: FormField[] = [
+                { key: 'fullName', labelKey: 'field.fullName', type: 'text' },
+                { key: 'phone', labelKey: 'field.phone', type: 'tel' },
+                { key: 'birthDate', labelKey: 'field.birthDate', type: 'date' },
+                { key: 'parentPhone', labelKey: 'field.parentPhone', type: 'tel' },
+            ]
+            if (mode === 'create') {
+                base.push({ key: 'branchId', labelKey: 'field.branch', type: 'select', optionsSource: 'branches' })
+            }
+            return base
+        },
         getInitialValues(row) {
             const user = row?.userDto ?? {}
             return {
@@ -50,6 +58,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
                     birthDate: values.birthDate,
                     // `/student` orqali yaratilyapti, ya'ni rol aniq.
                     role: 'STUDENT',
+                    branchId: values.branchId,
                 },
                 parentPhone: values.parentPhone,
             }
@@ -69,11 +78,17 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
     teachers: {
         createHintKey: 'admin.initialPasswordHint',
         lookupByPhone: true,
-        fields: [
-            { key: 'fullName', labelKey: 'field.fullName', type: 'text' },
-            { key: 'phone', labelKey: 'field.phone', type: 'tel' },
-            { key: 'birthDate', labelKey: 'field.birthDate', type: 'date' },
-        ],
+        fields: (mode) => {
+            const base: FormField[] = [
+                { key: 'fullName', labelKey: 'field.fullName', type: 'text' },
+                { key: 'phone', labelKey: 'field.phone', type: 'tel' },
+                { key: 'birthDate', labelKey: 'field.birthDate', type: 'date' },
+            ]
+            if (mode === 'create') {
+                base.push({ key: 'branchId', labelKey: 'field.branch', type: 'select', optionsSource: 'branches' })
+            }
+            return base
+        },
         getInitialValues(row) {
             const user = row?.userDto ?? {}
             return {
@@ -89,6 +104,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
                     phone: values.phone,
                     birthDate: values.birthDate,
                     role: 'TEACHER',
+                    branchId: values.branchId,
                 },
             }
         },

@@ -1,4 +1,5 @@
 import {
+    administrators,
     attendance,
     branches,
     fullGroup,
@@ -49,6 +50,7 @@ export const demoUser: UserDto = {
 export const db = {
     students: [...students] as StudentDto[],
     teachers: [...teachers] as TeacherDto[],
+    administrators: [...administrators] as UserDto[],
     groups: [...groups] as GroupDto[],
     lessons: [...lessons] as LessonDto[],
     attendance: [...attendance] as AttendanceDto[],
