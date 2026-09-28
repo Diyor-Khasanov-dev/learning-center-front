@@ -1,4 +1,4 @@
-import type { LessonDto } from '@/shared/types'
+import type { LessonDto, UserDto } from '@/shared/types'
 import { db, demoUser, flatten, json, nextId, page, type Row } from './state'
 
 export function handleCrud(
@@ -19,6 +19,31 @@ export function handleCrud(
     // `/user` dan `/user/admins` ga ko'chirdi).
     if (resource === 'user' && tail === 'admins' && method === 'GET') {
         return page(db.administrators as unknown as Row[], url)
+    }
+
+    // Yangi administrator (super-admin paneli). Backendda xuddi shu yo'l
+    // orqali o'quvchi/o'qituvchi ham yaratilishi mumkin, lekin frontend
+    // ularni `/student`/`/teacher` orqali yuboradi — demo'da faqat
+    // `role: 'ADMINISTRATOR'` holatini ushlaymiz.
+    if (resource === 'user' && method === 'POST') {
+        const id = nextId('a')
+        const fullName = String(body.fullName ?? '')
+        const phone = String(body.phone ?? '')
+        const created: UserDto = {
+            id,
+            fullName,
+            phone,
+            birthDate: body.birthDate as string | undefined,
+            branchId: body.branchId as string | undefined,
+            role: (body.role as UserDto['role']) ?? 'ADMINISTRATOR',
+        }
+        db.administrators = [...db.administrators, created]
+        return json({
+            id,
+            fullName,
+            phone,
+            temporaryPassword: 'demo-' + nextId('p'),
+        })
     }
 
     // Telefon bo'yicha qidiruv. Demo'da bitta raqam "topiladi", shunda

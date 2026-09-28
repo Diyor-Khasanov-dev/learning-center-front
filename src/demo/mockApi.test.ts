@@ -30,6 +30,40 @@ describe('mockApi', () => {
         expect(data?.phone).toBe('+998 90 999 99 99')
     })
 
+    it('GET /user/admins returns the seeded administrators page', async () => {
+        const data = await apiFetch<{ content?: Record<string, unknown>[]; totalElements?: number }>(
+            '/user/admins',
+            { token: 'demo' }
+        )
+
+        expect(data?.totalElements).toBeGreaterThan(0)
+        expect(data?.content?.[0]).toMatchObject({ role: 'ADMINISTRATOR' })
+    })
+
+    it('POST /user creates an administrator and returns a temporary password', async () => {
+        const created = await apiFetch<Record<string, unknown>>('/user', {
+            method: 'POST',
+            token: 'demo',
+            body: {
+                fullName: 'Test Administrator',
+                phone: '+998 90 000 00 00',
+                role: 'ADMINISTRATOR',
+                branchId: 'b1',
+                permissions: ['LEAD_MANAGEMENT'],
+            },
+        })
+
+        expect(created?.fullName).toBe('Test Administrator')
+        expect(created?.phone).toBe('+998 90 000 00 00')
+        expect(typeof created?.temporaryPassword).toBe('string')
+
+        const list = await apiFetch<{ content?: Record<string, unknown>[] }>('/user/admins', {
+            token: 'demo',
+            params: { page: 0, size: 50 },
+        })
+        expect(list?.content?.some((row) => row.fullName === 'Test Administrator')).toBe(true)
+    })
+
     it('handles /leads endpoints correctly', async () => {
         // GET /leads
         const getPage = await apiFetch<Record<string, unknown>>('/leads', { token: 'demo' })

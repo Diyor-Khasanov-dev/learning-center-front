@@ -1,8 +1,13 @@
+import { useState } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Avatar, ErrorBox, Input, Pagination, Panel } from '@/shared/ui'
+import { Avatar, Button, ErrorBox, Input, Pagination, Panel } from '@/shared/ui'
+import type { UserCreatedResponseDto } from '@/shared/types'
+import { AdminCreateModal } from './AdminCreateModal'
+import { AdminCredentialsModal } from './AdminCredentialsModal'
 import { SimpleTable } from './SimpleTable'
 import { usePeople } from '../hooks/usePeople'
+import { useBranches, useCreateAdmin } from '../hooks/useSuperAdminData'
 import type { PeopleKind, PersonRow } from '../api/superAdminApi'
 
 interface PeoplePanelProps {
@@ -21,8 +26,10 @@ interface PeoplePanelProps {
  * sana), faqat manba boshqa. Uchta alohida komponent yozilsa uchta joyda
  * bir xil tuzatish qilishga to'g'ri kelardi.
  *
- * Bu yerda faqat KO'RISH bor: qo'shish va tahrirlash administrator
- * panelida, chunki kundalik ish o'sha yerda qilinadi.
+ * QO'SHISH faqat administratorlar uchun shu yerda ("+ Administrator"):
+ * o'quvchi va o'qituvchini administrator panelida qo'shish mantiqiy —
+ * kundalik ish shu yerda; administratorni esa faqat super-admin qo'sha
+ * oladi, ya'ni shu panel — yagona o'rin.
  */
 export function PeoplePanel({
     token,
@@ -39,6 +46,19 @@ export function PeoplePanel({
         page,
         search
     )
+
+    const [showCreate, setShowCreate] = useState(false)
+    const [credentials, setCredentials] = useState<UserCreatedResponseDto | null>(null)
+
+    // Filiallar ro'yxati faqat administrator qo'shishda kerak, lekin
+    // `SuperAdminDashboardPage` allaqachon shu so'rovni (`token, 0, ''`)
+    // yuborgan — kesh bo'lgani uchun bu yerda qayta so'rov ketmaydi.
+    const branches = useBranches(token, 0, '')
+    const branchOptions = branches.rows.map((branch) => ({
+        value: branch.id,
+        label: branch.name || branch.id,
+    }))
+    const createAdmin = useCreateAdmin(token)
 
     const columns = [
         {
@@ -72,12 +92,18 @@ export function PeoplePanel({
 
     return (
         <Panel>
-            <div className="mb-3 max-w-xs">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
                 <Input
+                    className="max-w-xs flex-1"
                     value={search}
                     onChange={(event) => onSearchChange(event.target.value)}
                     placeholder={t('superAdmin.search')}
                 />
+                {kind === 'administrators' && (
+                    <Button variant="primary" size="sm" onClick={() => setShowCreate(true)}>
+                        {t('superAdmin.admin.new')}
+                    </Button>
+                )}
             </div>
 
             {error != null && <ErrorBox>{errorMessage(error)}</ErrorBox>}
@@ -95,6 +121,27 @@ export function PeoplePanel({
                 totalElements={totalElements}
                 onPageChange={onPageChange}
             />
+
+            {showCreate && (
+                <AdminCreateModal
+                    branchOptions={branchOptions}
+                    isSaving={createAdmin.isPending}
+                    error={createAdmin.error}
+                    onClose={() => setShowCreate(false)}
+                    onSubmit={(payload) =>
+                        createAdmin.mutate(payload, {
+                            onSuccess: (created) => {
+                                setShowCreate(false)
+                                setCredentials(created)
+                            },
+                        })
+                    }
+                />
+            )}
+
+            {credentials && (
+                <AdminCredentialsModal credentials={credentials} onClose={() => setCredentials(null)} />
+            )}
         </Panel>
     )
 }
