@@ -63,6 +63,7 @@ export const superAdmin = {
     'superAdmin.admin.new': '+ Administrator',
     'superAdmin.admin.newTitle': 'Yangi administrator',
     'superAdmin.admin.permissions': 'Ruxsatlar',
+    'superAdmin.admin.existingAccount': 'Bu odamning akkaunti bor — u eski paroli bilan kiradi.',
     'superAdmin.permission.LEAD_MANAGEMENT': 'Lidlar',
     'superAdmin.permission.EMPLOYEE_MANAGEMENT': 'Xodimlar',
     'superAdmin.permission.TEACHER_MANAGEMENT': 'O‘qituvchilar',

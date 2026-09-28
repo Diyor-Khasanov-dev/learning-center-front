@@ -48,10 +48,14 @@ export interface UserCreatePayload {
  *
  * Vaqtinchalik parol FAQAT shu javobda keladi (o'quvchi/o'qituvchida
  * ham xuddi shunday — boshqa hech qayerdan qayta olib bo'lmaydi).
+ *
+ * `temporaryPassword` — telefon tizimda ALLAQACHON bo'lsa `null`:
+ * `UserService.createUser` bunday holda yangi parol generatsiya
+ * qilmaydi, mavjud foydalanuvchini shu tashkilotga biriktiradi xolos.
  */
 export interface UserCreatedResponseDto {
     id: string
     fullName: string
     phone: string
-    temporaryPassword: string
+    temporaryPassword: string | null
 }

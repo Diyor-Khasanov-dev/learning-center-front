@@ -60,6 +60,7 @@ export const superAdmin: Record<SuperAdminKeys, string> = {
     'superAdmin.admin.new': '+ Администратор',
     'superAdmin.admin.newTitle': 'Новый администратор',
     'superAdmin.admin.permissions': 'Права',
+    'superAdmin.admin.existingAccount': 'У этого человека уже есть аккаунт — он войдёт со своим старым паролем.',
     'superAdmin.permission.LEAD_MANAGEMENT': 'Лиды',
     'superAdmin.permission.EMPLOYEE_MANAGEMENT': 'Сотрудники',
     'superAdmin.permission.TEACHER_MANAGEMENT': 'Преподаватели',

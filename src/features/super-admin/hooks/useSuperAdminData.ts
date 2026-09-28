@@ -119,7 +119,7 @@ export function useCreateAdmin(token: string) {
             // Sidebardagi qizil nuqta `adminCount` ga qaraydi, ro'yxat esa
             // `people('administrators', ...)` kaliti ostida — ikkalasi ham
             // eskirgan deb belgilanadi.
-            queryClient.invalidateQueries({ queryKey: ['people', 'administrators'] })
+            queryClient.invalidateQueries({ queryKey: queryKeys.peopleKind('administrators') })
             queryClient.invalidateQueries({ queryKey: queryKeys.adminCount() })
         },
     })
