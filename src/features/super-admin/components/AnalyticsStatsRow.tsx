@@ -52,10 +52,15 @@ export function AnalyticsStatsRow({
                                 {t(`analytics.${category}` as Parameters<typeof t>[0])}
                             </div>
                             <div
-                                className={cn(
-                                    'font-display text-2xl font-semibold tabular-nums text-fg sm:text-3xl',
-                                    hasError && 'text-xs font-normal text-error-fg'
-                                )}
+                                // `cn` klasslarni birlashtirmaydi, faqat qo'shadi — shuning
+                                // uchun o'lcham va rang bir-birini bosmasin deb ikki holat
+                                // alohida yoziladi (`text-fg` + `text-danger-fg` birga tursa
+                                // qaysi yutishi CSS tartibiga qolardi).
+                                className={
+                                    hasError
+                                        ? 'font-display text-xs font-normal text-danger-fg'
+                                        : 'font-display text-2xl font-semibold tabular-nums text-fg sm:text-3xl'
+                                }
                             >
                                 {totalText}
                             </div>
