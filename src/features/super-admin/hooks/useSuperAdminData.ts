@@ -1,6 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/shared/api'
+import type { UserCreatePayload } from '@/shared/types'
 import {
+    createAdmin,
     createBranch,
     createOrganization,
     deleteBranch,
@@ -107,4 +109,18 @@ export function useAdminCount(token: string) {
         retry: false,
     })
     return query.data ?? 0
+}
+
+export function useCreateAdmin(token: string) {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (body: UserCreatePayload) => createAdmin(token, body),
+        onSuccess: () => {
+            // Sidebardagi qizil nuqta `adminCount` ga qaraydi, ro'yxat esa
+            // `people('administrators', ...)` kaliti ostida — ikkalasi ham
+            // eskirgan deb belgilanadi.
+            queryClient.invalidateQueries({ queryKey: queryKeys.peopleKind('administrators') })
+            queryClient.invalidateQueries({ queryKey: queryKeys.adminCount() })
+        },
+    })
 }

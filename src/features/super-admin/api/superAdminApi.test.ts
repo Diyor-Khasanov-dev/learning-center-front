@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+    createAdmin,
     createBranch,
     createOrganization,
     deleteBranch,
@@ -114,10 +115,40 @@ describe('fetchAnalytics', () => {
 })
 
 describe('fetchAdminCount', () => {
-    it('GET /user?role=ADMINISTRATOR yuboradi va totalElements ni qaytaradi', async () => {
+    it('GET /user/admins yuboradi (role filtrisiz) va totalElements ni qaytaradi', async () => {
         const fetchMock = mockFetch({ text: '{"content":[{"id":"u1"}],"totalElements":5}' })
         const count = await fetchAdminCount(TOKEN)
-        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/user?page=0&size=1&role=ADMINISTRATOR')
+        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/user/admins?page=0&size=1')
         expect(count).toBe(5)
+    })
+})
+
+describe('createAdmin', () => {
+    it('POST /user ga role, branchId va permissions bilan yuboradi', async () => {
+        const fetchMock = mockFetch({
+            text: '{"id":"a1","fullName":"Kamola","phone":"+998901234567","temporaryPassword":"Ab12Cd34"}',
+        })
+        const result = await createAdmin(TOKEN, {
+            fullName: 'Kamola',
+            phone: '+998901234567',
+            role: 'ADMINISTRATOR',
+            branchId: 'b1',
+            permissions: ['LEAD_MANAGEMENT'],
+        })
+        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/user')
+        expect(fetchMock.mock.calls[0][1].method).toBe('POST')
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+            fullName: 'Kamola',
+            phone: '+998901234567',
+            role: 'ADMINISTRATOR',
+            branchId: 'b1',
+            permissions: ['LEAD_MANAGEMENT'],
+        })
+        expect(result).toEqual({
+            id: 'a1',
+            fullName: 'Kamola',
+            phone: '+998901234567',
+            temporaryPassword: 'Ab12Cd34',
+        })
     })
 })
