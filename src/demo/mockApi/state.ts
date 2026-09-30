@@ -138,11 +138,24 @@ export function page<T extends Row>(rows: T[], url: URL) {
         ? rows.filter((row) => JSON.stringify(row).toLowerCase().includes(search))
         : rows
 
-    return json({
-        content: filtered.slice(index * size, index * size + size),
-        totalPages: Math.max(1, Math.ceil(filtered.length / size)),
-        totalElements: filtered.length,
-    })
+    return json(pagedModel(filtered.slice(index * size, index * size + size), filtered.length, size, index))
+}
+
+/**
+ * Backend `Page` ni VIA_DTO shaklida qaytaradi (`page` ichida jami son).
+ * Demo ham aynan shunday qaytarsin — ilgari tekis shakl qaytargani uchun
+ * productionda buzilgan sahifalash demo'da ko'rinmay qolgan edi.
+ */
+export function pagedModel<T>(content: T[], totalElements: number, size = content.length || 1, number = 0) {
+    return {
+        content,
+        page: {
+            size,
+            number,
+            totalElements,
+            totalPages: Math.max(1, Math.ceil(totalElements / size)),
+        },
+    }
 }
 
 export function nextId(prefix: string) {
