@@ -77,3 +77,18 @@ buziladi.
 Ilgari har sahifada 100+ qatorli `const s = { … }` obyekti bor edi. Ular
 Tailwind klasslariga ko'chirildi: dark rejim, `:hover`, media so'rovlar va
 kod takrorlanishi shu bilan yechildi.
+
+## Butun ekranli oyna — faqat portal orqali
+
+`Panel` va sozlamalar kartalarida `backdrop-blur` (`backdrop-filter`) bor.
+Bu xususiyat ichidagi `fixed` elementni butun ekranga emas, **kartaning
+o'ziga** bog'laydi: `fixed inset-0` yozilgan oyna karta o'lchamida qoladi,
+tepasi yuqori panel ostida qirqiladi, keyingi kartalar esa uning ustiga
+chiqadi (2026-09-30: 1280×900 ekranda rasm oynasi 670×315 bo'lib chiqqan).
+
+Shuning uchun:
+
+- oyna kerak bo'lsa — `shared/ui/Modal` (u `document.body` ga portal qiladi);
+- `Modal` to'g'ri kelmasa (masalan rasmni kattalashtirish) —
+  `createPortal(..., document.body)` bilan o'zingiz chiqaring;
+- `fixed` elementni to'g'ridan-to'g'ri kartaning ichiga yozmang.

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
@@ -249,22 +250,27 @@ export function ImageGallery({ token: propToken }: ImageGalleryProps) {
             </div>
 
             {/* Kattalashtirilgan ko'rinish. Fon bosilsa yopiladi — bu
-                odatiy xatti-harakat va tugma qidirishga hojat qolmaydi. */}
-            {zoomed && (
-                <div
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label={t('settings.enlargeImage')}
-                    onClick={() => setZoomed(null)}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm"
-                >
-                    <img
-                        src={zoomed.imageUrl}
-                        alt={zoomed.originalFileName ?? t('settings.uploadedProfileImage')}
-                        className="max-h-[80vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
-                    />
-                </div>
-            )}
+                odatiy xatti-harakat va tugma qidirishga hojat qolmaydi.
+                `document.body` ga portal: bo'lim kartasidagi `backdrop-blur`
+                `fixed` ni kartaga qamab qo'yardi va rasm keyingi kartalar
+                ostida qolardi (o'lchangan: 1280×900 ekranda 670×315). */}
+            {zoomed &&
+                createPortal(
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={t('settings.enlargeImage')}
+                        onClick={() => setZoomed(null)}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm"
+                    >
+                        <img
+                            src={zoomed.imageUrl}
+                            alt={zoomed.originalFileName ?? t('settings.uploadedProfileImage')}
+                            className="max-h-[80vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
+                        />
+                    </div>,
+                    document.body
+                )}
         </SettingsSection>
     )
 }

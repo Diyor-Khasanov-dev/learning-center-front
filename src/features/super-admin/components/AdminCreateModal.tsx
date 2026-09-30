@@ -81,11 +81,7 @@ export function AdminCreateModal({ branchOptions, isSaving, error, onSubmit, onC
                 )}
 
                 <Field label={t('superAdmin.admin.permissions')}>
-                    {/* Ro'yxat o'zi cheklangan balandlikda aylanadi — aks
-                        holda ruxsatlar ko'payganda butun oyna 900px balandlikdagi
-                        ekranda ustki panel ostiga sig'may qoladi (tepasi
-                        "Yangi yozuv" ko'rinmay qoladi). */}
-                    <div className="flex max-h-36 flex-col gap-2 overflow-y-auto">
+                    <div className="flex flex-col gap-2">
                         {ADMIN_PERMISSIONS.map((permission) => (
                             <label key={permission} className="flex items-center gap-2 text-sm text-fg">
                                 <input
