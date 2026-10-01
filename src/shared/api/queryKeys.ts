@@ -29,6 +29,8 @@ export const queryKeys = {
         ['attendance', 'my', groupId, previousMonths] as const,
 
     teacherOptions: () => ['teacher', 'options'] as const,
+    freeTeacherOptions: (dayType?: string, startTime?: string, endTime?: string) =>
+        ['teacher', 'options', 'free', dayType, startTime, endTime] as const,
     groupOptions: () => ['group', 'options'] as const,
     branchOptions: () => ['branch', 'options'] as const,
     groupLevels: () => ['group-level', 'list'] as const,

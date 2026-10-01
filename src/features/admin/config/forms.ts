@@ -128,10 +128,10 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
                 { key: 'name', labelKey: 'field.groupName', type: 'text' },
                 { key: 'room', labelKey: 'field.room', type: 'text' },
                 { key: 'startDate', labelKey: 'group.startDate', type: 'date' },
-                { key: 'teacherId', labelKey: 'field.teacher', type: 'select', optionsSource: 'teachers' },
                 { key: 'dayType', labelKey: 'field.dayType', type: 'select', options: DAY_TYPE_OPTIONS },
                 { key: 'startTime', labelKey: 'field.startTime', type: 'time' },
                 { key: 'endTime', labelKey: 'field.endTime', type: 'time' },
+                { key: 'teacherId', labelKey: 'field.teacher', type: 'select', optionsSource: 'freeTeachers' },
             ]
             if (mode === 'edit') {
                 base.push({ key: 'status', labelKey: 'field.status', type: 'select', options: STATUS_OPTIONS })

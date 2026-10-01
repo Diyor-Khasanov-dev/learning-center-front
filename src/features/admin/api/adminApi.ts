@@ -47,6 +47,23 @@ export async function fetchTeacherOptions(token: string) {
     }))
 }
 
+/** Guruh yaratishda bo'sh o'qituvchilar ro'yxati uchun. */
+export async function fetchFreeTeacherOptions(
+    token: string,
+    dayType?: string,
+    startTime?: string,
+    endTime?: string
+) {
+    const data = await apiFetch<{ id: string; name?: string }[]>('/teacher/filter-for-group-create', {
+        token,
+        params: { dayType, startTime, endTime },
+    })
+    return (data ?? []).map((teacher) => ({
+        value: teacher.id,
+        label: teacher.name || teacher.id,
+    }))
+}
+
 /**
  * Dars formasidagi "Guruh" ro'yxati uchun.
  *
