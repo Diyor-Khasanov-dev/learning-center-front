@@ -29,65 +29,67 @@ export function DataTable<T>({
     const colSpan = columns.length + (hasActions ? 1 : 0)
 
     return (
-        <div className={cn(dataTableClasses.container, 'relative')}>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-surface-card/80 to-transparent sm:hidden" />
-            <table className={dataTableClasses.table}>
-                <thead>
-                    <tr>
-                        {columns.map((column) => (
-                            <th
-                                key={column.key}
-                                className={cn(dataTableClasses.headerCell, column.align === 'right' && 'text-right')}
-                            >
-                                {column.header}
-                            </th>
-                        ))}
-                        {hasActions && (
-                            <th className={cn(dataTableClasses.headerCell, 'text-right')}>{actionsHeader}</th>
-                        )}
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading && (
+        <div className={dataTableClasses.wrapper}>
+            <div className={dataTableClasses.container}>
+                <table className={dataTableClasses.table}>
+                    <thead>
                         <tr>
-                            <td colSpan={colSpan} className={dataTableClasses.stateCell}>
-                                {loadingText}
-                            </td>
+                            {columns.map((column) => (
+                                <th
+                                    key={column.key}
+                                    className={cn(dataTableClasses.headerCell, column.align === 'right' && 'text-right')}
+                                >
+                                    {column.header}
+                                </th>
+                            ))}
+                            {hasActions && (
+                                <th className={cn(dataTableClasses.headerCell, 'text-right')}>{actionsHeader}</th>
+                            )}
                         </tr>
-                    )}
-
-                    {!isLoading && rows.length === 0 && (
-                        <tr>
-                            <td colSpan={colSpan} className={dataTableClasses.stateCell}>
-                                {emptyText}
-                            </td>
-                        </tr>
-                    )}
-
-                    {!isLoading &&
-                        rows.map((row, index) => (
-                            <tr key={getRowKey(row)} className={dataTableClasses.row}>
-                                {columns.map((column) => (
-                                    <td
-                                        key={column.key}
-                                        className={cn(
-                                            dataTableClasses.cell,
-                                            column.align === 'right' && 'text-right',
-                                            column.className,
-                                        )}
-                                    >
-                                        {column.render(row)}
-                                    </td>
-                                ))}
-                                {renderActions && (
-                                    <td className={cn(dataTableClasses.cell, 'text-right')}>
-                                        <div className={dataTableClasses.actions}>{renderActions(row, index)}</div>
-                                    </td>
-                                )}
+                    </thead>
+                    <tbody>
+                        {isLoading && (
+                            <tr>
+                                <td colSpan={colSpan} className={dataTableClasses.stateCell}>
+                                    {loadingText}
+                                </td>
                             </tr>
-                        ))}
-                </tbody>
-            </table>
+                        )}
+
+                        {!isLoading && rows.length === 0 && (
+                            <tr>
+                                <td colSpan={colSpan} className={dataTableClasses.stateCell}>
+                                    {emptyText}
+                                </td>
+                            </tr>
+                        )}
+
+                        {!isLoading &&
+                            rows.map((row, index) => (
+                                <tr key={getRowKey(row)} className={dataTableClasses.row}>
+                                    {columns.map((column) => (
+                                        <td
+                                            key={column.key}
+                                            className={cn(
+                                                dataTableClasses.cell,
+                                                column.align === 'right' && 'text-right',
+                                                column.className,
+                                            )}
+                                        >
+                                            {column.render(row)}
+                                        </td>
+                                    ))}
+                                    {renderActions && (
+                                        <td className={cn(dataTableClasses.cell, 'text-right')}>
+                                            <div className={dataTableClasses.actions}>{renderActions(row, index)}</div>
+                                        </td>
+                                    )}
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className={dataTableClasses.scrollFade} />
         </div>
     )
 }
