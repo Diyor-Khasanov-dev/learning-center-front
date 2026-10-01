@@ -4,9 +4,9 @@ import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { formatHeader, formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
 import { Button, ErrorBox, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
-import { useFreeTeacherOptions } from '../hooks/useFreeTeacherOptions'
-import { useUserByPhone } from '../hooks/useUserByPhone'
-import { ExistingUserNotice } from './ExistingUserNotice'
+import { useGroupTeacherOptions } from '../hooks/useGroupTeacherOptions'
+import { usePhoneLookup } from '../hooks/usePhoneLookup'
+import { PhoneLookupHints } from './PhoneLookupHints'
 import type { EntityFormConfig, FormField, FormValues, ModalMode } from '../types'
 
 interface EntityFormModalProps {
@@ -63,31 +63,12 @@ export function EntityFormModal({
     const isLookup = mode === 'create' && formConfig?.lookupByPhone === true
     const phone = String(values.phone ?? '')
 
-    /** `null` — hali javob yo'q; `'linked'` — tasdiqlangan; `'new'` — rad etilgan. */
-    const [decision, setDecision] = useState<'linked' | 'new' | null>(null)
-    const { found, isSearching } = useUserByPhone(
+    const { found, isSearching, decision, confirmExisting, rejectExisting, resetDecision } = usePhoneLookup(
         session.token,
-        normalizePhone(phone),
-        isLookup && decision === null
+        phone,
+        isLookup,
+        setValues
     )
-
-    /**
-     * Tasdiqlangach ma'lumot to'ladi, lekin BLOKLANMAYDI.
-     *
-     * Sabab: raqam boshqa odamga o'tgan bo'lishi mumkin va o'shanda yangi
-     * egasining ismi yozilishi kerak. Formada nima tursa, o'sha yuboriladi —
-     * backend mavjud odamni yangilaydi. Administrator xato yozsa, odam
-     * o'zi kelib aytadi va administrator to'g'rilaydi.
-     */
-    function confirmExisting() {
-        if (!found) return
-        setValues((current) => ({
-            ...current,
-            fullName: found.fullName ?? current.fullName,
-            birthDate: found.birthDate ?? current.birthDate,
-        }))
-        setDecision('linked')
-    }
 
     const eyebrow = mode === 'create' ? t('admin.newRecord') : t('admin.editRecord')
     const title =
@@ -101,27 +82,7 @@ export function EntityFormModal({
             : formConfig.fields
         : []
 
-    const dayType = typeof values.dayType === 'string' ? values.dayType : undefined
-    const startTime = typeof values.startTime === 'string' ? values.startTime : undefined
-    const endTime = typeof values.endTime === 'string' ? values.endTime : undefined
-
-    const freeTeacherQuery = useFreeTeacherOptions(session.token, dayType, startTime, endTime)
-
-    let freeTeachersOptions: SelectOption[] = teacherOptions
-    if (freeTeacherQuery.isSuccess && Array.isArray(freeTeacherQuery.data)) {
-        let list = freeTeacherQuery.data
-        const currentTeacherId =
-            mode === 'edit' && typeof initialValues.teacherId === 'string'
-                ? initialValues.teacherId
-                : ''
-        if (currentTeacherId && !list.some((item) => item.value === currentTeacherId)) {
-            const currentTeacher = teacherOptions.find((item) => item.value === currentTeacherId)
-            if (currentTeacher) {
-                list = [currentTeacher, ...list]
-            }
-        }
-        freeTeachersOptions = list
-    }
+    const freeTeachersOptions = useGroupTeacherOptions(session.token, mode, values, initialValues, teacherOptions)
 
     /** `optionsSource` → tayyor ro'yxat. Yangi manba qo'shish bir qator. */
     const SERVER_OPTIONS: Record<NonNullable<FormField['optionsSource']>, SelectOption[]> = {
@@ -141,9 +102,7 @@ export function EntityFormModal({
     const soleBranchId = branchOptions.length === 1 ? branchOptions[0].value : undefined
 
     function setValue(key: string, value: unknown) {
-        // Raqam o'zgarsa oldingi qaror kuchini yo'qotadi — boshqa odam
-        // haqida gap ketyapti.
-        if (key === 'phone') setDecision(null)
+        if (key === 'phone') resetDecision()
         setValues((current) => ({ ...current, [key]: value }))
     }
 
@@ -181,32 +140,23 @@ export function EntityFormModal({
                 {formConfig
                     ? fields
                           // Bitta filial bo'lsa (yoki umuman bo'lmasa) tanlagich
-                          // yashiriladi — qiymat yuqoridagi `useEffect` orqali
-                          // avtomatik qo'yiladi (yoki bo'sh qoladi).
+                          // yashiriladi — qiymat `handleSubmit` da qo'yiladi
+                          // (yoki bo'sh qoladi).
                           .filter((field) => field.optionsSource !== 'branches' || branchOptions.length > 1)
                           .map((field) => (
                           <div key={field.key} className="flex flex-col gap-1.5">
                               <Field label={t(field.labelKey)}>
                                   {renderControl(field)}
                               </Field>
-                              {/* Xabar telefon maydonining ostida turadi:
-                                  administrator aynan shu yerga qarab turadi. */}
-                              {field.key === 'phone' && isLookup && found && decision === null && (
-                                  <ExistingUserNotice
-                                      user={found}
+                              {field.key === 'phone' && (
+                                  <PhoneLookupHints
+                                      isLookup={isLookup}
+                                      found={found}
+                                      isSearching={isSearching}
+                                      decision={decision}
                                       onConfirm={confirmExisting}
-                                      onReject={() => setDecision('new')}
+                                      onReject={rejectExisting}
                                   />
-                              )}
-                              {field.key === 'phone' && decision === 'new' && (
-                                  <p className="text-[0.72rem] leading-snug text-fg-faint">
-                                      {t('lookup.replacing')}
-                                  </p>
-                              )}
-                              {field.key === 'phone' && isSearching && (
-                                  <p className="text-[0.72rem] leading-snug text-fg-faint">
-                                      {t('common.loading')}
-                                  </p>
                               )}
                           </div>
                       ))
