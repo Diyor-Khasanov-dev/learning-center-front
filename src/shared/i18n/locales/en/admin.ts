@@ -81,6 +81,7 @@ export const admin: Record<AdminKeys, string> = {
     'status.COMPLETED': 'Ended',
     'group.dayType.ODD': 'Odd days',
     'group.dayType.EVEN': 'Even days',
+    'group.startDate': 'Start date',
     'field.dayType': 'Schedule type',
     'admin.addToGroup': 'Add',
     'admin.alreadyInGroup': 'In group',

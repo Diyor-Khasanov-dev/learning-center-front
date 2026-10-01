@@ -133,11 +133,41 @@ describe('groups form config', () => {
         expect(config.getInitialValues(null)).toMatchObject({ dayType: 'ODD' })
     })
 
-    it('timeTable ni backend kutgan shaklda yuboradi', () => {
+    it('startDate maydoni room dan keyin joylashgan', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('create') : config.fields
+        const keys = fields.map((f) => f.key)
+        expect(keys.indexOf('startDate')).toBe(keys.indexOf('room') + 1)
+
+        const startDateField = fields.find((f) => f.key === 'startDate')
+        expect(startDateField).toEqual({
+            key: 'startDate',
+            labelKey: 'group.startDate',
+            type: 'date',
+        })
+    })
+
+    it('row dagi startDate mavjud bo’lsa uni oladi, yo’q bo’lsa bugungi sana qilib beradi', () => {
+        const row: AdminRow = {
+            id: 'g1',
+            name: 'Beginners A',
+            startDate: '2025-01-15T00:00:00Z',
+        }
+        expect(config.getInitialValues(row)).toMatchObject({
+            startDate: '2025-01-15',
+        })
+
+        const today = new Date().toISOString().slice(0, 10)
+        expect(config.getInitialValues(null)).toMatchObject({
+            startDate: today,
+        })
+    })
+
+    it('create payload startDate ni o’z ichiga oladi', () => {
         expect(
             config.buildCreatePayload({
                 name: 'Beginners A',
                 room: '12',
+                startDate: '2025-02-01',
                 teacherId: 't1',
                 dayType: 'ODD',
                 startTime: '09:00',
@@ -146,8 +176,31 @@ describe('groups form config', () => {
         ).toEqual({
             name: 'Beginners A',
             room: '12',
+            startDate: '2025-02-01',
             teacherId: 't1',
             timeTable: { dayType: 'ODD', startTime: '09:00', endTime: '10:30' },
+        })
+    })
+
+    it('update payload startDate ni o’z ichiga oladi', () => {
+        expect(
+            config.buildUpdatePayload({
+                name: 'Beginners A',
+                room: '12',
+                startDate: '2025-02-01',
+                teacherId: 't1',
+                dayType: 'ODD',
+                startTime: '09:00',
+                endTime: '10:30',
+                status: 'ONGOING',
+            })
+        ).toEqual({
+            name: 'Beginners A',
+            room: '12',
+            startDate: '2025-02-01',
+            teacherId: 't1',
+            timeTable: { dayType: 'ODD', startTime: '09:00', endTime: '10:30' },
+            status: 'ONGOING',
         })
     })
 })
