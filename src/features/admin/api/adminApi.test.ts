@@ -5,6 +5,7 @@ import {
     fetchBranchOptions,
     fetchEntityCount,
     fetchEntityPage,
+    fetchFreeTeacherOptions,
     fetchGroupOptions,
     fetchTeacherOptions,
     updateEntity,
@@ -109,6 +110,25 @@ describe('fetchTeacherOptions', () => {
     it('fullName bo‘lmasa id ni label sifatida ishlatadi', async () => {
         mockFetch({ text: '{"content":[{"id":"t2","userDto":{}}]}' })
         const options = await fetchTeacherOptions(TOKEN)
+        expect(options).toEqual([{ value: 't2', label: 't2' }])
+    })
+})
+
+describe('fetchFreeTeacherOptions', () => {
+    it('/teacher/filter-for-group-create ga parametrlar yuborib, {value,label} ro‘yxatiga o‘giradi', async () => {
+        const fetchMock = mockFetch({
+            text: '[{"id":"t1","name":"Vali Aliyev"}]',
+        })
+        const options = await fetchFreeTeacherOptions(TOKEN, 'ODD', '09:00', '10:30')
+        expect(fetchMock.mock.calls[0][0]).toBe(
+            '/api/v1/teacher/filter-for-group-create?dayType=ODD&startTime=09%3A00&endTime=10%3A30'
+        )
+        expect(options).toEqual([{ value: 't1', label: 'Vali Aliyev' }])
+    })
+
+    it('name bo‘lmasa id ni label sifatida ishlatadi', async () => {
+        mockFetch({ text: '[{"id":"t2"}]' })
+        const options = await fetchFreeTeacherOptions(TOKEN, 'EVEN', '11:00', '12:00')
         expect(options).toEqual([{ value: 't2', label: 't2' }])
     })
 })
