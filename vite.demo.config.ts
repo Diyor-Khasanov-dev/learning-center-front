@@ -17,7 +17,11 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist-demo',
-        rollupOptions: { input: fileURLToPath(new URL('./demo.html', import.meta.url)) },
+        rollupOptions: {
+            input: fileURLToPath(new URL('./demo.html', import.meta.url)),
+            // Demo bitta faylga yig'ilgani uchun kod bo'linmasligi kerak
+            output: { codeSplitting: false },
+        },
         // Bitta faylga yig'ish uchun kod bo'linmasligi kerak
         cssCodeSplit: false,
         assetsInlineLimit: 100_000_000,
