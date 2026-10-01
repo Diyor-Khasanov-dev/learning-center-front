@@ -1,4 +1,4 @@
-import { formatTime } from '@/shared/lib'
+import { formatDate, formatTime } from '@/shared/lib'
 import { DAY_TYPES, GROUP_STATUSES } from '@/shared/types'
 import type { EntityFormConfig, EntityKey, FormField } from '../types'
 
@@ -127,6 +127,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
             const base: FormField[] = [
                 { key: 'name', labelKey: 'field.groupName', type: 'text' },
                 { key: 'room', labelKey: 'field.room', type: 'text' },
+                { key: 'startDate', labelKey: 'group.startDate', type: 'date' },
                 { key: 'teacherId', labelKey: 'field.teacher', type: 'select', optionsSource: 'teachers' },
                 { key: 'dayType', labelKey: 'field.dayType', type: 'select', options: DAY_TYPE_OPTIONS },
                 { key: 'startTime', labelKey: 'field.startTime', type: 'time' },
@@ -141,6 +142,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
             return {
                 name: row?.name ?? '',
                 room: row?.room ?? '',
+                startDate: formatDate(row?.startDate) || new Date().toISOString().slice(0, 10),
                 teacherId: row?.teacher?.id ?? '',
                 dayType: row?.timeTable?.dayType ?? 'ODD',
                 startTime: formatTime(row?.timeTable?.startTime),
@@ -152,6 +154,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
             return {
                 name: values.name,
                 room: values.room,
+                startDate: values.startDate,
                 teacherId: values.teacherId,
                 timeTable: {
                     dayType: values.dayType,
@@ -164,6 +167,7 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
             return {
                 name: values.name,
                 room: values.room,
+                startDate: values.startDate,
                 teacherId: values.teacherId,
                 timeTable: {
                     dayType: values.dayType,

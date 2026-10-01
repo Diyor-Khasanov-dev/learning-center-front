@@ -84,6 +84,7 @@ export const admin = {
     'status.COMPLETED': 'Tugagan',
     'group.dayType.ODD': 'Toq kunlar',
     'group.dayType.EVEN': 'Juft kunlar',
+    'group.startDate': 'Boshlanish sanasi',
     'field.dayType': 'Jadval turi',
     'admin.addToGroup': 'Qo‘shish',
     'admin.alreadyInGroup': 'Guruhda',
