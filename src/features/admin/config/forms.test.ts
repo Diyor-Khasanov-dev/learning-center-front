@@ -146,6 +146,15 @@ describe('groups form config', () => {
         })
     })
 
+    it('teacherId maydoni endTime dan keyin joylashgan va optionsSource freeTeachers', () => {
+        const fields = typeof config.fields === 'function' ? config.fields('create') : config.fields
+        const keys = fields.map((f) => f.key)
+        expect(keys.indexOf('teacherId')).toBe(keys.indexOf('endTime') + 1)
+
+        const teacherIdField = fields.find((f) => f.key === 'teacherId')
+        expect(teacherIdField?.optionsSource).toBe('freeTeachers')
+    })
+
     it('row dagi startDate mavjud bo’lsa uni oladi, yo’q bo’lsa bugungi sana qilib beradi', () => {
         const row: AdminRow = {
             id: 'g1',

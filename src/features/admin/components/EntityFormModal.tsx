@@ -4,6 +4,7 @@ import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { formatHeader, formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
 import { Button, ErrorBox, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
+import { useFreeTeacherOptions } from '../hooks/useFreeTeacherOptions'
 import { useUserByPhone } from '../hooks/useUserByPhone'
 import { ExistingUserNotice } from './ExistingUserNotice'
 import type { EntityFormConfig, FormField, FormValues, ModalMode } from '../types'
@@ -100,11 +101,34 @@ export function EntityFormModal({
             : formConfig.fields
         : []
 
+    const dayType = typeof values.dayType === 'string' ? values.dayType : undefined
+    const startTime = typeof values.startTime === 'string' ? values.startTime : undefined
+    const endTime = typeof values.endTime === 'string' ? values.endTime : undefined
+
+    const freeTeacherQuery = useFreeTeacherOptions(session.token, dayType, startTime, endTime)
+
+    let freeTeachersOptions: SelectOption[] = teacherOptions
+    if (freeTeacherQuery.isSuccess && Array.isArray(freeTeacherQuery.data)) {
+        let list = freeTeacherQuery.data
+        const currentTeacherId =
+            mode === 'edit' && typeof initialValues.teacherId === 'string'
+                ? initialValues.teacherId
+                : ''
+        if (currentTeacherId && !list.some((item) => item.value === currentTeacherId)) {
+            const currentTeacher = teacherOptions.find((item) => item.value === currentTeacherId)
+            if (currentTeacher) {
+                list = [currentTeacher, ...list]
+            }
+        }
+        freeTeachersOptions = list
+    }
+
     /** `optionsSource` → tayyor ro'yxat. Yangi manba qo'shish bir qator. */
     const SERVER_OPTIONS: Record<NonNullable<FormField['optionsSource']>, SelectOption[]> = {
         teachers: teacherOptions,
         groups: groupOptions,
         branches: branchOptions,
+        freeTeachers: freeTeachersOptions,
     }
 
     /*
