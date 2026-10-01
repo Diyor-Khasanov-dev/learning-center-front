@@ -44,7 +44,7 @@ export default function AnalyticsPanel({ token }: AnalyticsPanelProps) {
                             ···
                         </div>
                     ) : isChartError ? (
-                        <div className="flex h-full items-center justify-center text-sm text-error-fg">
+                        <div className="flex h-full items-center justify-center text-sm text-danger-fg">
                             {t('analytics.error')}
                         </div>
                     ) : (

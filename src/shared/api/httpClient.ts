@@ -1,4 +1,5 @@
 import { ApiError } from './ApiError'
+import { flattenPagedModel } from './pagedModel'
 import { getRequestLocale } from './requestLocale'
 import { refreshAccessToken } from './sessionRefresh'
 
@@ -78,7 +79,7 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
     const text = await res.text()
     if (!text) return null
     try {
-        return JSON.parse(text) as T
+        return flattenPagedModel(JSON.parse(text)) as T
     } catch {
         return null
     }

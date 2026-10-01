@@ -30,6 +30,18 @@ beforeEach(() => vi.unstubAllGlobals())
 afterEach(() => vi.restoreAllMocks())
 
 describe('apiFetch', () => {
+    // Backend VIA_DTO bilan jami sonni `page` ichida qaytaradi — busiz hamma
+    // ro'yxatda "0 total" chiqardi va super-admin filiallarga qulflanardi.
+    it('VIA_DTO sahifasining jami sonini tepa darajada qaytaradi', async () => {
+        mockFetch({
+            text: '{"content":[{"id":"b1"},{"id":"b2"}],"page":{"size":10,"number":0,"totalElements":2,"totalPages":1}}',
+        })
+        const data = await apiFetch<{ content?: unknown[]; totalElements?: number; totalPages?: number }>('/branch')
+        expect(data?.totalElements).toBe(2)
+        expect(data?.totalPages).toBe(1)
+        expect(data?.content).toHaveLength(2)
+    })
+
     it('nisbiy yo’lga /api/v1 prefiksini qo’shadi', async () => {
         const fetchMock = mockFetch({ text: '{"id":"1"}' })
         await apiFetch('/student')

@@ -1,5 +1,5 @@
 import { groupRoster } from '../mockData'
-import { json, noContent } from './state'
+import { json, noContent, pagedModel } from './state'
 
 export function handleEnrollments(
     path: string,
@@ -10,13 +10,10 @@ export function handleEnrollments(
     if (path === '/enrollments' && method === 'GET') {
         const groupId = url.searchParams.get('groupId') ?? ''
         const ids = groupRoster[groupId] ?? []
-        return json({
-            // Enrollment id si demo'da guruh+o'quvchidan yasaladi —
-            // haqiqiy backendda u alohida yozuvning id si.
-            content: ids.map((studentId) => ({ id: `e-${groupId}-${studentId}`, studentId, groupId })),
-            totalPages: 1,
-            totalElements: ids.length,
-        })
+        // Enrollment id si demo'da guruh+o'quvchidan yasaladi —
+        // haqiqiy backendda u alohida yozuvning id si.
+        const content = ids.map((studentId) => ({ id: `e-${groupId}-${studentId}`, studentId, groupId }))
+        return json(pagedModel(content, content.length))
     }
     if (path === '/enrollments' && method === 'POST') {
         const groupId = String(body.groupId)
