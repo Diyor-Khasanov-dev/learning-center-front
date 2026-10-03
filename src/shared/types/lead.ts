@@ -42,7 +42,8 @@ export interface LeadCreateDto {
     fullName: string
     phone: string
     source?: LeadSource
-    preferredCourse?: string
+    /** Backend `LeadCreateDto.preferredCourseId` — nomi aynan shunday, aks holda kurs yetib bormaydi. */
+    preferredCourseId?: string
 }
 
 export interface LeadUpdateDto {
@@ -50,7 +51,7 @@ export interface LeadUpdateDto {
     phone?: string
     status: LeadStatus
     source?: LeadSource
-    preferredCourse?: string
+    preferredCourseId?: string
     callAt?: string
 }
 

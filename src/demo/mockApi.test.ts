@@ -79,7 +79,7 @@ describe('mockApi', () => {
                 fullName: 'Test Lead',
                 phone: '+998 90 000 00 00',
                 source: 'INSTAGRAM',
-                preferredCourse: 'lvl-a1',
+                preferredCourseId: 'lvl-a1',
             },
         })
         expect(created?.fullName).toBe('Test Lead')

@@ -35,6 +35,12 @@ export const queryKeys = {
     branchOptions: () => ['branch', 'options'] as const,
     groupLevels: () => ['group-level', 'list'] as const,
     groupLevelNameOptions: () => ['group-level', 'name-options'] as const,
+    /**
+     * Lid formasidagi kurs tanlagichi — `groupLevelNameOptions` bilan BIR XIL
+     * endpoint, lekin boshqa shakl (`{value, label}`). Kalit alohida bo'lmasa
+     * admin paneli keshga yozgan `{id, name}` qaytib, ro'yxat bo'sh chiqadi.
+     */
+    leadCourseOptions: () => ['lead', 'course-options'] as const,
 
     groupEnrollments: (groupId: string) => ['enrollments', groupId] as const,
 
