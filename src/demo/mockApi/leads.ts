@@ -15,7 +15,7 @@ export function handleLeads(
         return page(rows as unknown as Row[], url)
     }
     if (path === '/leads' && method === 'POST') {
-        const level = db.groupLevels.find((item) => item.id === String(body.preferredCourse))
+        const level = db.groupLevels.find((item) => item.id === String(body.preferredCourseId))
         const newLead: LeadDto = {
             id: nextId('ld'),
             fullName: String(body.fullName ?? ''),
@@ -30,8 +30,8 @@ export function handleLeads(
     }
     if (path.startsWith('/leads/') && method === 'PUT') {
         const id = path.slice('/leads/'.length)
-        const level = body.preferredCourse
-            ? db.groupLevels.find((item) => item.id === String(body.preferredCourse))
+        const level = body.preferredCourseId
+            ? db.groupLevels.find((item) => item.id === String(body.preferredCourseId))
             : undefined
         db.leads = db.leads.map((lead) => {
             if (lead.id !== id) return lead

@@ -8,7 +8,7 @@ export function useLeadGroupOptions(token: string) {
 }
 
 export function useLeadCourseOptions(token: string) {
-    return useQuery({ queryKey: queryKeys.groupLevelNameOptions(), queryFn: () => fetchLeadCourseOptions(token), staleTime: 5 * 60_000 })
+    return useQuery({ queryKey: queryKeys.leadCourseOptions(), queryFn: () => fetchLeadCourseOptions(token), staleTime: 5 * 60_000 })
 }
 
 export function useLeads(token: string, params: Pick<LeadListParams, 'size' | 'search' | 'status'>) {

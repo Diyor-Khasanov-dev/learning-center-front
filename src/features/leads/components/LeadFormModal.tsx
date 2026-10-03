@@ -47,7 +47,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
                 fullName: trimmedName,
                 phone: trimmedPhone,
                 source: source || undefined,
-                preferredCourse: trimmedCourse,
+                preferredCourseId: trimmedCourse,
                 status: lead.status ?? 'NEW',
             }
             onSubmit(body)
@@ -56,7 +56,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
                 fullName: trimmedName,
                 phone: trimmedPhone,
                 source: source || undefined,
-                preferredCourse: trimmedCourse,
+                preferredCourseId: trimmedCourse,
             }
             onSubmit(body)
         }

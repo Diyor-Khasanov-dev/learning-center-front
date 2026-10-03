@@ -39,7 +39,7 @@ describe('NewLeadModal', () => {
             fullName: 'Jasur Bek',
             phone: '+998911112233',
             source: undefined,
-            preferredCourse: undefined,
+            preferredCourseId: undefined,
         })
     })
 })
@@ -74,7 +74,7 @@ describe('EditLeadModal', () => {
             fullName: 'Ali Karimov',
             phone: '+998901234567',
             source: 'INSTAGRAM',
-            preferredCourse: 'lvl-1',
+            preferredCourseId: 'lvl-1',
             status: 'CALL_LATER',
         })
     })
