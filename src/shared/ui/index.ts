@@ -23,6 +23,8 @@ export { SegmentedControl } from './SegmentedControl'
 export { Select, type SelectOption } from './Select'
 export { SubscriptionStatusBadge } from './SubscriptionStatusBadge'
 export { ThemeToggle } from './ThemeToggle'
+export { Toaster } from './Toaster'
+export { dismissToast, showErrorToast } from './toastStore'
 export {
     ArrowDownIcon,
     ArrowUpIcon,

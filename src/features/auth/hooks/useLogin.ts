@@ -26,6 +26,9 @@ export function useLogin(onSuccess: (session: Session) => void) {
 
     const mutation = useMutation({
         retry: false,
+        // Kirish formasi xatoni o'zi tushunarli qilib ko'rsatadi ("parol
+        // noto'g'ri") — qizil xabar uni takrorlab, xom server matnini chiqarardi.
+        meta: { toast: false },
         mutationFn: async (credentials: LoginCredentials) => {
             const response = await login(credentials)
 
