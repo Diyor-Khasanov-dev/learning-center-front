@@ -71,7 +71,10 @@ export function LeadsPage() {
     const mutations = useLeadMutations(token)
     const groups = useLeadGroupOptions(token)
     const total = leads.length
-    const apiError = LEAD_STATUSES.map((status) => lists[status].error).find(Boolean) ?? mutations.create.error ?? mutations.update.error ?? mutations.enroll.error ?? mutations.reject.error ?? mutations.callLater.error ?? mutations.remove.error
+    // Faqat ro'yxat yuklash xatosi. Saqlash xatolari endi qizil xabarda
+    // (`queryClient.ts` → `MutationCache`) — ilgari ular shu yerda, ochiq oyna
+    // ORQASIDA va "yuklab bo'lmadi" matni bilan chiqardi.
+    const apiError = LEAD_STATUSES.map((status) => lists[status].error).find(Boolean)
 
     function openCreate() { setEditing(null); setIsCreateOpen(true) }
     function openEdit(lead: LeadDto) { setEditing(lead); setIsCreateOpen(false) }

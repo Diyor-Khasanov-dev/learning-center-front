@@ -49,12 +49,18 @@ barcha sahifa/qidiruv variantlarini yangilaydi.
 
 ## Umumiy sozlamalar
 
-[`app/providers/AppProviders.tsx`](../src/app/providers/AppProviders.tsx):
+[`app/providers/queryClient.ts`](../src/app/providers/queryClient.ts)
+(`AppProviders` uni komponent ichida chaqiradi):
 
 - `staleTime: 30s` — har fokusda qayta so'rov yubormaslik uchun;
 - `retry` — 4xx da qayta urinmaydi (javob o'zgarmaydi), 5xx da 2 marta;
 - `QueryClient` komponent ichida yaratiladi, modul darajasida emas — aks
-  holda testlar bir-birining cache'ini meros qilib oladi.
+  holda testlar bir-birining cache'ini meros qilib oladi;
+- **har qanday mutatsiya xatosi** `MutationCache.onError` orqali o'ng yuqori
+  burchakda qizil xabar (`shared/ui/Toaster`) bo'lib chiqadi va 5 soniyada
+  yo'qoladi. Xabar `Modal` ustida turadi — xato oyna orqasida qolib ketmaydi.
+  Xatoni o'zi ko'rsatadigan mutatsiya (masalan login formasi)
+  `meta: { toast: false }` bilan chiqib ketadi.
 
 ## Hosila holat (derived state)
 
