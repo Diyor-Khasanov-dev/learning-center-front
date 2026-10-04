@@ -7,8 +7,9 @@ import { PrintIcon } from './PrintIcon'
 
 const TYPE_TONE: Record<TransactionTypeRead, BadgeTone> = {
     PAID: 'success',
-    RETURNED: 'warning',
+    REFUND: 'warning',
     MONTHLY_FEE: 'neutral',
+    CORRECTION: 'steel',
 }
 
 interface TransactionTableProps {

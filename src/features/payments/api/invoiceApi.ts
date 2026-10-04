@@ -1,5 +1,5 @@
 import { apiFetch } from '@/shared/api'
-import type { GroupOverviewDto, InvoiceDto, InvoiceStatus, Page, StudentDto } from '@/shared/types'
+import type { GroupOverviewDto, InvoiceDto, InvoiceStatus, Page } from '@/shared/types'
 
 const ENDPOINT = '/invoice'
 
@@ -39,28 +39,10 @@ export function createGroupInvoice(token: string, groupId: string) {
  * Qolgan yozish amallari backenddan olib tashlandi: `PUT /invoice/{id}`
  * (holatni o'zgartirish) va `POST /invoice/return` (pul qaytarish) endi
  * yo'q. Hisob 12-darsdan keyin avtomatik yaratiladi, pul qaytarish esa
- * `RETURNED` turidagi tranzaksiya bo'lib yoziladi.
+ * `REFUND` turidagi tranzaksiya bo'lib yoziladi.
  */
 export function deleteInvoice(token: string, id: string) {
     return apiFetch(`${ENDPOINT}/${id}`, { method: 'DELETE', token })
-}
-
-/**
- * O'quvchilar ro'yxati — tanlagich uchun VA ismni id bo'yicha topish uchun.
- *
- * `InvoiceDto` da o'quvchining ismi yo'q, faqat `enrollmentDto.studentId`
- * bor. Har bir qator uchun alohida so'rov yuborish o'rniga ro'yxat bir marta
- * yuklanadi va jadval undan ism oladi.
- *
- * Bo'limlar bir-biridan import qilmagani uchun admin'dagi o'xshash
- * funksiyaga tayanmaymiz — bu yerda o'zimizniki turadi.
- */
-export async function fetchStudentOptions(token: string) {
-    const data = await apiFetch<Page<StudentDto>>('/student', { token, params: { page: 0, size: 200 } })
-    return (data?.content ?? []).map((student) => ({
-        value: student.id,
-        label: student.userDto?.fullName || student.id,
-    }))
 }
 
 /** Hisob yaratish tugmasidagi guruh tanlagichi. */

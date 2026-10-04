@@ -106,7 +106,7 @@ export const invoices: InvoiceDto[] = [
 export const transactions: TransactionDto[] = [
     { id: 't1', type: 'PAID', amount: 250000, invoice: invoices[1], user: students[1], createdAt: '2026-08-03T10:15:00' },
     { id: 't2', type: 'PAID', amount: 200000, invoice: invoices[1], user: students[1], createdAt: '2026-08-11T14:40:00' },
-    { id: 't3', type: 'RETURNED', amount: 100000, invoice: invoices[2], user: students[2], createdAt: '2026-06-20T09:05:00' },
+    { id: 't3', type: 'REFUND', amount: 100000, invoice: invoices[2], user: students[2], createdAt: '2026-06-20T09:05:00' },
 ]
 
 export const organizations: OrganizationDto[] = [

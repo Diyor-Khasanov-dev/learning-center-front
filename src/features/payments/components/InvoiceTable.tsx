@@ -1,15 +1,11 @@
 import { useT } from '@/shared/i18n'
 import { formatAmount, formatDate } from '@/shared/lib'
 import { Badge, DataTable, IconButton, TrashIcon } from '@/shared/ui'
-import type { BadgeTone, DataTableColumn } from '@/shared/ui'
-import type { InvoiceDto, InvoiceStatus } from '@/shared/types'
+import type { DataTableColumn } from '@/shared/ui'
+import type { InvoiceDto } from '@/shared/types'
+import { INVOICE_STATUS_TONE } from '../lib/invoiceStatusTone'
 import { PrintIcon } from './PrintIcon'
 
-const STATUS_TONE: Record<InvoiceStatus, BadgeTone> = {
-    PAID: 'success',
-    PENDING: 'warning',
-    OVERDUE: 'danger',
-}
 
 interface InvoiceTableProps {
     invoices: InvoiceDto[]
@@ -48,7 +44,7 @@ export function InvoiceTable({ invoices, isLoading, onDelete, onPrint }: Invoice
             header: t('field.status'),
             render: (invoice) =>
                 invoice.paymentStatus ? (
-                    <Badge tone={STATUS_TONE[invoice.paymentStatus]}>
+                    <Badge tone={INVOICE_STATUS_TONE[invoice.paymentStatus]}>
                         {t(`invoice.status.${invoice.paymentStatus}`)}
                     </Badge>
                 ) : (

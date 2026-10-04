@@ -32,14 +32,24 @@ describe('fetchTransactions', () => {
 })
 
 describe('createTransaction', () => {
-    // Hisob id si YUBORILMAYDI — backend uni o'zi topadi.
-    it('POST /transaction ga faqat tur, summa va o‘quvchini yuboradi', async () => {
+    it('POST /transaction ga tur, summa, o‘quvchi va hisobni yuboradi', async () => {
         const fetchMock = mockFetch('{"id":"t1"}')
-        await createTransaction(TOKEN, { type: 'PAID', amount: 400000, studentId: 'st-1' })
+        await createTransaction(TOKEN, { type: 'PAID', amount: 400000, studentId: 'st-1', invoiceId: 'inv-1' })
 
         expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/transaction')
         expect(fetchMock.mock.calls[0][1].method).toBe('POST')
-        expect(fetchMock.mock.calls[0][1].body).toBe('{"type":"PAID","amount":400000,"studentId":"st-1"}')
+        expect(fetchMock.mock.calls[0][1].body).toBe(
+            '{"type":"PAID","amount":400000,"studentId":"st-1","invoiceId":"inv-1"}'
+        )
+    })
+
+    it('qaytarish sababini izoh sifatida yuboradi, bo‘sh izohni tushiradi', async () => {
+        const fetchMock = mockFetch('{"id":"t4"}')
+        await createTransaction(TOKEN, { type: 'PAID', amount: 1, studentId: 's', invoiceId: 'i', note: '  ' })
+        await createTransaction(TOKEN, { type: 'REFUND', amount: 1, studentId: 's', invoiceId: 'i', note: ' Ko‘chib ketdi ' })
+
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body)).not.toHaveProperty('note')
+        expect(JSON.parse(fetchMock.mock.calls[1][1].body).note).toBe('Ko‘chib ketdi')
     })
 })
 
@@ -48,16 +58,16 @@ describe('createTransaction ishorasi', () => {
     // o'quvchining qarzi kamayish o'rniga ko'payib ketadi.
     it('qaytarimni manfiy qilib yuboradi', async () => {
         const fetchMock = mockFetch('{"id":"t2"}')
-        await createTransaction(TOKEN, { type: 'RETURNED', amount: 100000, studentId: 'st-1' })
+        await createTransaction(TOKEN, { type: 'REFUND', amount: 100000, studentId: 'st-1', invoiceId: 'inv-1' })
 
-        expect(fetchMock.mock.calls[0][1].body).toBe('{"type":"RETURNED","amount":-100000,"studentId":"st-1"}')
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({ type: 'REFUND', amount: -100000 })
     })
 
     it('to‘lovni musbat qoldiradi', async () => {
         const fetchMock = mockFetch('{"id":"t3"}')
-        await createTransaction(TOKEN, { type: 'PAID', amount: 100000, studentId: 'st-1' })
+        await createTransaction(TOKEN, { type: 'PAID', amount: 100000, studentId: 'st-1', invoiceId: 'inv-1' })
 
-        expect(fetchMock.mock.calls[0][1].body).toBe('{"type":"PAID","amount":100000,"studentId":"st-1"}')
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({ type: 'PAID', amount: 100000 })
     })
 })
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { deleteInvoice, fetchInvoices, fetchStudentOptions } from './invoiceApi'
+import { deleteInvoice, fetchInvoices } from './invoiceApi'
 
 /**
  * `httpClient.test.ts` dagi kabi — global `fetch` soxtalashtiriladi,
@@ -55,28 +55,5 @@ describe('deleteInvoice', () => {
         await deleteInvoice(TOKEN, '1')
         expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/invoice/1')
         expect(fetchMock.mock.calls[0][1].method).toBe('DELETE')
-    })
-})
-
-describe('fetchStudentOptions', () => {
-    it('/student ga sahifalash parametrlarini yuborib, {value,label} ro‘yxatiga o‘giradi', async () => {
-        const fetchMock = mockFetch({
-            text: '{"content":[{"id":"s1","userDto":{"fullName":"Ali Valiyev"}}]}',
-        })
-        const options = await fetchStudentOptions(TOKEN)
-        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/student?page=0&size=200')
-        expect(options).toEqual([{ value: 's1', label: 'Ali Valiyev' }])
-    })
-
-    it('fullName bo‘lmasa id ni label sifatida ishlatadi', async () => {
-        mockFetch({ text: '{"content":[{"id":"s2","userDto":{}}]}' })
-        const options = await fetchStudentOptions(TOKEN)
-        expect(options).toEqual([{ value: 's2', label: 's2' }])
-    })
-
-    it('javob bo‘sh bo‘lsa bo‘sh ro‘yxat qaytaradi', async () => {
-        mockFetch({ text: '' })
-        const options = await fetchStudentOptions(TOKEN)
-        expect(options).toEqual([])
     })
 })

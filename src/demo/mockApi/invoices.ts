@@ -16,8 +16,20 @@ export function handleInvoices(
 ): Response | null {
     if (path === '/invoice' && method === 'GET') {
         const status = url.searchParams.get('status')
-        const rows = status ? db.invoices.filter((invoice) => invoice.paymentStatus === status) : db.invoices
-        return page(rows as unknown as Row[], url)
+        const byStatus = status ? db.invoices.filter((invoice) => invoice.paymentStatus === status) : db.invoices
+        // Backend qidiruvi o'quvchi TELEFONINI ham qamraydi (to'lov oynasi
+        // hisoblarni shu bilan topadi), hisob qatorida esa telefon yo'q —
+        // shuning uchun telefonni o'quvchidan qarab qo'shib qidiramiz.
+        const search = (url.searchParams.get('search') ?? '').toLowerCase()
+        const rows = search
+            ? byStatus.filter((invoice) => {
+                  const student = db.students.find((item) => item.id === invoice.enrollmentDto?.studentId)
+                  return `${JSON.stringify(invoice)} ${student?.userDto?.phone ?? ''}`.toLowerCase().includes(search)
+              })
+            : byStatus
+        const params = new URL(url)
+        params.searchParams.delete('search')
+        return page(rows as unknown as Row[], params)
     }
     // Guruhga qo'lda hisob yaratish. Ikkinchi marta chaqirilsa haqiqiy
     // backend 409 qaytaradi — demo'da ham shunday, tugmaning xato holati
@@ -55,16 +67,19 @@ export function handleInvoices(
     if (path === '/transaction' && method === 'POST') {
         const studentId = String(body.studentId ?? '')
         const student = db.students.find((item) => item.id === studentId)
-        // Backend to'lovni o'quvchining eng so'nggi hisobiga bog'laydi.
-        const invoice = [...db.invoices]
-            .reverse()
-            .find((item) => item.enrollmentDto?.studentId === studentId)
+        // Backendda `invoiceId` `@NotNull` — yuborilmasa 400.
+        if (!body.invoiceId) return json({ errorCode: 'BadRequest', message: 'invoiceId must not be null' }, 400)
+        const invoice = db.invoices.find((item) => item.id === body.invoiceId)
         if (!invoice) return json({ message: 'Invoice not found' }, 404)
+        if (body.type === 'PAID' && invoice.paymentStatus === 'PAID') {
+            return json({ errorCode: 'BadRequest', message: 'Invoice already paid' }, 400)
+        }
 
         const transaction: TransactionDto = {
             id: nextId('t'),
             type: body.type as TransactionType,
             amount: Number(body.amount),
+            note: body.note ? String(body.note) : undefined,
             invoice,
             user: student,
             createdAt: new Date().toISOString().slice(0, 19),
