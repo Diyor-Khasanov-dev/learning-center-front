@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
+import { formatPhone, isValidPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
 import { Button, ErrorBox, Field, Input, Modal } from '@/shared/ui'
 import type { OrganizationPayload } from '../api/developerApi'
 
@@ -25,8 +25,13 @@ export function OrganizationFormModal({
     const [website, setWebsite] = useState('')
     const [daysBeforeDebt, setDaysBeforeDebt] = useState('')
 
+    // Telefon maydoni "+998" bilan boshlanadi — `required` uni to'ldirilgan
+    // deb hisoblaydi, shuning uchun to'liq raqamni alohida tekshiramiz.
+    const isPhoneValid = isValidPhone(phone) && normalizePhone(phone) !== normalizePhone(UZ_PHONE_PREFIX)
+
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        if (!isPhoneValid) return
         const days = Number(daysBeforeDebt)
         onSubmit({
             name: name.trim(),
@@ -51,6 +56,7 @@ export function OrganizationFormModal({
                 <Field label={t('field.phone')}>
                     <Input
                         type="tel"
+                        required
                         value={phone}
                         onChange={(event) => setPhone(formatPhone(event.target.value))}
                     />
@@ -72,6 +78,7 @@ export function OrganizationFormModal({
                     <Input
                         type="number"
                         min="0"
+                        required
                         value={daysBeforeDebt}
                         onChange={(event) => setDaysBeforeDebt(event.target.value)}
                     />
@@ -81,7 +88,7 @@ export function OrganizationFormModal({
 
                 <div className="mt-1 flex justify-end gap-2.5">
                     <Button onClick={onClose}>{t('common.cancel')}</Button>
-                    <Button type="submit" variant="primary" disabled={isSaving}>
+                    <Button type="submit" variant="primary" disabled={isSaving || !isPhoneValid}>
                         {isSaving ? t('common.saving') : t('common.save')}
                     </Button>
                 </div>

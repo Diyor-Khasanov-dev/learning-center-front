@@ -17,6 +17,10 @@ export function SettingsPage() {
     const navigate = useNavigate()
 
     const isAdmin = session.role === 'ADMINISTRATOR' || session.role === 'SUPER_ADMIN'
+    // Dasturchi hech bir tashkilotga tegishli emas: profil (`PUT /user`) va
+    // rasmlar backendda tashkilotga bog'langan, unga yopiq. Unga faqat
+    // ko'rinish va parol — ilgari menyudagi "Sozlamalar" umuman ochilmasdi.
+    const isDeveloper = session.role === 'DEVELOPER'
 
     return (
         <AppShell
@@ -34,8 +38,8 @@ export function SettingsPage() {
             {/* Tor ustun: sozlamalar o'qiladigan ro'yxat, keng jadval emas */}
             <div className="mx-auto max-w-2xl">
                 <AppearanceSection />
-                <ProfileSection />
-                <ImageGallery />
+                {!isDeveloper && <ProfileSection />}
+                {!isDeveloper && <ImageGallery />}
                 <PasswordSection />
                 {isAdmin && <CentreSection />}
             </div>

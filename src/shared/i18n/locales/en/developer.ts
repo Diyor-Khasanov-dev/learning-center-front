@@ -29,6 +29,7 @@ export const developer = {
     'plan.limits': 'Limits',
     'plan.active': 'Status',
     'plan.inactive': 'Inactive',
+    'plan.isActive': 'Active — can be chosen for new subscriptions',
     'plan.empty': 'No plans yet.',
     'plan.new': 'New plan',
     'plan.newTitle': 'Add a plan',

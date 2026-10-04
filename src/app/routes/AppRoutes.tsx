@@ -72,7 +72,7 @@ export function AppRoutes() {
             <Route
                 path="/settings"
                 element={
-                    <RequireRole roles={['SUPER_ADMIN', 'ADMINISTRATOR', 'TEACHER', 'STUDENT']}>
+                    <RequireRole roles={['SUPER_ADMIN', 'ADMINISTRATOR', 'TEACHER', 'STUDENT', 'DEVELOPER']}>
                         <SettingsPage />
                     </RequireRole>
                 }

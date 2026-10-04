@@ -122,7 +122,7 @@ export function DeveloperDashboardPage() {
                 />
             )}
 
-            {tab === 'plans' ? (
+            {tab === 'plans' && (
                 <Panel>
                     {plansError != null && <ErrorBox>{errorMessage(plansError)}</ErrorBox>}
                     <PlanTable
@@ -135,7 +135,11 @@ export function DeveloperDashboardPage() {
                         onDelete={(plan) => planMutations.remove.mutate(plan.id)}
                     />
                 </Panel>
-            ) : (
+            )}
+
+            {/* Faqat o'z tabida: ilgari `plans ? … : …` shakli tufayli obunalar
+                jadvali "Tashkilotlar" tabida ham ikkinchi bo'lib chiqardi. */}
+            {tab === 'subscriptions' && (
                 <Panel>
                     <div className="mb-3 max-w-xs">
                         <Input
