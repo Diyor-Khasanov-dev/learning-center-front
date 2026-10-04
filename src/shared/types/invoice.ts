@@ -41,19 +41,26 @@ export interface InvoiceDto {
 /**
  * To'lov turi.
  *
- * `MONTHLY_FEE` backend enum'ida bor, lekin uni faqat server o'zi qo'yadi —
- * `TransactionCreateDto` sxemasi mijozga `PAID` va `RETURNED` ni ruxsat
- * beradi. Shuning uchun yozish va o'qish uchun alohida tiplar.
+ * Backend enum'i: `PAID`, `REFUND`, `MONTHLY_FEE`, `CORRECTION`
+ * (`TransactionType.java`). Ilgari `RETURNED` edi — backend uni `REFUND`
+ * ga almashtirdi (sxemadagi `@Schema` izohi hali eski nomni ko'rsatadi,
+ * lekin Jackson enum nomini kutadi: `RETURNED` yuborilsa 400).
+ *
+ * Mijoz faqat `PAID` va `REFUND` yozadi; `MONTHLY_FEE` ni server o'zi
+ * qo'yadi, `CORRECTION` uchun ekran yo'q. Shuning uchun yozish va o'qish
+ * uchun alohida tiplar.
  */
-export const TRANSACTION_TYPES = ['PAID', 'RETURNED'] as const
+export const TRANSACTION_TYPES = ['PAID', 'REFUND'] as const
 export type TransactionType = (typeof TRANSACTION_TYPES)[number]
-export type TransactionTypeRead = TransactionType | 'MONTHLY_FEE'
+export type TransactionTypeRead = TransactionType | 'MONTHLY_FEE' | 'CORRECTION'
 
 /** `TransactionDto` — bitta to'lov harakati (to'ladi yoki qaytarib olindi). */
 export interface TransactionDto {
     id: string
     type?: TransactionTypeRead
     amount?: number
+    /** Ixtiyoriy izoh — qaytarishda sababi shu yerga yoziladi. */
+    note?: string
     invoice?: InvoiceDto
     /** Backend buni `user` deb ataydi, lekin ichida `StudentDto` turadi. */
     user?: StudentDto

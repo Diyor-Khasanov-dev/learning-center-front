@@ -7,7 +7,7 @@ ishlaydi va rolga qarab har xil panel ko'rsatadi:
 
 | Rol             | Nima ko'radi                                                      |
 | --------------- | ----------------------------------------------------------------- |
-| `ADMINISTRATOR` | Students / Teachers / Groups / Lessons CRUD + guruhga o'quvchi biriktirish + **To'lovlar** |
+| `ADMINISTRATOR` | Students / Teachers / Groups / Lessons CRUD + guruhga o'quvchi biriktirish + **To'lovlar** (o'quvchini qidirib to'lov qabul qilish, alohida pul qaytarish) |
 | `TEACHER`       | O'z guruhlari, ro'yxat, "Start lesson", davomat                    |
 | `STUDENT`       | O'z profili; davomat va guruh — endpoint kutilmoqda                |
 | `SUPER_ADMIN`   | Tashkilot va filiallar (branch) CRUD, statistika, odamlar ro'yxati + administrator qo'shish |

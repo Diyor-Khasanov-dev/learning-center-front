@@ -58,8 +58,9 @@ export function PaymentReceiptModal({
     let paymentMethod = '—'
     if (transaction?.type) {
         if (transaction.type === 'PAID') paymentMethod = t('transaction.type.PAID')
-        else if (transaction.type === 'RETURNED') paymentMethod = t('transaction.type.RETURNED')
+        else if (transaction.type === 'REFUND') paymentMethod = t('transaction.type.REFUND')
         else if (transaction.type === 'MONTHLY_FEE') paymentMethod = t('transaction.type.MONTHLY_FEE')
+        else if (transaction.type === 'CORRECTION') paymentMethod = t('transaction.type.CORRECTION')
     } else if (invoice?.paymentStatus) {
         paymentMethod = t(`invoice.status.${invoice.paymentStatus}`)
     }

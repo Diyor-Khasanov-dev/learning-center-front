@@ -689,7 +689,12 @@ ko'rsatish uchun front butun o'quvchilar ro'yxatini yuklab, id bo'yicha
 qidiryapti. `InvoiceDto` ga `status` va o'quvchi ismini qo'shsangiz shu
 ikkalasi ham yo'qoladi.
 
-### 4. 🟠 To'lov faqat ENG SO'NGGI hisobga bog'lanadi
+### 4. ✅ To'lov faqat ENG SO'NGGI hisobga bog'lanadi — endi `invoiceId` bor
+
+**2026-10-04:** `TransactionCreateDto` da `invoiceId` (`@NotNull`) bor, front
+hisobni o'zi tanlab yuboradi. Lekin backend uni faqat `MONTHLY_FEE` uchun
+o'qiydi — pastdagi 2026-10-04 bo'limi, 21-band.
+
 
 `TransactionMapper.toEntity` → `studentService.getLatestInvoice(studentId)`.
 Ya'ni eski hisobga to'lov yozib bo'lmaydi, va o'quvchida umuman hisob
@@ -1103,3 +1108,38 @@ paneli faqat administratorlar RO'YXATINI ko'rsatadi
 (`PeoplePanel.tsx`: "qo'shish va tahrirlash administrator panelida").
 Ya'ni filial avtomatik tanlanishi hozircha faqat o'quvchi va o'qituvchi
 formalariga tegishli; administrator yaratish formasi alohida vazifa.
+
+---
+
+## 2026-10-04 — to'lov oynasi qayta yozildi (`main` 22ec819)
+
+### 21. 🔴 `POST /transaction` to'lov va qaytarishda 500 beradi
+
+`TransactionService.resolveInvoiceIfRequired` hisobni faqat `MONTHLY_FEE`
+uchun topadi, `PAID` va `REFUND` da `null` qaytaradi. Keyin
+`TransactionValidator.validate` → `transaction.getInvoice().getPaymentStatus()`
+→ **NullPointerException → 500**. Ya'ni administrator hozir hech qanday
+to'lovni yoza olmaydi.
+
+Taklif: `invoiceId` har uch tur uchun o'qilsin (u baribir `@NotNull`) va
+tashkilot tekshirilsin; "hisob to'langan" tekshiruvi faqat `PAID` uchun
+qolsin — pul odatda aynan to'langan hisobdan qaytariladi.
+
+### 22. 🔴 `GET /invoice` boshqa tashkilotlarning hisoblarini ham qaytaradi
+
+`InvoiceRepository.getAllInvoicesByFilter` da `organizationId` sharti yo'q
+(faqat `deleted = false`), global Hibernate filtri ham yo'q. Istalgan
+markaz administratori qidiruv orqali boshqa markaz o'quvchilarining ismi,
+telefoni va summalarini ko'radi. `where i.organizationId = :orgId` kerak.
+
+### 23. 🟡 `RETURNED` → `REFUND`
+
+Enum `REFUND` ga o'zgargan, `@Schema(allowableValues)` hali `RETURNED` ni
+ko'rsatadi — Swagger'dan yuborilsa 400. Front `REFUND` ga o'tkazildi.
+
+### 24. 🟡 O'quvchi qidiruvi faqat ism bo'yicha
+
+`GET /student?search=` faqat `fullName` ni qidiradi. To'lov oynasida
+telefon bo'yicha ham qidirish qulay bo'lardi — `u.phone` sharti qo'shilsa,
+frontda o'zgarish kerak emas.
+

@@ -57,6 +57,9 @@ export const queryKeys = {
     studentsByGroup: (groupId: string, role: string) => ['student', 'byGroup', groupId, role] as const,
 
     invoices: (params: Record<string, unknown>) => ['invoice', 'list', params] as const,
+    /** `invoice` prefiksi bilan — to'lov yozilgach `['invoice']` invalidatsiyasi buni ham yangilaydi. */
+    studentInvoices: (studentId: string) => ['invoice', 'byStudent', studentId] as const,
+    studentSearch: (search: string) => ['student', 'search', search] as const,
     transactions: (params: Record<string, unknown>) => ['transaction', 'list', params] as const,
 
     organizations: (params: Record<string, unknown>) => ['organization', 'list', params] as const,

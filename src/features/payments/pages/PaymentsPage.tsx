@@ -10,15 +10,14 @@ import { AppShell, BackIcon, Button, ErrorBox, Eyebrow, IconButton, Pagination, 
 import { GroupInvoicePanel } from '../components/GroupInvoicePanel'
 import { InvoiceFilters } from '../components/InvoiceFilters'
 import { InvoiceTable } from '../components/InvoiceTable'
-import { NewPaymentModal } from '../components/NewPaymentModal'
+import { PaymentFormModal } from '../components/PaymentFormModal'
 import { PaymentReceiptModal } from '../components/PaymentReceiptModal'
 import { TransactionTable } from '../components/TransactionTable'
 import { useInvoiceMutations } from '../hooks/useInvoiceMutations'
 import { useGroupOptions } from '../hooks/useGroupOptions'
 import { useInvoices } from '../hooks/useInvoices'
-import { useStudentOptions } from '../hooks/useStudentOptions'
 import { useTransactionMutations, useTransactions } from '../hooks/useTransactions'
-import type { InvoiceDto, InvoiceStatus, TransactionDto } from '@/shared/types'
+import type { InvoiceDto, InvoiceStatus, TransactionDto, TransactionType } from '@/shared/types'
 
 /**
  * To'lovlar bo'limi.
@@ -45,13 +44,12 @@ export function PaymentsPage() {
     const [from, setFrom] = useState('')
     const [to, setTo] = useState('')
     const [txPage, setTxPage] = useState(0)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [formType, setFormType] = useState<TransactionType | null>(null)
     const [receiptTransaction, setReceiptTransaction] = useState<TransactionDto | null>(null)
     const [receiptInvoice, setReceiptInvoice] = useState<InvoiceDto | null>(null)
 
     const list = useInvoices(session.token, { page, search, status, from, to })
     const transactions = useTransactions(session.token, txPage, search)
-    const studentOptions = useStudentOptions(session.token, isModalOpen)
     const groupOptions = useGroupOptions(session.token)
     const invoices = useInvoiceMutations(session.token)
     const payments = useTransactionMutations(session.token)
@@ -108,7 +106,10 @@ export function PaymentsPage() {
                     <Button size="sm" onClick={handleExportCsv} disabled={list.isLoading || list.invoices.length === 0}>
                         {t('common.exportCsv')}
                     </Button>
-                    <Button variant="primary" size="sm" onClick={() => setIsModalOpen(true)}>
+                    <Button size="sm" onClick={() => setFormType('REFUND')}>
+                        {t('transaction.refund')}
+                    </Button>
+                    <Button variant="primary" size="sm" onClick={() => setFormType('PAID')}>
                         {t('transaction.new')}
                     </Button>
                 </>
@@ -204,15 +205,14 @@ export function PaymentsPage() {
                 />
             </Panel>
 
-            {isModalOpen && (
-                <NewPaymentModal
-                    studentOptions={studentOptions}
+            {formType != null && (
+                <PaymentFormModal
+                    key={formType}
+                    token={session.token}
+                    type={formType}
                     isSaving={payments.create.isPending}
-                    error={payments.create.error}
-                    onSubmit={(payload) =>
-                        payments.create.mutate(payload, { onSuccess: () => setIsModalOpen(false) })
-                    }
-                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={(payload) => payments.create.mutate(payload, { onSuccess: () => setFormType(null) })}
+                    onClose={() => setFormType(null)}
                 />
             )}
 
