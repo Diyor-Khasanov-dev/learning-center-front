@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth, useSession } from '@/app/providers/useAuth'
 import { useTheme } from '@/app/providers/useTheme'
 import { errorMessage } from '@/shared/api'
-import type { LeadCreateDto, LeadDto, LeadRejectDto, LeadStatus, LeadUpdateDto } from '@/shared/types'
-import { LEAD_STATUSES, REJECTION_REASONS } from '@/shared/types'
+import type { LeadCreateDto, LeadDto, LeadStatus, LeadUpdateDto } from '@/shared/types'
+import { LEAD_STATUSES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
-import { AppShell, Badge, Button, EmptyState, ErrorBox, Field, Input, Modal, Panel, Select } from '@/shared/ui'
+import { AppShell, Badge, Button, EmptyState, ErrorBox, Input, Panel, Select } from '@/shared/ui'
 import { EditLeadModal } from '../components/EditLeadModal'
+import { LeadActionModal } from '../components/LeadActionModal'
 import { LeadCard } from '../components/LeadCard'
 import { NewLeadModal } from '../components/NewLeadModal'
 import { useLeadGroupOptions, useLeadMutations, useLeads } from '../hooks/useLeads'
@@ -31,10 +32,6 @@ export function LeadsPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
     const [draggedId, setDraggedId] = useState<string | null>(null)
     const [action, setAction] = useState<{ lead: LeadDto; status: LeadStatus } | null>(null)
-    const [groupId, setGroupId] = useState('')
-    const [rejectReason, setRejectReason] = useState<LeadRejectDto['reason']>('OTHER')
-    const [rejectNote, setRejectNote] = useState('')
-    const [callAt, setCallAt] = useState('')
     const newLeads = useLeads(token, { size: PAGE_SIZE, search: search || undefined, status: 'NEW' })
     const enrolledLeads = useLeads(token, { size: PAGE_SIZE, search: search || undefined, status: 'ENROLLED' })
     const callLaterLeads = useLeads(token, { size: PAGE_SIZE, search: search || undefined, status: 'CALL_LATER' })
@@ -89,21 +86,11 @@ export function LeadsPage() {
     function changeStatus(lead: LeadDto, status: LeadStatus) {
         if (asStatus(lead.status) === status || status === 'NEW') return
         setAction({ lead, status })
-        setGroupId('')
-        setRejectReason('OTHER')
-        setRejectNote('')
-        setCallAt('')
     }
     function drop(status: LeadStatus) {
         const lead = leads.find((item) => item.id === draggedId)
         setDraggedId(null)
         if (lead) changeStatus(lead, status)
-    }
-    function submitAction() {
-        if (!action) return
-        if (action.status === 'ENROLLED' && groupId) mutations.enroll.mutate({ id: action.lead.id, groupId }, { onSuccess: () => setAction(null) })
-        if (action.status === 'REJECTED') mutations.reject.mutate({ id: action.lead.id, body: { reason: rejectReason, note: rejectNote.trim() || undefined } }, { onSuccess: () => setAction(null) })
-        if (action.status === 'CALL_LATER' && callAt) mutations.callLater.mutate({ id: action.lead.id, callAt }, { onSuccess: () => setAction(null) })
     }
 
     return (
@@ -124,11 +111,33 @@ export function LeadsPage() {
             </div>
             {isCreateOpen && <NewLeadModal token={token} isPending={mutations.create.isPending} onClose={closeCreate} onSubmit={handleCreate} />}
             {editing && <EditLeadModal token={token} lead={editing} isPending={mutations.update.isPending} onClose={closeEdit} onSubmit={handleUpdate} />}
-            {action && <Modal eyebrow={t('lead.actionEyebrow')} title={action.status === 'ENROLLED' ? t('lead.action.ENROLLED') : action.status === 'REJECTED' ? t('lead.action.REJECTED') : t('lead.action.CALL_LATER')} onClose={() => setAction(null)} footer={<><Button onClick={() => setAction(null)}>{t('common.cancel')}</Button><Button variant="primary" onClick={submitAction} disabled={(action.status === 'ENROLLED' && !groupId) || (action.status === 'CALL_LATER' && !callAt) || mutations.enroll.isPending || mutations.reject.isPending || mutations.callLater.isPending}>{t('common.save')}</Button></>}>
-                {action.status === 'ENROLLED' && <Field label={t('lead.group')}><Select aria-label={t('lead.group')} placeholder={t('lead.selectGroup')} value={groupId} options={groups.data ?? []} onChange={(event) => setGroupId(event.target.value)} /></Field>}
-                {action.status === 'REJECTED' && <div className="space-y-4"><Field label={t('lead.rejectionReason')}><Select aria-label={t('lead.rejectionReason')} options={REJECTION_REASONS.map((reason) => ({ value: reason, label: t(`lead.reason.${reason}`) }))} value={rejectReason} onChange={(event) => setRejectReason(event.target.value as LeadRejectDto['reason'])} /></Field><Field label={t('lead.note')}><Input value={rejectNote} onChange={(event) => setRejectNote(event.target.value)} /></Field></div>}
-                {action.status === 'CALL_LATER' && <Field label={t('lead.callAt')}><Input type="datetime-local" value={callAt} onChange={(event) => setCallAt(event.target.value)} min={new Date().toISOString().slice(0, 16)} /></Field>}
-            </Modal>}
+            {action && (
+                <LeadActionModal
+                    lead={action.lead}
+                    status={action.status as 'ENROLLED' | 'REJECTED' | 'CALL_LATER'}
+                    groupOptions={groups.data ?? []}
+                    isPending={mutations.enroll.isPending || mutations.reject.isPending || mutations.callLater.isPending}
+                    onClose={() => setAction(null)}
+                    onEnroll={(groupId) =>
+                        mutations.enroll.mutate(
+                            { id: action.lead.id, groupId },
+                            { onSuccess: () => setAction(null) }
+                        )
+                    }
+                    onReject={(body) =>
+                        mutations.reject.mutate(
+                            { id: action.lead.id, body },
+                            { onSuccess: () => setAction(null) }
+                        )
+                    }
+                    onCallLater={(callAt) =>
+                        mutations.callLater.mutate(
+                            { id: action.lead.id, callAt },
+                            { onSuccess: () => setAction(null) }
+                        )
+                    }
+                />
+            )}
         </AppShell>
     )
 }
