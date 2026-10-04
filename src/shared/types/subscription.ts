@@ -45,6 +45,8 @@ export interface PlanPayload {
     currency: string
     durationMonths: number
     sortOrder?: number
+    /** Faqat tahrirlashda: `PlanUpdateDto` da `@NotNull`, yaratishda yo'q. */
+    active?: boolean
     limits: Partial<Record<FeatureKey, number>>
 }
 

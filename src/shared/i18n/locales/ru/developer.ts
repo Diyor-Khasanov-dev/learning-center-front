@@ -29,6 +29,7 @@ export const developer = {
     'plan.limits': 'Ограничения',
     'plan.active': 'Статус',
     'plan.inactive': 'Неактивен',
+    'plan.isActive': 'Активен — можно выбрать в новой подписке',
     'plan.empty': 'Тарифы ещё не добавлены.',
     'plan.new': 'Новый тариф',
     'plan.newTitle': 'Добавить тариф',

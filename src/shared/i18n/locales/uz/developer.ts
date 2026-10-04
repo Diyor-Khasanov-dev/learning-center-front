@@ -29,6 +29,7 @@ export const developer = {
     'plan.limits': 'Cheklovlar',
     'plan.active': 'Holati',
     'plan.inactive': 'Faol emas',
+    'plan.isActive': 'Faol — yangi obunada tanlash mumkin',
     'plan.empty': 'Hali tarif qo‘shilmagan.',
     'plan.new': 'Yangi tarif',
     'plan.newTitle': 'Tarif qo‘shish',

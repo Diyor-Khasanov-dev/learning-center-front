@@ -12,7 +12,10 @@ interface PlanFormModalProps {
     onClose: () => void
 }
 
-/** Bo'sh qoldirilgan cheklov "chegara yo'q" degani — nol emas. */
+/**
+ * Maydonlar formada majburiy (`required`), shuning uchun bo'sh qiymat bu
+ * yerga deyarli kelmaydi — bu faqat himoya: `NaN` serverga ketmasin.
+ */
 function toLimit(value: string): number | undefined {
     const parsed = Number(value)
     return value.trim() === '' || Number.isNaN(parsed) ? undefined : parsed
@@ -27,6 +30,7 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
     const [currency, setCurrency] = useState(plan?.currency ?? 'UZS')
     const [durationMonths, setDurationMonths] = useState(String(plan?.durationMonths ?? '1'))
     const [sortOrder, setSortOrder] = useState(String(plan?.sortOrder ?? ''))
+    const [active, setActive] = useState(plan?.active ?? true)
     const [limits, setLimits] = useState<Record<string, string>>(() =>
         Object.fromEntries(FEATURE_KEYS.map((key) => [key, String(plan?.limits?.[key] ?? '')]))
     )
@@ -41,6 +45,9 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
             currency: currency.trim().toUpperCase(),
             durationMonths: Number(durationMonths),
             sortOrder: toLimit(sortOrder),
+            // `PlanUpdateDto.active` `@NotNull` — yuborilmasa tahrirlash
+            // "active: must not be null" bilan yiqiladi. Yaratishda maydon yo'q.
+            ...(plan ? { active } : {}),
             limits: Object.fromEntries(
                 FEATURE_KEYS.map((key) => [key, toLimit(limits[key])]).filter(([, value]) => value != null)
             ),
@@ -69,7 +76,7 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
                 </Field>
 
                 <Field label={t('plan.description')}>
-                    <Input value={description} onChange={(event) => setDescription(event.target.value)} />
+                    <Input required value={description} onChange={(event) => setDescription(event.target.value)} />
                 </Field>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -106,6 +113,7 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
                         <Input
                             type="number"
                             min="0"
+                            required
                             value={sortOrder}
                             onChange={(event) => setSortOrder(event.target.value)}
                         />
@@ -119,6 +127,7 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
                             <Input
                                 type="number"
                                 min="0"
+                                required
                                 value={limits[key]}
                                 onChange={(event) =>
                                     setLimits((current) => ({ ...current, [key]: event.target.value }))
@@ -127,6 +136,18 @@ export function PlanFormModal({ plan, isSaving, error, onSubmit, onClose }: Plan
                         </Field>
                     ))}
                 </div>
+
+                {plan && (
+                    <label className="flex cursor-pointer items-center gap-2.5 text-sm text-fg">
+                        <input
+                            type="checkbox"
+                            checked={active}
+                            onChange={(event) => setActive(event.target.checked)}
+                            className="size-4 accent-accent"
+                        />
+                        {t('plan.isActive')}
+                    </label>
+                )}
 
                 {error != null && <ErrorBox>{errorMessage(error)}</ErrorBox>}
 
