@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, useSession } from '@/app/providers/useAuth'
 import { useTheme } from '@/app/providers/useTheme'
+import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import type { GroupLevelDto } from '@/shared/types'
 import { AppShell, BackIcon, Button, ErrorBox, IconButton, Panel } from '@/shared/ui'
@@ -87,9 +88,6 @@ export function GroupLevelsPage() {
         mutations.reorder.mutate(toOrderPayload(next))
     }
 
-    const mutationError =
-        mutations.create.error ?? mutations.update.error ?? mutations.remove.error ?? mutations.reorder.error
-
     return (
         <AppShell
             subtitle={t('groupLevel.title')}
@@ -119,15 +117,9 @@ export function GroupLevelsPage() {
                     <div className="mb-4">
                         <ErrorBox>
                             {t('groupLevel.loadFailed', {
-                                message: (list.error as Error)?.message ?? 'Unknown error',
+                                message: errorMessage(list.error),
                             })}
                         </ErrorBox>
-                    </div>
-                )}
-
-                {mutationError && (
-                    <div className="mb-4">
-                        <ErrorBox>{(mutationError as Error)?.message ?? 'Unknown error'}</ErrorBox>
                     </div>
                 )}
 
@@ -150,7 +142,8 @@ export function GroupLevelsPage() {
                     row={modal.row}
                     initialValues={initialValues}
                     isSaving={modal.mode === 'create' ? mutations.create.isPending : mutations.update.isPending}
-                    error={mutationError}
+                    // Modalga faqat yaralish yoki tahrirlash xatosi uzatiladi
+                    error={modal.mode === 'create' ? mutations.create.error : mutations.update.error}
                     onSubmit={handleSubmit}
                     onClose={() => setModal(null)}
                 />
