@@ -8,6 +8,7 @@ import { LEAD_STATUSES, REJECTION_REASONS } from '@/shared/types'
 import { useT } from '@/shared/i18n'
 import { AppShell, Badge, Button, EmptyState, ErrorBox, Field, Input, Modal, Panel, Select } from '@/shared/ui'
 import { EditLeadModal } from '../components/EditLeadModal'
+import { LeadCard } from '../components/LeadCard'
 import { NewLeadModal } from '../components/NewLeadModal'
 import { useLeadGroupOptions, useLeadMutations, useLeads } from '../hooks/useLeads'
 
@@ -15,12 +16,6 @@ const PAGE_SIZE = 50
 const EMPTY_LEADS: LeadDto[] = []
 const STATUS_TONE: Record<LeadStatus, 'accent' | 'success' | 'warning' | 'danger'> = { NEW: 'accent', ENROLLED: 'success', CALL_LATER: 'warning', REJECTED: 'danger' }
 const COLUMN_TONE: Record<LeadStatus, string> = { NEW: 'border-accent/30 bg-accent-soft', ENROLLED: 'border-success/30 bg-success-soft', CALL_LATER: 'border-warning/30 bg-warning-soft', REJECTED: 'border-danger/30 bg-danger-soft' }
-
-function formatDate(value?: string | null) {
-    if (!value) return null
-    const date = new Date(value)
-    return Number.isNaN(date.getTime()) ? value : date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
 
 function asStatus(value?: LeadStatus): LeadStatus { return LEAD_STATUSES.includes(value as LeadStatus) ? value as LeadStatus : 'NEW' }
 
@@ -87,6 +82,10 @@ export function LeadsPage() {
         if (!editing) return
         mutations.update.mutate({ id: editing.id, body }, { onSuccess: closeEdit })
     }
+    function deleteLead(lead: LeadDto) {
+        if (confirm(t('lead.deleteConfirm', { name: lead.fullName || t('lead.unnamed') })))
+            mutations.remove.mutate(lead.id)
+    }
     function changeStatus(lead: LeadDto, status: LeadStatus) {
         if (asStatus(lead.status) === status || status === 'NEW') return
         setAction({ lead, status })
@@ -118,7 +117,7 @@ export function LeadsPage() {
                 <div className="overflow-x-auto pb-2"><div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:min-w-[1040px]">
                     {visibleStatuses.map((status) => { const list = lists[status]; const grouped = leadsByStatus[status]; return <section key={status} className={`flex min-h-110 flex-col rounded-2xl border p-3.5 ${COLUMN_TONE[status]}`} onDragOver={(event) => event.preventDefault()} onDrop={() => drop(status)}>
                         <header className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1"><div><h2 className="font-display text-base font-semibold text-fg">{t(`lead.status.${status}`)}</h2><p className="text-xs text-fg-muted">{t('lead.count', { count: grouped.length })}</p></div><Badge tone={STATUS_TONE[status]}>{grouped.length}</Badge></header>
-                        <div className="flex flex-1 flex-col gap-3">{list.isLoading ? <div className="rounded-xl border border-dashed border-border-base bg-surface-card p-5 text-center text-sm text-fg-muted">{t('common.loading')}</div> : grouped.length === 0 ? <div className="flex min-h-32 flex-1 items-center justify-center rounded-xl border border-dashed border-border-base bg-surface-card/60 px-4 text-center text-xs text-fg-muted">{t('lead.dropHere')}</div> : grouped.map((lead) => <article key={lead.id} draggable onDragStart={() => setDraggedId(lead.id)} onDragEnd={() => setDraggedId(null)} className="cursor-grab rounded-xl border border-border-base bg-surface-card p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"><div className="flex items-start justify-between gap-2"><div className="min-w-0"><h3 className="truncate font-semibold text-fg">{lead.fullName || t('lead.unnamed')}</h3><a className="mt-1 block text-sm text-accent-fg hover:underline" href={`tel:${lead.phone ?? ''}`}>{lead.phone || t('lead.noPhone')}</a></div><Button size="sm" onClick={() => openEdit(lead)}>{t('common.edit')}</Button></div><div className="mt-3 flex flex-wrap gap-1.5">{lead.source && <Badge tone="slate">{t(`lead.source.${lead.source}`)}</Badge>}{lead.preferredCourse?.name && <Badge tone="purple">{lead.preferredCourse.name}</Badge>}</div>{lead.callAt && <p className="mt-3 rounded-lg bg-warning-soft px-2.5 py-2 text-xs font-medium text-warning-fg">{t('lead.callAt')}: {formatDate(lead.callAt)}</p>}<div className="mt-3 flex items-center gap-2 border-t border-border-base pt-3"><Select aria-label={t('lead.changeStatus')} className="text-xs" value={status} options={LEAD_STATUSES.map((value) => ({ value, label: t(`lead.status.${value}`) }))} onChange={(event) => changeStatus(lead, event.target.value as LeadStatus)} /><button type="button" className="ml-auto text-xs font-medium text-danger-fg hover:underline" onClick={() => { if (confirm(t('lead.deleteConfirm', { name: lead.fullName || t('lead.unnamed') }))) mutations.remove.mutate(lead.id) }}>{t('common.delete')}</button></div></article>)}{list.hasNextPage && <div ref={(element) => { if (element) loadMoreRefs.current[status] = element; else delete loadMoreRefs.current[status] }} data-status={status} className="h-8 text-center text-xs text-fg-muted">{list.isFetchingNextPage ? t('common.loading') : ''}</div>}</div>
+                        <div className="flex flex-1 flex-col gap-3">{list.isLoading ? <div className="rounded-xl border border-dashed border-border-base bg-surface-card p-5 text-center text-sm text-fg-muted">{t('common.loading')}</div> : grouped.length === 0 ? <div className="flex min-h-32 flex-1 items-center justify-center rounded-xl border border-dashed border-border-base bg-surface-card/60 px-4 text-center text-xs text-fg-muted">{t('lead.dropHere')}</div> : grouped.map((lead) => <LeadCard key={lead.id} lead={lead} status={status} onEdit={openEdit} onStatusChange={changeStatus} onDelete={deleteLead} onDragStart={(id) => setDraggedId(id)} onDragEnd={() => setDraggedId(null)} />)}{list.hasNextPage && <div ref={(element) => { if (element) loadMoreRefs.current[status] = element; else delete loadMoreRefs.current[status] }} data-status={status} className="h-8 text-center text-xs text-fg-muted">{list.isFetchingNextPage ? t('common.loading') : ''}</div>}</div>
                     </section> })}
                 </div></div>
                 {visibleStatuses.every((status) => !lists[status].isLoading) && leads.length === 0 && !apiError && <EmptyState title="No leads found" description="Try a different search, or add your first lead." />}
