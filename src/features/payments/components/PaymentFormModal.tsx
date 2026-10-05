@@ -39,7 +39,7 @@ export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: P
     const [pickedInvoiceId, setPickedInvoiceId] = useState('')
     const [amount, setAmount] = useState('')
     const [note, setNote] = useState('')
-    const { invoices, isLoading } = useStudentInvoices(token, student)
+    const { invoices, isLoading } = useStudentInvoices(token, student, type)
 
     // Foydalanuvchi o'zi tanlamaguncha — avtomatik tanlov. Holatga yozib
     // qo'yilmaydi: hisoblar kelgach effekt bilan sinxronlash shart bo'lmasin.
@@ -91,6 +91,7 @@ export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: P
                             <InvoiceChoice
                                 invoices={invoices}
                                 isLoading={isLoading}
+                                emptyText={isRefund ? t('transaction.noInvoices') : t('transaction.allPaid')}
                                 value={invoiceId}
                                 onChange={setPickedInvoiceId}
                             />

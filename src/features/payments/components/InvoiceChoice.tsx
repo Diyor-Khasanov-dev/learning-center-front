@@ -1,12 +1,14 @@
 import { useT } from '@/shared/i18n'
 import { cn, formatAmount, formatDate } from '@/shared/lib'
 import { Badge } from '@/shared/ui'
-import type { InvoiceDto } from '@/shared/types'
+import type { SimpleInvoiceDto } from '@/shared/types'
 import { INVOICE_STATUS_TONE } from '../lib/invoiceStatusTone'
 
 interface InvoiceChoiceProps {
-    invoices: InvoiceDto[]
+    invoices: SimpleInvoiceDto[]
     isLoading: boolean
+    /** Ro'yxat bo'sh bo'lganda ko'rsatiladigan matn — to'lov va qaytarishda sababi har xil. */
+    emptyText: string
     value: string
     onChange: (invoiceId: string) => void
 }
@@ -15,12 +17,12 @@ interface InvoiceChoiceProps {
  * O'quvchining hisoblari — radio ro'yxat. Odatda hech narsa bosilmaydi:
  * eng so'nggi mos hisob forma ochilganda o'zi tanlanadi.
  */
-export function InvoiceChoice({ invoices, isLoading, value, onChange }: InvoiceChoiceProps) {
+export function InvoiceChoice({ invoices, isLoading, emptyText, value, onChange }: InvoiceChoiceProps) {
     const { t } = useT()
 
     if (isLoading) return <p className="px-1 text-xs text-fg-muted">{t('transaction.invoicesLoading')}</p>
     if (invoices.length === 0) {
-        return <p className="rounded-xl bg-warning-soft px-4 py-3 text-sm text-warning-fg">{t('transaction.noInvoices')}</p>
+        return <p className="rounded-xl bg-warning-soft px-4 py-3 text-sm text-warning-fg">{emptyText}</p>
     }
 
     return (
@@ -45,7 +47,15 @@ export function InvoiceChoice({ invoices, isLoading, value, onChange }: InvoiceC
                         <span className="block font-medium text-fg">{invoice.invoiceNumber || invoice.id}</span>
                         <span className="block text-xs whitespace-nowrap text-fg-muted">{formatDate(invoice.issuedAt)}</span>
                     </span>
-                    <span className="font-semibold tabular-nums text-fg">{formatAmount(invoice.amount)}</span>
+                    <span className="text-right">
+                        <span className="block font-semibold tabular-nums text-fg">{formatAmount(invoice.amount)}</span>
+                        {/* Qisman to'langan hisobda qancha qolganini ko'rish uchun */}
+                        {(invoice.paid ?? 0) > 0 && (
+                            <span className="block text-xs whitespace-nowrap text-fg-muted">
+                                {t('transaction.paidSoFar', { amount: formatAmount(invoice.paid) })}
+                            </span>
+                        )}
+                    </span>
                     {invoice.paymentStatus && (
                         <Badge tone={INVOICE_STATUS_TONE[invoice.paymentStatus]}>
                             {t(`invoice.status.${invoice.paymentStatus}`)}

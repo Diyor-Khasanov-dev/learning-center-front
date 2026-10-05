@@ -16,16 +16,25 @@ function page(content: unknown[]) {
     return JSON.stringify({ content, page: { totalElements: content.length, totalPages: 1 } })
 }
 
+/** `GET /invoice/student/{id}` javobi; `null` — backend 409 beradi (hammasi to'langan). */
+let unpaidResponse: unknown[] | null = invoices.filter((invoice) => invoice.paymentStatus !== 'PAID')
+
+function respond(status: number, body: string) {
+    return Promise.resolve({ ok: status < 400, status, text: () => Promise.resolve(body) })
+}
+
 beforeEach(() => {
+    unpaidResponse = invoices.filter((invoice) => invoice.paymentStatus !== 'PAID')
     vi.stubGlobal(
         'fetch',
-        vi.fn((url: string) =>
-            Promise.resolve({
-                ok: true,
-                status: 200,
-                text: () => Promise.resolve(url.includes('/student') ? page([student]) : page(invoices)),
-            })
-        )
+        vi.fn((url: string) => {
+            if (url.includes('/invoice/student/')) {
+                return unpaidResponse == null
+                    ? respond(409, JSON.stringify({ errorCode: 'AlreadyExists', message: 'MessageKey not found' }))
+                    : respond(200, JSON.stringify(unpaidResponse))
+            }
+            return respond(200, url.includes('/student') ? page([student]) : page(invoices))
+        })
     )
 })
 
@@ -77,6 +86,17 @@ describe('PaymentFormModal', () => {
         await userEvent.click(screen.getByRole('button', { name: /saqlash/i }))
 
         expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ invoiceId: 'inv-old', amount: 1000 }))
+    })
+
+    // Hammasi to'langan bo'lsa backend 409 beradi — bu xato emas, forma o'z matnini ko'rsatadi.
+    it('explains when every invoice is already paid', async () => {
+        unpaidResponse = null
+        render('PAID')
+        await pickStudent()
+
+        expect(await screen.findByText(/to.lanmagan hisobi yo.q/i)).toBeInTheDocument()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+        expect(screen.queryByText(/MessageKey/)).not.toBeInTheDocument()
     })
 
     it('requires a reason for a refund', async () => {

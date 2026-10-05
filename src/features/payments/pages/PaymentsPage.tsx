@@ -76,7 +76,7 @@ export function PaymentsPage() {
 
         const exportColumns: CsvColumn<InvoiceDto>[] = [
             { header: t('invoice.number'), accessor: (inv) => inv.invoiceNumber ?? '' },
-            { header: t('invoice.student'), accessor: (inv) => inv.enrollmentDto?.studentFullName ?? '' },
+            { header: t('invoice.student'), accessor: (inv) => inv.enrollmentDto?.fullName ?? '' },
             { header: t('invoice.amount'), accessor: (inv) => (inv.amount != null ? formatAmount(inv.amount) : '') },
             {
                 header: t('field.status'),

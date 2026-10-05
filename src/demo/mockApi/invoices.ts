@@ -31,12 +31,31 @@ export function handleInvoices(
         params.searchParams.delete('search')
         return page(rows as unknown as Row[], params)
     }
+    // O'quvchining to'lanmagan hisoblari. Backend kabi: hammasi to'langan
+    // (yoki hisob yo'q) bo'lsa 409, `enrollmentDto` siz qisqa shaklda.
+    if (path.startsWith('/invoice/student/') && method === 'GET') {
+        const studentId = path.split('/')[3]
+        const unpaid = db.invoices
+            .filter((invoice) => invoice.enrollmentDto?.studentId === studentId && invoice.paymentStatus !== 'PAID')
+            .map((invoice) => ({
+                id: invoice.id,
+                invoiceNumber: invoice.invoiceNumber,
+                amount: invoice.amount,
+                paid: invoice.paid,
+                issuedAt: invoice.issuedAt,
+                paymentStatus: invoice.paymentStatus,
+            }))
+        if (unpaid.length === 0) {
+            return json({ errorCode: 'AlreadyExists', message: 'MessageKey not found: invoice.already.paid' }, 409)
+        }
+        return json(unpaid)
+    }
     // Guruhga qo'lda hisob yaratish. Ikkinchi marta chaqirilsa haqiqiy
     // backend 409 qaytaradi — demo'da ham shunday, tugmaning xato holati
     // ko'rinsin.
     if (path.startsWith('/invoice/') && method === 'POST') {
         const groupId = path.split('/')[2]
-        const already = db.invoices.some((invoice) => invoice.enrollmentDto?.groupId === groupId)
+        const already = db.invoices.some((invoice) => invoice.enrollmentDto?.groupIdNameDto?.id === groupId)
         if (already) return json({ errorCode: 'AlreadyExists', message: 'Invoice already created' }, 409)
 
         const created = db.students.slice(0, 2).map((student, index) => ({
@@ -48,8 +67,9 @@ export function handleInvoices(
             enrollmentDto: {
                 id: nextId('e'),
                 studentId: student.id,
-                studentFullName: student.userDto?.fullName,
-                groupId,
+                fullName: student.userDto?.fullName,
+                phone: student.userDto?.phone,
+                groupIdNameDto: { id: groupId, name: db.groups.find((group) => group.id === groupId)?.name ?? '' },
             },
         }))
         db.invoices = [...db.invoices, ...created]

@@ -1,5 +1,5 @@
-import { apiFetch } from '@/shared/api'
-import type { InvoiceDto, Page, StudentDto } from '@/shared/types'
+import { ApiError, apiFetch } from '@/shared/api'
+import type { InvoiceDto, Page, SimpleInvoiceDto, StudentDto } from '@/shared/types'
 
 /** Natijalar ro'yxati qisqa bo'lsin — kerakli odam topilmasa, ism aniqlashtiriladi. */
 export const STUDENT_SEARCH_SIZE = 15
@@ -21,9 +21,29 @@ export async function searchStudents(token: string, search: string): Promise<Stu
 }
 
 /**
- * Tanlangan o'quvchining hisoblari.
+ * To'lov uchun: o'quvchining TO'LANMAGAN hisoblari.
  *
- * Backendda "o'quvchi bo'yicha hisoblar" endpointi yo'q. `GET /invoice`
+ * `GET /invoice/student/{id}` to'lanmagan hisoblarni qaytaradi. Hammasi
+ * to'langan (yoki hisob umuman yo'q) bo'lsa backend `409 AlreadyExists`
+ * beradi — bu xato emas, oddiy holat, shuning uchun bo'sh ro'yxat
+ * qaytaramiz va forma o'z matnini ko'rsatadi. Backend xabar matnini
+ * bermaydi (`messages*.properties` yo'q — "MessageKey not found: …").
+ */
+export async function fetchUnpaidInvoices(token: string, studentId: string): Promise<SimpleInvoiceDto[]> {
+    try {
+        return (await apiFetch<SimpleInvoiceDto[]>(`/invoice/student/${studentId}`, { token })) ?? []
+    } catch (error) {
+        if (error instanceof ApiError && error.status === 409) return []
+        throw error
+    }
+}
+
+/**
+ * Pul qaytarish uchun: o'quvchining BARCHA hisoblari.
+ *
+ * Yuqoridagi endpoint to'langan hisoblarni bermaydi, pul esa odatda aynan
+ * to'langan hisobdan qaytariladi. "O'quvchi bo'yicha barcha hisoblar"
+ * endpointi yo'q. `GET /invoice`
  * `search` ni ism, telefon, guruh nomi va hisob raqami bo'yicha qidiradi —
  * telefon bilan qidirib, natijani `studentId` bo'yicha aniq filtrlaymiz
  * (bir xil ismli ikki o'quvchi bo'lishi mumkin). Telefon bo'lmasa — ism.

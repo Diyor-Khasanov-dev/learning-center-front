@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { queryKeys } from '@/shared/api'
-import type { StudentDto } from '@/shared/types'
-import { fetchStudentInvoices, searchStudents } from '../api/paymentLookupApi'
+import type { StudentDto, TransactionType } from '@/shared/types'
+import { fetchStudentInvoices, fetchUnpaidInvoices, searchStudents } from '../api/paymentLookupApi'
 import { sortInvoicesNewestFirst } from '../lib/pickInvoice'
 
 /** Har harfda so'rov ketmasin — yozib bo'lgach bir marta. */
@@ -39,10 +39,13 @@ export function useStudentSearch(token: string, search: string) {
     }
 }
 
-export function useStudentInvoices(token: string, student: StudentDto | null) {
+export function useStudentInvoices(token: string, student: StudentDto | null, type: TransactionType) {
     const query = useQuery({
-        queryKey: queryKeys.studentInvoices(student?.id ?? ''),
-        queryFn: () => fetchStudentInvoices(token, student as StudentDto),
+        queryKey: queryKeys.studentInvoices(student?.id ?? '', type),
+        queryFn: () =>
+            type === 'PAID'
+                ? fetchUnpaidInvoices(token, (student as StudentDto).id)
+                : fetchStudentInvoices(token, student as StudentDto),
         enabled: student != null,
         select: sortInvoicesNewestFirst,
     })

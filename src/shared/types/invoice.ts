@@ -1,15 +1,22 @@
+import type { IdNameDto } from './common'
 import type { StudentDto } from './student'
 
 export const INVOICE_STATUSES = ['PAID', 'PENDING', 'OVERDUE'] as const
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number]
 
-/** `EnrollmentDto` — o'quvchining bitta guruhdagi yozuvi. */
+/**
+ * `EnrollmentDto` — o'quvchining bitta guruhdagi yozuvi.
+ *
+ * 2026-10-05 (`b4b1425`): `studentFullName` → `fullName`, `phone` qo'shildi,
+ * `groupId` o'rniga `groupIdNameDto` — guruh nomi ham keladi, chek uchun
+ * guruhlar ro'yxatidan qidirish shart emas.
+ */
 export interface EnrollmentDto {
     id: string
     studentId?: string
-    /** Ro'yxat so'rovida keladi; bitta hisobni olganda bo'sh bo'lishi mumkin. */
-    studentFullName?: string
-    groupId?: string
+    fullName?: string
+    phone?: string
+    groupIdNameDto?: IdNameDto
     reason?: string
 }
 
@@ -32,11 +39,19 @@ export interface InvoiceDto {
     id: string
     invoiceNumber?: string
     amount?: number
+    /** Shu hisobga hozirgacha to'langan summa. */
+    paid?: number
     /** `LocalDateTime` — "yyyy-MM-ddTHH:mm:ss". */
     issuedAt?: string
     enrollmentDto?: EnrollmentDto
     paymentStatus?: InvoiceStatus
 }
+
+/**
+ * `SimpleInvoiceDto` — `GET /invoice/student/{studentId}` javobi:
+ * `InvoiceDto` ning o'quvchisiz (`enrollmentDto` siz) ko'rinishi.
+ */
+export type SimpleInvoiceDto = Omit<InvoiceDto, 'enrollmentDto'>
 
 /**
  * To'lov turi.
