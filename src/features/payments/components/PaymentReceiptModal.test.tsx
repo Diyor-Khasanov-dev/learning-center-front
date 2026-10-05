@@ -39,8 +39,9 @@ const mockTransaction: TransactionDto = {
         invoiceNumber: 'INV-101',
         enrollmentDto: {
             id: 'en-1',
-            groupId: 'GRP-99',
-            studentFullName: 'Jasur Alimov',
+            // Nom bo'sh — chek guruh nomini ro'yxatdan id bo'yicha topishi kerak.
+            groupIdNameDto: { id: 'GRP-99', name: '' },
+            fullName: 'Jasur Alimov',
         },
     },
 }

@@ -11,7 +11,7 @@ const invoices: InvoiceDto[] = [
         amount: 450000,
         issuedAt: '2026-07-01T09:00:00',
         paymentStatus: 'OVERDUE',
-        enrollmentDto: { id: 'e1', studentId: 'st-1', studentFullName: 'Aziza Karimova' },
+        enrollmentDto: { id: 'e1', studentId: 'st-1', fullName: 'Aziza Karimova' },
     },
 ]
 

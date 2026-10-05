@@ -51,6 +51,8 @@ export const payments: Record<PaymentsKeys, string> = {
     'transaction.invoice': 'Invoice',
     'transaction.invoicesLoading': 'Loading invoices…',
     'transaction.noInvoices': 'This student has no invoice yet — the payment cannot be recorded.',
+    'transaction.allPaid': 'This student has no unpaid invoices — all are paid or none has been issued yet.',
+    'transaction.paidSoFar': 'Paid: {{amount}}',
     'transaction.note': 'Note (optional)',
     'transaction.reason': 'Refund reason',
     'transaction.reasonPlaceholder': 'For example: stopped studying',

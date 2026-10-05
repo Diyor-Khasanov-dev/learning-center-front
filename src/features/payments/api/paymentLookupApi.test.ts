@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchStudentInvoices, searchStudents } from './paymentLookupApi'
+import { fetchStudentInvoices, fetchUnpaidInvoices, searchStudents } from './paymentLookupApi'
 
 function mockFetch(body: unknown) {
     const fetchMock = vi.fn().mockResolvedValue({
@@ -40,5 +40,27 @@ describe('paymentLookupApi', () => {
 
         expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/invoice?page=0&size=50&search=%2B998901112233')
         expect(invoices.map((invoice) => invoice.id)).toEqual(['i1'])
+    })
+
+    it('loads unpaid invoices from the student endpoint', async () => {
+        const fetchMock = mockFetch([{ id: 'i1', paymentStatus: 'PENDING' }])
+
+        const invoices = await fetchUnpaidInvoices('tok', 's1')
+
+        expect(fetchMock.mock.calls[0][0]).toBe('/api/v1/invoice/student/s1')
+        expect(invoices.map((invoice) => invoice.id)).toEqual(['i1'])
+    })
+
+    it('treats 409 (everything paid) as an empty list', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: false,
+                status: 409,
+                text: () => Promise.resolve('{"errorCode":"AlreadyExists","message":"MessageKey not found"}'),
+            })
+        )
+
+        await expect(fetchUnpaidInvoices('tok', 's1')).resolves.toEqual([])
     })
 })

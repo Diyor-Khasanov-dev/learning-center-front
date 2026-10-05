@@ -54,6 +54,8 @@ export const payments = {
     'transaction.invoice': 'Hisob',
     'transaction.invoicesLoading': 'Hisoblar yuklanmoqda…',
     'transaction.noInvoices': 'Bu o‘quvchida hali hisob yo‘q — to‘lovni yozib bo‘lmaydi.',
+    'transaction.allPaid': 'Bu o‘quvchining to‘lanmagan hisobi yo‘q — barcha hisoblari to‘langan yoki hali hisob yaratilmagan.',
+    'transaction.paidSoFar': 'To‘langan: {{amount}}',
     'transaction.note': 'Izoh (ixtiyoriy)',
     'transaction.reason': 'Qaytarish sababi',
     'transaction.reasonPlaceholder': 'Masalan: o‘qishni to‘xtatdi',

@@ -37,16 +37,15 @@ export function PaymentReceiptModal({
     // Tranzaksiya yoki Hisobdan ma'lumotlarni yig'amiz
     const studentName =
         transaction?.user?.userDto?.fullName ||
-        transaction?.invoice?.enrollmentDto?.studentFullName ||
-        invoice?.enrollmentDto?.studentFullName ||
+        transaction?.invoice?.enrollmentDto?.fullName ||
+        invoice?.enrollmentDto?.fullName ||
         '—'
 
-    // `EnrollmentDto` da guruh NOMI yo'q, faqat `groupId`. Uni shundoq
-    // chop etsak chekda UUID chiqadi — shuning uchun ro'yxatdan nomini
-    // topamiz. Topilmasa qatorni umuman ko'rsatmaymiz: bo'sh joy
-    // tushunarsiz identifikatordan yaxshiroq.
-    const groupId = transaction?.invoice?.enrollmentDto?.groupId || invoice?.enrollmentDto?.groupId
-    const groupName = groupOptions.find((option) => option.value === groupId)?.label
+    // Guruh nomi endi `groupIdNameDto` da keladi. Nom bo'sh bo'lsa ro'yxatdan
+    // id bo'yicha qidiramiz; topilmasa qatorni umuman ko'rsatmaymiz — chekda
+    // tushunarsiz UUID chiqqandan bo'sh joy yaxshiroq.
+    const group = transaction?.invoice?.enrollmentDto?.groupIdNameDto ?? invoice?.enrollmentDto?.groupIdNameDto
+    const groupName = group?.name || groupOptions.find((option) => option.value === group?.id)?.label
 
     const amount = transaction?.amount ?? invoice?.amount
     const formattedAmount = formatAmount(amount)

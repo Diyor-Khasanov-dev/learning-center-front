@@ -1143,3 +1143,39 @@ ko'rsatadi — Swagger'dan yuborilsa 400. Front `REFUND` ga o'tkazildi.
 telefon bo'yicha ham qidirish qulay bo'lardi — `u.phone` sharti qo'shilsa,
 frontda o'zgarish kerak emas.
 
+---
+
+## 2026-10-05 — `GET /invoice/student/{studentId}` va yangi `EnrollmentDto` (`main` b4b1425)
+
+Front ulandi: to'lov oynasi to'lanmagan hisoblarni shu endpointdan oladi
+(qaytarish — eski qidiruv orqali, chunki pul to'langan hisobdan qaytadi).
+`EnrollmentDto` ning yangi maydonlari (`fullName`, `phone`, `groupIdNameDto`)
+va `InvoiceDto.paid` ham ulandi.
+
+### 25. 🔴 Yangi so'rov parametri bog'lanmaydi
+
+`InvoiceRepository.findByStudentId`: so'rovda `:statuses`, metodda esa
+`@Param("status")`. `statuses` ga qiymat berilmaydi — chaqirilganda Hibernate
+xato beradi, endpoint 500 qaytaradi.
+
+### 26. 🔴 Mantiq teskari: to'langanlarini tanlaydi
+
+`InvoiceService.getStudentInvoice` → `findByStudentId(studentId, InvoiceStatus.PAID)`,
+so'rovda esa `paymentStatus in :statuses`. Nom tuzatilsa ham endpoint
+TO'LANGAN hisoblarni qaytaradi. `not in` yoki `<> :status` kerak.
+
+### 27. 🟠 Proyeksiyada holat nomi mos emas
+
+So'rovda `i.paymentStatus as paymentStatus`, `SimpleInvoiceProjection` da
+esa `getInvoiceStatus()` — holat har doim `null` keladi.
+`i.deleted = false` sharti ham yo'q: o'chirilgan hisob tanlanib qolishi mumkin.
+
+### 28. 🟡 "Hammasi to'langan" matni
+
+`INVOICE_ALREADY_PAID` uchun `messages*.properties` yo'q — javobda
+"MessageKey not found: invoice.already.paid". Front bu 409 ni o'zi ushlab,
+o'z matnini ko'rsatadi.
+
+21-band (`POST /transaction` da `PAID`/`REFUND` uchun hisob o'qilmaydi →
+NPE → 500) hamon ochiq.
+
