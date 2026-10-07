@@ -3,6 +3,7 @@ import type { TranslationKey } from '@/shared/i18n'
 import { formatDate } from '@/shared/lib'
 import { GroupStatusBadge } from '../components/GroupStatusBadge'
 import { LessonStatusBadge } from '../components/LessonStatusBadge'
+import { PersonCell } from '../components/PersonCell'
 import { TimetableCell } from '../components/TimetableCell'
 import type { AdminRow, EntityKey } from '../types'
 
@@ -36,13 +37,23 @@ function teacherName(row: AdminRow): string | undefined {
  */
 export const COLUMN_CONFIGS: Partial<Record<EntityKey, ColumnConfig[]>> = {
     students: [
-        { key: 'fullName', labelKey: 'field.fullName', get: (row) => row.userDto?.fullName },
+        {
+            key: 'fullName',
+            labelKey: 'field.fullName',
+            get: (row) => row.userDto?.fullName,
+            render: (row) => <PersonCell name={row.userDto?.fullName} imageUrl={row.userDto?.imageUrl} />,
+        },
         { key: 'phone', labelKey: 'field.phone', get: (row) => row.userDto?.phone },
         { key: 'birthDate', labelKey: 'field.birthDate', get: (row) => row.userDto?.birthDate },
         { key: 'parentPhone', labelKey: 'field.parentPhone', get: (row) => row.parentPhone },
     ],
     teachers: [
-        { key: 'fullName', labelKey: 'field.fullName', get: (row) => row.userDto?.fullName },
+        {
+            key: 'fullName',
+            labelKey: 'field.fullName',
+            get: (row) => row.userDto?.fullName,
+            render: (row) => <PersonCell name={row.userDto?.fullName} imageUrl={row.userDto?.imageUrl} />,
+        },
         { key: 'phone', labelKey: 'field.phone', get: (row) => row.userDto?.phone },
         { key: 'birthDate', labelKey: 'field.birthDate', get: (row) => row.userDto?.birthDate },
     ],

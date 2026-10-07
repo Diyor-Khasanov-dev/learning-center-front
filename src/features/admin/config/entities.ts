@@ -13,12 +13,4 @@ export function entityByKey(key: EntityKey): EntityConfig {
     return ENTITIES.find((entity) => entity.key === key)!
 }
 
-/** Statistika kartalarining yuqori chizig'i rangi. */
-export const ENTITY_ACCENT: Record<EntityKey, string> = {
-    students: 'border-t-danger',
-    teachers: 'border-t-success',
-    groups: 'border-t-amber',
-    lessons: 'border-t-steel',
-}
-
 export const PAGE_SIZE = 10

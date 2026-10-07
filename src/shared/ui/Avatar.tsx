@@ -7,6 +7,25 @@ interface AvatarProps {
     size?: 'sm' | 'md' | 'lg'
     /** `initials` — ism bosh harflari (standart), `silhouette` — jinsni bildirmaydigan neytral siymo. */
     fallback?: 'initials' | 'silhouette'
+    /**
+     * Ismga qarab yumshoq rang tanlanadi (jadvallarda). Bir xil odam doim
+     * bir xil rangda — ro'yxatda ko'z bilan topish oson bo'ladi.
+     */
+    colorful?: boolean
+}
+
+const COLORFUL_TONES = [
+    'bg-accent-soft text-accent-fg',
+    'bg-steel-soft text-steel-fg',
+    'bg-success-soft text-success-fg',
+    'bg-amber-soft text-amber-fg',
+    'bg-danger-soft text-danger-fg',
+] as const
+
+function toneFor(name = ''): string {
+    let hash = 0
+    for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
+    return COLORFUL_TONES[hash % COLORFUL_TONES.length]
 }
 
 // `sm` — jadval qatori uchun: kattaroq rasm qatorni cho'zib yuboradi va
@@ -31,7 +50,7 @@ function SilhouetteIcon() {
  * manzil eskirgan bo'lishi mumkin. Busiz foydalanuvchi siniq rasm belgisini
  * ko'radi va bu xatolikdek tuyuladi.
  */
-export function Avatar({ name, src, size = 'md', fallback = 'initials' }: AvatarProps) {
+export function Avatar({ name, src, size = 'md', fallback = 'initials', colorful = false }: AvatarProps) {
     const classes = cn('shrink-0 rounded-full', SIZE_CLASSES[size])
     // Bayroq emas, YIQILGAN MANZIL saqlanadi: shunda yangi rasm berilganda
     // holatni effekt bilan tozalash kerak bo'lmaydi, o'zi to'g'ri hisoblanadi.
@@ -52,7 +71,8 @@ export function Avatar({ name, src, size = 'md', fallback = 'initials' }: Avatar
         <div
             className={cn(
                 classes,
-                'flex items-center justify-center bg-brand font-display font-bold text-brand-fg ring-1 ring-border-base'
+                'flex items-center justify-center font-display font-bold ring-1 ring-border-base',
+                colorful ? toneFor(name) : 'bg-brand text-brand-fg'
             )}
         >
             {fallback === 'silhouette' ? <SilhouetteIcon /> : initials(name)}

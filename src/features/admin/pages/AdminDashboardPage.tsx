@@ -5,7 +5,7 @@ import { useTheme } from '@/app/providers/useTheme'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { GROUP_STATUSES } from '@/shared/types'
-import { Button, ErrorBox, Eyebrow, Input, Pagination, Panel, Select } from '@/shared/ui'
+import { Button, ErrorBox, Eyebrow, Pagination, Panel, SearchInput, Select } from '@/shared/ui'
 import { AdminSidebar, AdminTabStrip } from '../components/AdminSidebar'
 import type { AdminSidebarLink } from '../components/AdminSidebar'
 import { AssignStudentsModal } from '../components/AssignStudentsModal'
@@ -199,8 +199,9 @@ export function AdminDashboardPage() {
                                         }}
                                     />
                                 )}
-                                <Input
-                                    className="min-w-40 flex-1 sm:w-56 sm:flex-none"
+                                <SearchInput
+                                    className="min-w-40 flex-1 sm:w-64 sm:flex-none"
+                                    aria-label={t('admin.search', { entity: plural.toLowerCase() })}
                                     placeholder={t('admin.search', { entity: plural.toLowerCase() })}
                                     value={search}
                                     onChange={(event) => {

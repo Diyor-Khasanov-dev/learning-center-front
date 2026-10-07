@@ -19,7 +19,7 @@ function swatch(background: string, initials: string): string {
 }
 
 export const demoImages: ImageDto[] = [
-    { id: 'img-demo-1', imageUrl: swatch('#7c3aed', 'DF'), originalFileName: 'profil-1.svg' },
+    { id: 'img-demo-1', imageUrl: swatch('#4f46e5', 'DF'), originalFileName: 'profil-1.svg' },
     { id: 'img-demo-2', imageUrl: swatch('#0f766e', 'DF'), originalFileName: 'profil-2.svg' },
     { id: 'img-demo-3', imageUrl: swatch('#b45309', 'DF'), originalFileName: 'profil-3.svg' },
 ]

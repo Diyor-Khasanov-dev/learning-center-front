@@ -3,22 +3,24 @@ import type { ButtonSize, ButtonVariant } from './Button'
 
 /** Variant klasslari komponentdan tashqarida turadi, Fast Refresh barqaror qoladi. */
 export const buttonVariantClasses: Record<ButtonVariant, string> = {
+    // Asosiy harakat — kapsula shaklida, indigo gradient. Soya rangli
+    // "dog'" emas: pastga tushadigan yumshoq nur.
     primary: cn(
-        'border border-brand/25 bg-linear-to-r from-purple via-brand to-accent text-brand-fg shadow-[0_18px_40px_-18px_var(--accent)]',
-        'hover:shadow-[0_22px_48px_-18px_var(--accent)] hover:saturate-115 active:shadow-[0_12px_28px_-20px_var(--accent)]'
+        'rounded-full border border-white/10 bg-linear-to-r from-purple via-brand to-accent text-brand-fg font-medium shadow-[0_8px_24px_-10px_var(--brand)]',
+        'hover:shadow-[0_12px_28px_-10px_var(--brand)] hover:brightness-110'
     ),
     brand: cn(
-        'border border-brand/25 bg-linear-to-r from-purple via-brand to-accent text-brand-fg font-semibold shadow-[0_18px_40px_-18px_var(--accent)]',
-        'hover:shadow-[0_22px_48px_-18px_var(--accent)] hover:saturate-115 active:shadow-[0_12px_28px_-20px_var(--accent)]'
+        'rounded-full border border-white/10 bg-linear-to-r from-purple via-brand to-accent text-brand-fg font-semibold shadow-[0_8px_24px_-10px_var(--brand)]',
+        'hover:shadow-[0_12px_28px_-10px_var(--brand)] hover:brightness-110'
     ),
-    success: 'border border-success/20 bg-success text-white font-semibold shadow-[0_14px_30px_-22px_var(--success)] hover:brightness-105',
+    success: 'rounded-lg border border-success/20 bg-success text-white font-semibold hover:brightness-105',
     purple: cn(
-        'border border-purple/25 bg-linear-to-r from-purple to-accent text-white shadow-[0_16px_34px_-20px_var(--accent)]',
-        'hover:shadow-[0_20px_42px_-20px_var(--accent)] hover:saturate-115'
+        'rounded-full border border-white/10 bg-linear-to-r from-purple to-accent text-white shadow-[0_8px_24px_-10px_var(--brand)]',
+        'hover:brightness-110'
     ),
-    secondary: 'border border-border-base bg-surface-card/80 text-fg shadow-[0_12px_28px_-24px_var(--fg)] hover:border-border-strong hover:bg-surface-hover',
-    ghost: 'border border-transparent text-fg-muted hover:bg-surface-hover hover:text-fg',
-    danger: 'border border-danger-soft bg-danger-soft text-danger-fg hover:bg-danger hover:text-white',
+    secondary: 'rounded-lg border border-border-base bg-surface-card text-fg shadow-[0_1px_2px_rgb(15_23_42/0.04)] hover:border-border-strong hover:bg-surface-hover',
+    ghost: 'rounded-lg border border-transparent text-fg-muted hover:bg-surface-hover hover:text-fg',
+    danger: 'rounded-lg border border-danger-soft bg-danger-soft text-danger-fg hover:bg-danger hover:text-white',
 }
 
 export const buttonSizeClasses: Record<ButtonSize, string> = {
