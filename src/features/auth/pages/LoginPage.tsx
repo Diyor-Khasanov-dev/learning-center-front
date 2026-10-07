@@ -42,16 +42,21 @@ export function LoginPage({ onLoggedIn }: { onLoggedIn: (session: Session) => vo
             </div>
 
             <div className="relative hidden items-end overflow-hidden bg-sidebar p-14 lg:flex">
-                {/* Daftar chiziqlari — sof bezak, shuning uchun aria-hidden */}
+                {/* Sof bezak (aria-hidden): indigo va osmon ko'ki nurlari + mayda
+                    nuqtali to'r — yangi palitradagi "chuqurlik" hissi. */}
                 <div
                     aria-hidden="true"
-                    className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_27px,rgba(250,246,238,0.08)_28px)]"
+                    className="absolute inset-0 bg-[radial-gradient(60%_50%_at_20%_15%,rgb(99_102_241/0.35),transparent_70%),radial-gradient(45%_40%_at_85%_80%,rgb(56_189_248/0.18),transparent_70%)]"
+                />
+                <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-[radial-gradient(rgb(255_255_255/0.07)_1px,transparent_1px)] bg-size-[22px_22px]"
                 />
                 <div className="relative max-w-sm">
-                    <span className="mb-4 inline-flex -rotate-2 rounded-sm border-[1.5px] border-brand px-2 py-0.5 font-mono text-[0.65rem] tracking-[0.05em] text-brand uppercase">
+                    <span className="mb-4 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[0.68rem] font-semibold tracking-[0.08em] text-sidebar-fg/80 uppercase backdrop-blur">
                         {t('auth.stamp')}
                     </span>
-                    <p className="font-display text-2xl leading-snug text-sidebar-fg/90 italic">
+                    <p className="font-display text-3xl leading-snug font-semibold tracking-tight text-white">
                         {t('auth.quote')}
                     </p>
                 </div>

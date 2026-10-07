@@ -1,5 +1,5 @@
 import { useT } from '@/shared/i18n'
-import { Button, Field, Input, Select } from '@/shared/ui'
+import { Button, Field, Input, SearchInput, Select } from '@/shared/ui'
 import type { InvoiceStatus } from '@/shared/types'
 
 interface InvoiceFiltersProps {
@@ -56,7 +56,7 @@ export function InvoiceFilters({
             </Field>
 
             <Field label={t('invoice.search')} className="w-full sm:w-auto">
-                <Input
+                <SearchInput
                     className="w-full min-w-0 sm:w-56"
                     placeholder={t('invoice.search')}
                     value={search}

@@ -24,6 +24,7 @@ export { ProfileMenu } from './ProfileMenu'
 export { SegmentedControl } from './SegmentedControl'
 export { SearchInput } from './SearchInput'
 export { Select, type SelectOption } from './Select'
+export { StatCard } from './StatCard'
 export { SubscriptionStatusBadge } from './SubscriptionStatusBadge'
 export { ThemeToggle } from './ThemeToggle'
 export { Toaster } from './Toaster'
@@ -33,6 +34,8 @@ export {
     ArrowUpIcon,
     BackIcon,
     BookOpenIcon,
+    BuildingIcon,
+    ChartIcon,
     EditIcon,
     EyeIcon,
     EyeOffIcon,
@@ -41,6 +44,7 @@ export {
     MoonIcon,
     SearchIcon,
     SettingsIcon,
+    ShieldIcon,
     SignOutIcon,
     StarIcon,
     SunIcon,

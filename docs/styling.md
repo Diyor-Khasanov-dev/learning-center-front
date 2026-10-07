@@ -53,7 +53,11 @@ uni yuqoridagidek qo'shing.
 - **Asosiy tugma** (`primary`) — kapsula (`rounded-full`) va indigo gradient.
   Burchak klassi variantda turadi, `Button` asosida emas: bitta elementda
   ikki xil `rounded-*` bo'lmasin.
-- **Qidiruv** — `SearchInput` (chapda lupa, kapsula shakli).
+- **Qidiruv** — `SearchInput` (chapda lupa, kapsula shakli). Loyihadagi
+  barcha qidiruv maydonlari shu.
+- **Statistika** — `StatCard` (admin, o'qituvchi, super-admin): ikonka
+  rangli kichik fonda, katta raqam, ostida faqat HAQIQIY dinamika.
+- **Ro'yxatdagi odamlar** — `Avatar colorful`: ismga qarab doim bir xil rang.
 
 ## Dark rejim
 

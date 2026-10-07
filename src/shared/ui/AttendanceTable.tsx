@@ -157,7 +157,7 @@ export function AttendanceTable({
                                         name={student.userDto?.fullName}
                                         src={student.userDto?.imageUrl}
                                         size="sm"
-                                        fallback="silhouette"
+                                        colorful
                                     />
                                     {onSelectStudent ? (
                                         <button

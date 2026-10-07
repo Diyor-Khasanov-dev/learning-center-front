@@ -67,6 +67,9 @@ export default function AnalyticsPanel({ token }: AnalyticsPanelProps) {
                                     axisLine={false}
                                     tickLine={false}
                                     tick={{ fill: 'var(--color-fg-muted)', fontSize: 12 }}
+                                    // Standart 60px "1 200 000" ga yetmaydi — boshi qirqilib
+                                    // "200 000" ko'rinardi va summa 6 baravar kam tuyulardi.
+                                    width={84}
                                     tickFormatter={(val) => formatAmount(val)}
                                 />
                                 <Tooltip
