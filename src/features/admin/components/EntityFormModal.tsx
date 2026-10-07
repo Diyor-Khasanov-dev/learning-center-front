@@ -2,8 +2,8 @@ import { useState, type FormEvent } from 'react'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatHeader, formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
-import { Button, ErrorBox, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
+import { formatHeader, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput, Select, type SelectOption } from '@/shared/ui'
 import { useGroupTeacherOptions } from '../hooks/useGroupTeacherOptions'
 import { usePhoneLookup } from '../hooks/usePhoneLookup'
 import { PhoneLookupHints } from './PhoneLookupHints'
@@ -209,6 +209,15 @@ export function EntityFormModal({
 
     function renderTextInput(key: string, type: string = 'text') {
         const raw = values[key]
+        if (type === 'tel') {
+            return (
+                <PhoneInput
+                    disabled={isLookup && found !== null && decision === null && key !== 'phone'}
+                    value={typeof raw === 'string' ? raw : ''}
+                    onChange={(next) => setValue(key, next)}
+                />
+            )
+        }
         return (
             <Input
                 type={type}
@@ -223,9 +232,7 @@ export function EntityFormModal({
                         ? JSON.stringify(raw)
                         : ((raw as string | number | undefined) ?? '')
                 }
-                onChange={(event) =>
-                    setValue(key, type === 'tel' ? formatPhone(event.target.value) : event.target.value)
-                }
+                onChange={(event) => setValue(key, event.target.value)}
             />
         )
     }

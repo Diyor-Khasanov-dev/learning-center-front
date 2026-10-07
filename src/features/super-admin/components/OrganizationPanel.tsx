@@ -3,8 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { errorMessage, queryKeys } from '@/shared/api'
 import { useMyOrganization } from '@/shared/hooks'
 import { useT } from '@/shared/i18n'
-import { formatPhone, normalizePhone } from '@/shared/lib'
-import { Avatar, Button, ErrorBox, Eyebrow, Field, Input, Panel } from '@/shared/ui'
+import { normalizePhone } from '@/shared/lib'
+import { Avatar, Button, ErrorBox, Eyebrow, Field, Input, Panel, PhoneInput } from '@/shared/ui'
 import { updateOwnOrganization } from '../api/superAdminApi'
 import type { OrganizationDto } from '@/shared/types'
 
@@ -58,7 +58,7 @@ function OrganizationForm({
     const queryClient = useQueryClient()
 
     const [name, setName] = useState(initial.name ?? '')
-    const [phone, setPhone] = useState(formatPhone(initial.phone ?? ''))
+    const [phone, setPhone] = useState(initial.phone ?? '')
     const [email, setEmail] = useState(initial.email ?? '')
     const [website, setWebsite] = useState(initial.website ?? '')
 
@@ -123,11 +123,7 @@ function OrganizationForm({
                 </Field>
 
                 <Field label={t('field.phone')}>
-                    <Input
-                        type="tel"
-                        value={phone}
-                        onChange={(event) => setPhone(formatPhone(event.target.value))}
-                    />
+                    <PhoneInput value={phone} onChange={setPhone} />
                 </Field>
 
                 <Field label={t('organization.email')}>

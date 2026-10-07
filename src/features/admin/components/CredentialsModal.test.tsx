@@ -7,7 +7,7 @@ describe('CredentialsModal', () => {
     it('telefon va parolni ko’rsatadi', () => {
         renderWithProviders(
             <CredentialsModal
-                credentials={{ fullName: 'Jasur Alimov', phone: '+998901234567', password: 'k7Qm2xPz' }}
+                credentials={{ fullName: 'Jasur Alimov', phone: '+998901234567', temporaryPassword: 'k7Qm2xPz' }}
                 onClose={vi.fn()}
             />
         )
@@ -23,7 +23,7 @@ describe('CredentialsModal', () => {
      */
     it('parol qayta ko’rsatilmasligini ogohlantiradi', () => {
         renderWithProviders(
-            <CredentialsModal credentials={{ phone: '+998901234567', password: 'k7Qm2xPz' }} onClose={vi.fn()} />
+            <CredentialsModal credentials={{ phone: '+998901234567', temporaryPassword: 'k7Qm2xPz' }} onClose={vi.fn()} />
         )
 
         expect(screen.getByText(/boshqa ko‘rsatilmaydi/i)).toBeInTheDocument()

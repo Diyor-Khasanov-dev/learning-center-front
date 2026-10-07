@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Field, Input, Modal } from '@/shared/ui'
+import { normalizePhone } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput } from '@/shared/ui'
 import type { OrganizationPayload } from '../api/superAdminApi'
 import type { OrganizationDto } from '@/shared/types'
 
@@ -32,7 +33,7 @@ export function OrganizationFormModal({
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         if (!isValid) return
-        onSubmit({ name: name.trim(), email, phone, website })
+        onSubmit({ name: name.trim(), email, phone: normalizePhone(phone), website })
     }
 
     return (
@@ -46,7 +47,7 @@ export function OrganizationFormModal({
                     <Input value={name} onChange={(e) => setName(e.target.value)} required />
                 </Field>
                 <Field label={t('org.phone')}>
-                    <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <PhoneInput value={phone} onChange={setPhone} />
                 </Field>
                 <Field label={t('org.email')}>
                     <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />

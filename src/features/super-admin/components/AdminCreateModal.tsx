@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
-import { Button, ErrorBox, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
+import { isCompleteUzPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput, Select, type SelectOption } from '@/shared/ui'
 import { ADMIN_PERMISSIONS, type AdminPermission, type UserCreatePayload } from '@/shared/types'
 import { buildAdminCreatePayload } from '../lib/adminPayload'
 
@@ -30,7 +30,7 @@ export function AdminCreateModal({ branchOptions, isSaving, error, onSubmit, onC
     const [permissions, setPermissions] = useState<AdminPermission[]>([])
 
     const soleBranchId = branchOptions.length === 1 ? branchOptions[0].value : undefined
-    const isValid = fullName.trim() !== '' && normalizePhone(phone).length > UZ_PHONE_PREFIX.trim().length
+    const isValid = fullName.trim() !== '' && isCompleteUzPhone(phone)
 
     function togglePermission(permission: AdminPermission) {
         setPermissions((current) =>
@@ -59,12 +59,7 @@ export function AdminCreateModal({ branchOptions, isSaving, error, onSubmit, onC
                 </Field>
 
                 <Field label={t('field.phone')}>
-                    <Input
-                        type="tel"
-                        value={phone}
-                        onChange={(event) => setPhone(formatPhone(event.target.value))}
-                        required
-                    />
+                    <PhoneInput required value={phone} onChange={setPhone} />
                 </Field>
 
                 {/* Bitta filial bo'lsa tanlashning ma'nosi yo'q — yashirin,

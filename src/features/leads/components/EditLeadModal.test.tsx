@@ -62,7 +62,7 @@ describe('EditLeadModal', () => {
         const phoneInput = screen.getByLabelText(/Telefon/i) as HTMLInputElement
 
         expect(nameInput.value).toBe('Ali Valiyev')
-        expect(phoneInput.value).toBe('+998901234567')
+        expect(phoneInput.value).toBe('+998 90 123 45 67')
 
         await userEvent.clear(nameInput)
         await userEvent.type(nameInput, 'Ali Karimov')

@@ -1,4 +1,4 @@
-import { demoUser, getDemoRole, json, makeToken } from './state'
+import { demoUser, getDemoRole, json, makeToken, noContent } from './state'
 
 export function handleAuth(path: string): Response | null {
     // Demo'da kirish har doim bir bosqichda — tashkilot tanlash faqat bir
@@ -6,6 +6,8 @@ export function handleAuth(path: string): Response | null {
     if (path === '/auth/select-organization') {
         return json({ token: makeToken(getDemoRole()), expiry: '2099-01-01T00:00:00Z' })
     }
+    // Haqiqiy backend refresh cookie'ni o'chiradi; demo'da cookie yo'q.
+    if (path === '/auth/logout') return noContent()
     if (path === '/auth/refresh-token' || path === '/auth/login') {
         return json({ token: makeToken(getDemoRole()), expiry: '2099-01-01T00:00:00Z' })
     }

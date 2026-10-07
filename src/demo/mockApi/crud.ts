@@ -104,7 +104,7 @@ export function handleCrud(
         // parolni qaytaradi — administrator uni faqat shu yerda ko'radi.
         if (table === 'students' || table === 'teachers') {
             const user = (created.userDto ?? {}) as Record<string, unknown>
-            return json({ ...created, userDto: { ...user, password: 'demo-' + nextId('p') } })
+            return json({ ...created, userDto: { ...user, temporaryPassword: 'demo-' + nextId('p') } })
         }
 
         return json(created)

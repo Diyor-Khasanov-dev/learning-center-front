@@ -12,6 +12,7 @@ import { AssignStudentsModal } from '../components/AssignStudentsModal'
 import { EntityFormModal } from '../components/EntityFormModal'
 import { EntityTable } from '../components/EntityTable'
 import { CredentialsModal, type CreatedCredentials } from '../components/CredentialsModal'
+import { createdCredentials } from '../lib/createdCredentials'
 import { OnboardingSteps } from '../components/OnboardingSteps'
 import { StatsRow } from '../components/StatsRow'
 import { COLUMN_CONFIGS, inferColumns } from '../config/columns'
@@ -127,8 +128,8 @@ export function AdminDashboardPage() {
             {
                 onSuccess: (created) => {
                     setFormModal(null)
-                    const user = (created as { userDto?: CreatedCredentials })?.userDto
-                    if (formModal.mode === 'create' && user?.password) setCredentials(user)
+                    const user = createdCredentials(created)
+                    if (formModal.mode === 'create' && user) setCredentials(user)
                 },
             }
         )

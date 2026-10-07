@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatPhone, isValidPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
-import { Button, ErrorBox, Field, Input, Modal } from '@/shared/ui'
+import { isCompleteUzPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput } from '@/shared/ui'
 import type { OrganizationPayload } from '../api/developerApi'
 
 interface OrganizationFormModalProps {
@@ -27,7 +27,7 @@ export function OrganizationFormModal({
 
     // Telefon maydoni "+998" bilan boshlanadi — `required` uni to'ldirilgan
     // deb hisoblaydi, shuning uchun to'liq raqamni alohida tekshiramiz.
-    const isPhoneValid = isValidPhone(phone) && normalizePhone(phone) !== normalizePhone(UZ_PHONE_PREFIX)
+    const isPhoneValid = isCompleteUzPhone(phone)
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -54,12 +54,7 @@ export function OrganizationFormModal({
                 </Field>
 
                 <Field label={t('field.phone')}>
-                    <Input
-                        type="tel"
-                        required
-                        value={phone}
-                        onChange={(event) => setPhone(formatPhone(event.target.value))}
-                    />
+                    <PhoneInput required value={phone} onChange={setPhone} />
                 </Field>
 
                 <Field label={t('organization.email')}>

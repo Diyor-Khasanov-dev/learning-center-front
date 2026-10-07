@@ -4,7 +4,12 @@ import { Button, Modal } from '@/shared/ui'
 export interface CreatedCredentials {
     fullName?: string
     phone?: string
-    password?: string
+    /**
+     * Backenddagi `UserCreatedResponseDto.temporaryPassword`. Ilgari bu yerda
+     * `password` kutilardi — nom mos kelmagani uchun o'qituvchi/o'quvchi
+     * yaratilganda parol oynasi hech qachon chiqmasdi.
+     */
+    temporaryPassword?: string
 }
 
 /**
@@ -44,7 +49,7 @@ export function CredentialsModal({
                     {/* Tanlash oson bo'lishi uchun katta va monoshrift: bu matn
                         qo'lda ko'chiriladi yoki og'zaki aytiladi. */}
                     <dd className="font-mono text-lg font-semibold tracking-wide text-fg select-all">
-                        {credentials.password}
+                        {credentials.temporaryPassword}
                     </dd>
                 </div>
             </dl>

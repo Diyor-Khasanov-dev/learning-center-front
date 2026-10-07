@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
-import { Button, ErrorBox, Field, Input, Modal } from '@/shared/ui'
+import { normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput } from '@/shared/ui'
 import type { SuperAdminPayload } from '../api/developerApi'
 
 interface SuperAdminFormModalProps {
@@ -53,12 +53,7 @@ export function SuperAdminFormModal({
                 </Field>
 
                 <Field label={t('field.phone')}>
-                    <Input
-                        type="tel"
-                        required
-                        value={phone}
-                        onChange={(event) => setPhone(formatPhone(event.target.value))}
-                    />
+                    <PhoneInput required value={phone} onChange={setPhone} />
                 </Field>
 
                 <Field label={t('auth.password')}>

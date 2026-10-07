@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { refreshSession, toSession } from '@/features/auth/api/authApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { logout, refreshSession, toSession } from '@/features/auth/api/authApi'
 import { setTokenRefresher } from '@/shared/api'
 import { AuthContext } from './auth-context'
 import type { Session } from '@/shared/types'
@@ -19,6 +20,7 @@ import type { Session } from '@/shared/types'
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [session, setSession] = useState<Session | null>(null)
     const [isRestoring, setIsRestoring] = useState(true)
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         let cancelled = false
@@ -39,7 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, [])
 
     const signIn = useCallback((next: Session) => setSession(next), [])
-    const signOut = useCallback(() => setSession(null), [])
+    const signOut = useCallback(() => {
+        // Javobni kutmaymiz: chiqish darhol bo'lsin. Endpoint xato bersa ham
+        // (hali deploy qilinmagan bo'lsa) frontend baribir chiqadi.
+        logout().catch(() => {})
+        setSession(null)
+        // Keshda oldingi foydalanuvchining ma'lumotlari qoladi — shu
+        // brauzerda keyin kirgan boshqa odam ularni bir lahza ko'rardi.
+        queryClient.clear()
+    }, [queryClient])
 
     useEffect(() => {
         setTokenRefresher(async () => {
