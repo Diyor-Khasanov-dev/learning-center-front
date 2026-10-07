@@ -71,3 +71,22 @@ o'qituvchi qo'lda o'zgartirgan statuslar turadi.
 
 Foydasi: dars almashganda qoralamani "tozalash" kerak emas, u o'zi
 yangilanadi, va `useEffect` ichida `setState` bo'lmaydi.
+
+## Forma qoralamalari (`useDraft`)
+
+Modal formada yozilgan narsa sahifa yangilansa ham yo'qolmasligi uchun
+qiymat `useState` o'rniga
+[`useDraft(kalit, boshlang'ich)`](../src/shared/hooks/useDraft.ts) da turadi.
+Bu server ma'lumoti emas — foydalanuvchi hali yubormagan matn, shuning uchun
+TanStack Query emas, `localStorage` (`alia:draft:<kalit>`).
+
+- Har o'zgarish darhol yoziladi; qiymat boshlang'ich holatga qaytsa — o'chadi.
+- `Modal` ga `draft={draft}` beriladi. Shunda Escape yoki fon bosilganda oyna
+  darhol yopilmaydi, "Qoralamani saqlash / O'chirish" deb so'raydi.
+  "Bekor qilish" tugmasi esa so'ramasdan `draft.discard()` qiladi.
+- Yuborishda `draft.discard()` (validatsiyadan o'tgandan keyin).
+- Kalit forma va yozuv bo'yicha alohida: `lead-new`, `lead-edit:<id>`,
+  `lead-action:<id>:<status>`, `entity:<bo'lim>:<id|new>`, `payment:<tur>`,
+  `group-level:<id|new>`.
+- Qoralamada ism va telefon bor: chiqishda (`signOut`) hammasi o'chiriladi,
+  bir haftadan eskisi o'qilganda tashlanadi.

@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { useDraft } from '@/shared/hooks'
 import type { LeadDto, LeadRejectDto } from '@/shared/types'
 import { REJECTION_REASONS } from '@/shared/types'
 import { useT } from '@/shared/i18n'
 import { Button, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
-import { dayLabel, defaultSchedule, isFuture, timeLabel, toCallAt, type Schedule } from '../lib/schedule'
+import { dayLabel, defaultSchedule, isFuture, timeLabel, toCallAt } from '../lib/schedule'
 import { ScheduleWheel } from './ScheduleWheel'
 
 interface LeadActionModalProps {
@@ -19,22 +20,33 @@ interface LeadActionModalProps {
 
 /**
  * Lid ustida harakat bajarish modali (guruhga yozish, rad etish, keyinroq qo'ng'iroq qilish).
- * Forma holati modal ichida saqlanadi, shunda har safar modal ochilganda eski lid ma'lumotlari tozalanadi.
+ * Yozilgani qoralama sifatida saqlanadi (`useDraft`) — sahifa yangilansa ham yo'qolmaydi.
  */
 export function LeadActionModal(props: LeadActionModalProps) {
-    const { status, groupOptions, isPending, onClose, onEnroll, onReject, onCallLater } = props
+    const { lead, status, groupOptions, isPending, onClose, onEnroll, onReject, onCallLater } = props
     const { t, locale } = useT()
-    // Forma holatlari modal ichida saqlanadi va har gal modal ochilganda boshlang'ich holatga qaytadi
-    const [groupId, setGroupId] = useState('')
-    const [rejectReason, setRejectReason] = useState<LeadRejectDto['reason']>('OTHER')
-    const [rejectNote, setRejectNote] = useState('')
     // Oyna ochilgan payt — g'ildirakdagi "Bugun/Ertaga" va standart vaqt shundan.
     const [now] = useState(() => new Date())
-    const [schedule, setSchedule] = useState<Schedule>(() => defaultSchedule(now))
+    // Qoralama lid va harakat bo'yicha alohida: boshqa lidni ochganda
+    // birovning izohi chiqib qolmasin.
+    const draft = useDraft(`lead-action:${lead.id}:${status}`, {
+        groupId: '',
+        rejectReason: 'OTHER' as LeadRejectDto['reason'],
+        rejectNote: '',
+        schedule: defaultSchedule(now),
+    })
+    const { groupId, rejectReason, rejectNote, schedule } = draft.value
+    const update = (patch: Partial<typeof draft.value>) => draft.setValue((current) => ({ ...current, ...patch }))
     const isScheduleValid = isFuture(schedule, new Date())
     const scheduleText = `${dayLabel(schedule.day, now, locale, { today: t('lead.today'), tomorrow: t('lead.tomorrow') })}, ${timeLabel(schedule)}`
 
+    function cancel() {
+        draft.discard()
+        onClose()
+    }
+
     function submitAction() {
+        draft.discard()
         if (status === 'ENROLLED' && groupId) {
             onEnroll(groupId)
         } else if (status === 'REJECTED') {
@@ -55,9 +67,10 @@ export function LeadActionModal(props: LeadActionModalProps) {
                       : t('lead.action.CALL_LATER')
             }
             onClose={onClose}
+            draft={draft}
             footer={
                 <>
-                    <Button onClick={onClose}>{t('common.cancel')}</Button>
+                    <Button onClick={cancel}>{t('common.cancel')}</Button>
                     <Button
                         variant="primary"
                         onClick={submitAction}
@@ -80,7 +93,7 @@ export function LeadActionModal(props: LeadActionModalProps) {
                         placeholder={t('lead.selectGroup')}
                         value={groupId}
                         options={groupOptions}
-                        onChange={(event) => setGroupId(event.target.value)}
+                        onChange={(event) => update({ groupId: event.target.value })}
                     />
                 </Field>
             )}
@@ -95,7 +108,7 @@ export function LeadActionModal(props: LeadActionModalProps) {
                             }))}
                             value={rejectReason}
                             onChange={(event) =>
-                                setRejectReason(event.target.value as LeadRejectDto['reason'])
+                                update({ rejectReason: event.target.value as LeadRejectDto['reason'] })
                             }
                         />
                     </Field>
@@ -103,14 +116,14 @@ export function LeadActionModal(props: LeadActionModalProps) {
                         <Input
                             aria-label={t('lead.note')}
                             value={rejectNote}
-                            onChange={(event) => setRejectNote(event.target.value)}
+                            onChange={(event) => update({ rejectNote: event.target.value })}
                         />
                     </Field>
                 </div>
             )}
             {status === 'CALL_LATER' && (
                 <div className="space-y-2">
-                    <ScheduleWheel value={schedule} onChange={setSchedule} now={now} />
+                    <ScheduleWheel value={schedule} onChange={(next) => update({ schedule: next })} now={now} />
                     {!isScheduleValid && <p className="text-xs text-danger-fg">{t('lead.schedulePast')}</p>}
                 </div>
             )}
