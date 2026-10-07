@@ -50,7 +50,7 @@ export function Modal({ eyebrow, title, onClose, children, footer, maxWidth = 'm
                 {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
                 <h2 className="mt-1 mb-4 font-display text-xl font-semibold text-fg">{title}</h2>
                 {children}
-                {footer && <div className="mt-4 flex justify-end gap-2.5">{footer}</div>}
+                {footer && <div className="mt-4 flex flex-wrap justify-end gap-2.5">{footer}</div>}
             </div>
         </div>,
         document.body

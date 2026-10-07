@@ -3,6 +3,8 @@ import type { LeadDto, LeadRejectDto } from '@/shared/types'
 import { REJECTION_REASONS } from '@/shared/types'
 import { useT } from '@/shared/i18n'
 import { Button, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
+import { dayLabel, defaultSchedule, isFuture, timeLabel, toCallAt, type Schedule } from '../lib/schedule'
+import { ScheduleWheel } from './ScheduleWheel'
 
 interface LeadActionModalProps {
     lead: LeadDto
@@ -21,20 +23,24 @@ interface LeadActionModalProps {
  */
 export function LeadActionModal(props: LeadActionModalProps) {
     const { status, groupOptions, isPending, onClose, onEnroll, onReject, onCallLater } = props
-    const { t } = useT()
+    const { t, locale } = useT()
     // Forma holatlari modal ichida saqlanadi va har gal modal ochilganda boshlang'ich holatga qaytadi
     const [groupId, setGroupId] = useState('')
     const [rejectReason, setRejectReason] = useState<LeadRejectDto['reason']>('OTHER')
     const [rejectNote, setRejectNote] = useState('')
-    const [callAt, setCallAt] = useState('')
+    // Oyna ochilgan payt — g'ildirakdagi "Bugun/Ertaga" va standart vaqt shundan.
+    const [now] = useState(() => new Date())
+    const [schedule, setSchedule] = useState<Schedule>(() => defaultSchedule(now))
+    const isScheduleValid = isFuture(schedule, new Date())
+    const scheduleText = `${dayLabel(schedule.day, now, locale, { today: t('lead.today'), tomorrow: t('lead.tomorrow') })}, ${timeLabel(schedule)}`
 
     function submitAction() {
         if (status === 'ENROLLED' && groupId) {
             onEnroll(groupId)
         } else if (status === 'REJECTED') {
             onReject({ reason: rejectReason, note: rejectNote.trim() || undefined })
-        } else if (status === 'CALL_LATER' && callAt) {
-            onCallLater(callAt)
+        } else if (status === 'CALL_LATER' && isScheduleValid) {
+            onCallLater(toCallAt(schedule))
         }
     }
 
@@ -57,11 +63,12 @@ export function LeadActionModal(props: LeadActionModalProps) {
                         onClick={submitAction}
                         disabled={
                             (status === 'ENROLLED' && !groupId) ||
-                            (status === 'CALL_LATER' && !callAt) ||
+                            (status === 'CALL_LATER' && !isScheduleValid) ||
                             isPending
                         }
                     >
-                        {t('common.save')}
+                        {/* Telegramdagidek: tugmaning o'zi qachonga belgilanayotganini aytadi */}
+                        {status === 'CALL_LATER' ? t('lead.scheduleFor', { when: scheduleText }) : t('common.save')}
                     </Button>
                 </>
             }
@@ -102,15 +109,10 @@ export function LeadActionModal(props: LeadActionModalProps) {
                 </div>
             )}
             {status === 'CALL_LATER' && (
-                <Field label={t('lead.callAt')}>
-                    <Input
-                        aria-label={t('lead.callAt')}
-                        type="datetime-local"
-                        value={callAt}
-                        onChange={(event) => setCallAt(event.target.value)}
-                        min={new Date().toISOString().slice(0, 16)}
-                    />
-                </Field>
+                <div className="space-y-2">
+                    <ScheduleWheel value={schedule} onChange={setSchedule} now={now} />
+                    {!isScheduleValid && <p className="text-xs text-danger-fg">{t('lead.schedulePast')}</p>}
+                </div>
             )}
         </Modal>
     )

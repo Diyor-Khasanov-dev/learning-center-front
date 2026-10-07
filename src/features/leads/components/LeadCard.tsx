@@ -2,6 +2,7 @@
 import type { LeadDto, LeadStatus } from '@/shared/types'
 import { LEAD_STATUSES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
+import { formatCallAt } from '../lib/schedule'
 import { Badge, Button, Select } from '@/shared/ui'
 
 export interface LeadCardProps {
@@ -14,12 +15,6 @@ export interface LeadCardProps {
     onDragEnd: () => void
 }
 
-function formatDate(value?: string | null) {
-    if (!value) return null
-    const date = new Date(value)
-    return Number.isNaN(date.getTime()) ? value : date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-}
-
 // Lid kartochkasining alohida komponent shaklida chiqarilishi — kodni o'qilishi va qo'llab-quvvatlanishini osonlashtiradi
 export function LeadCard({
     lead,
@@ -30,7 +25,7 @@ export function LeadCard({
     onDragStart,
     onDragEnd,
 }: LeadCardProps) {
-    const { t } = useT()
+    const { t, locale } = useT()
 
     return (
         <article
@@ -69,7 +64,7 @@ export function LeadCard({
             </div>
             {lead.callAt && (
                 <p className="mt-3 rounded-lg bg-warning-soft px-2.5 py-2 text-xs font-medium text-warning-fg">
-                    {t('lead.callAt')}: {formatDate(lead.callAt)}
+                    {t('lead.callAt')}: {formatCallAt(lead.callAt, new Date(), locale, { today: t('lead.today'), tomorrow: t('lead.tomorrow') })}
                 </p>
             )}
             <div className="mt-3 flex items-center gap-2 border-t border-border-base pt-3">
