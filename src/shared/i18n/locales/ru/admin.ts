@@ -53,6 +53,8 @@ export const admin: Record<AdminKeys, string> = {
     'field.branch': 'Филиал',
     'field.days': 'Дни',
     'field.startTime': 'Начало',
+    'field.hour': 'часы',
+    'field.minute': 'минуты',
     'field.endTime': 'Окончание',
     'field.status': 'Статус',
     'field.select': '— Выберите —',
