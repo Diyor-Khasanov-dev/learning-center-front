@@ -37,6 +37,24 @@ Shundan keyin `bg-info`, `text-info`, `border-info` o'zi ishlaydi.
 **Komponentda hex kod yozmang.** Agar kerakli semantik rang yo'q bo'lsa,
 uni yuqoridagidek qo'shing.
 
+## Palitra (2026-10 yangilanishi)
+
+- **Bitta asosiy rang — indigo** (`brand`, `accent`), **bitta yordamchi —
+  osmon ko'ki** (`magenta`/`steel` tokenlari). `purple` endi indigo'ning
+  to'q tusi: gradientlar bir oiladan. Yangi ekranga yangi yorqin rang
+  qo'shmang — holat ranglari (`success`, `danger`, `warning`) faqat holat
+  uchun.
+- **Fon — slate**, sof oq/qora emas: yorug'da `#f8fafc`, to'qda `#0b1120`.
+- **Shisha karta:** `bg-surface-card/80 backdrop-blur-md`, ingichka qirra
+  (`border-border-base` — to'qda oq 7%), soya `shadow-[var(--shadow-card)]`.
+  Rangli "dog'" soyalar ishlatilmaydi.
+- **Jadval:** qator chiziqlari `border-border-base/60`, hover — to'qda oq 5%.
+  Amallar tugmalari (`IconButton`) neytral kulrang, faqat hover'da yorishadi.
+- **Asosiy tugma** (`primary`) — kapsula (`rounded-full`) va indigo gradient.
+  Burchak klassi variantda turadi, `Button` asosida emas: bitta elementda
+  ikki xil `rounded-*` bo'lmasin.
+- **Qidiruv** — `SearchInput` (chapda lupa, kapsula shakli).
+
 ## Dark rejim
 
 `prefers-color-scheme` emas, `<html class="dark">` ishlatiladi — foydalanuvchi

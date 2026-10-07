@@ -5,14 +5,20 @@ import { cn } from '@/shared/lib'
  *
  * Alohida faylda turibdi, chunki komponent faylidan konstanta eksport
  * qilinsa Vite'ning Fast Refresh'i ishlamay qoladi.
+ *
+ * `inputBaseClasses` da burchak va gorizontal padding YO'Q: qidiruv
+ * maydoni (`SearchInput`) ularni o'zgacha beradi, ikki xil `rounded-*`
+ * bir elementda bo'lsa qaysi biri yutishi CSS tartibiga qolib ketadi.
  */
-export const inputClasses = cn(
-    'min-h-11 w-full rounded-lg border border-border-base bg-surface-card/85 px-3.5 text-sm text-fg shadow-[0_12px_28px_-26px_var(--fg)] backdrop-blur',
+export const inputBaseClasses = cn(
+    'min-h-11 w-full border border-border-base bg-surface-card text-sm text-fg shadow-[0_1px_2px_rgb(15_23_42/0.04)]',
     'transition-[border-color,box-shadow] duration-150 placeholder:text-fg-faint',
     'hover:border-border-strong',
     'focus:border-accent focus:ring-3 focus:ring-accent/20 focus:outline-none',
     // Bloklangan maydon ochig'idan ko'rinishda farq qilishi SHART: aks holda
     // foydalanuvchi yozmoqchi bo'lib, nega yozilmayotganini tushunmaydi.
     'disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:border-border-base',
-    'read-only:bg-surface-soft read-only:text-fg-muted read-only:hover:border-border-base'
+    'read-only:bg-surface-muted read-only:text-fg-muted read-only:hover:border-border-base'
 )
+
+export const inputClasses = cn(inputBaseClasses, 'rounded-lg px-3.5')

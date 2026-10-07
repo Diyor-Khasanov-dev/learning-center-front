@@ -22,6 +22,7 @@ export { Panel } from './Panel'
 export { PhoneInput } from './PhoneInput'
 export { ProfileMenu } from './ProfileMenu'
 export { SegmentedControl } from './SegmentedControl'
+export { SearchInput } from './SearchInput'
 export { Select, type SelectOption } from './Select'
 export { SubscriptionStatusBadge } from './SubscriptionStatusBadge'
 export { ThemeToggle } from './ThemeToggle'
@@ -31,14 +32,22 @@ export {
     ArrowDownIcon,
     ArrowUpIcon,
     BackIcon,
+    BookOpenIcon,
     EditIcon,
     EyeIcon,
     EyeOffIcon,
+    FolderIcon,
+    LayersIcon,
     MoonIcon,
+    SearchIcon,
     SettingsIcon,
     SignOutIcon,
     StarIcon,
     SunIcon,
+    TargetIcon,
+    TeacherIcon,
     TrashIcon,
     UserPlusIcon,
+    UsersIcon,
+    WalletIcon,
 } from './icons'
