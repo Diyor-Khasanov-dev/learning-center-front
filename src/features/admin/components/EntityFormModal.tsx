@@ -7,6 +7,7 @@ import { Button, ErrorBox, Field, Input, Modal, PhoneInput, Select, type SelectO
 import { useGroupTeacherOptions } from '../hooks/useGroupTeacherOptions'
 import { usePhoneLookup } from '../hooks/usePhoneLookup'
 import { PhoneLookupHints } from './PhoneLookupHints'
+import { TimeSelect } from './TimeSelect'
 import type { EntityFormConfig, FormField, FormValues, ModalMode } from '../types'
 
 interface EntityFormModalProps {
@@ -204,6 +205,16 @@ export function EntityFormModal({
             )
         }
 
+        if (field.type === 'time') {
+            return (
+                <TimeSelect
+                    label={t(field.labelKey)}
+                    value={(values[field.key] as string | undefined) ?? ''}
+                    onChange={(next) => setValue(field.key, next)}
+                />
+            )
+        }
+
         return renderTextInput(field.key, field.type)
     }
 
@@ -225,8 +236,6 @@ export function EntityFormModal({
                 // aks holda administrator yozib bo'lgach ustiga boshqa ism
                 // tushadi va nima o'zgarganini sezmaydi.
                 disabled={isLookup && found !== null && decision === null && key !== 'phone'}
-                // `time` inputi 24 soatlik ko'rinishda chiqsin
-                lang={type === 'time' ? 'ru-RU' : undefined}
                 value={
                     typeof raw === 'object' && raw !== null
                         ? JSON.stringify(raw)
