@@ -25,6 +25,17 @@ export function selectOrganization(organizationId: string, credentials: LoginCre
  * httpOnly refresh cookie orqali yangi access token oladi.
  * Cookie bo'lmasa backend 401 qaytaradi — bu normal holat (kirilmagan).
  */
+/**
+ * Chiqish: backend httpOnly `refresh_token` cookie'sini o'chiradi.
+ *
+ * Cookie'ni frontend o'zi o'chira olmaydi (httpOnly). Busiz chiqqandan
+ * keyin sahifa yangilansa, `refresh-token` yana sessiya beradi va odam
+ * qaytib kirib qoladi.
+ */
+export function logout() {
+    return apiFetch<void>('/auth/logout', { method: 'POST' })
+}
+
 export function refreshSession() {
     return apiFetch<AuthResponse>('/auth/refresh-token', { method: 'POST' })
 }

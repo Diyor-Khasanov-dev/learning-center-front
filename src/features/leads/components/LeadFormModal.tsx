@@ -2,9 +2,9 @@ import { useState } from 'react'
 import type { LeadCreateDto, LeadDto, LeadSource, LeadUpdateDto } from '@/shared/types'
 import { LEAD_SOURCES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Field, Input, Modal, Select } from '@/shared/ui'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput, Select } from '@/shared/ui'
 import { useLeadCourseOptions } from '../hooks/useLeads'
-import { isValidPhone, normalizePhone } from '@/shared/lib'
+import { isCompleteUzPhone, normalizePhone } from '@/shared/lib'
 
 export interface LeadFormModalProps {
     token: string
@@ -29,7 +29,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
     const [showErrors, setShowErrors] = useState(false)
 
     const nameError = fullName.trim() === ''
-    const phoneError = !isValidPhone(phone)
+    const phoneError = !isCompleteUzPhone(phone)
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -82,12 +82,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
                     {showErrors && nameError && <ErrorBox>{t('lead.nameRequired')}</ErrorBox>}
                 </Field>
                 <Field label={t('lead.phone')}>
-                    <Input
-                        type="tel"
-                        placeholder="+998901234567"
-                        value={phone}
-                        onChange={(event) => setPhone(event.target.value)}
-                    />
+                    <PhoneInput value={phone} onChange={setPhone} />
                     <p className="mt-1 text-xs text-fg-muted">{t('lead.phoneHint')}</p>
                     {showErrors && phoneError && <ErrorBox>{t('lead.phoneInvalid')}</ErrorBox>}
                 </Field>

@@ -64,7 +64,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={onLoggedIn} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         await waitFor(() => expect(onLoggedIn).toHaveBeenCalledTimes(1))
@@ -78,7 +78,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={vi.fn()} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByLabelText(/meni eslab qol/i))
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
@@ -97,7 +97,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={vi.fn()} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         expect(await screen.findByRole('alert')).toHaveTextContent(/administrator/i)
@@ -117,7 +117,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={onLoggedIn} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         await waitFor(() => expect(onLoggedIn).toHaveBeenCalledTimes(1))
@@ -142,7 +142,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={onLoggedIn} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         const select = await screen.findByLabelText(/tashkilot/i)
@@ -163,7 +163,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={onLoggedIn} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998900000000')
-        await user.type(screen.getByLabelText(/parol/i), 'wrong')
+        await user.type(screen.getByLabelText(/^parol$/i), 'wrong')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         expect(await screen.findByRole('alert')).toHaveTextContent(/noto’g’ri|noto'g'ri/i)
@@ -180,7 +180,7 @@ describe('LoginForm', () => {
         renderWithProviders(<LoginForm onLoggedIn={onLoggedIn} />)
 
         await user.type(screen.getByLabelText(/telefon raqami/i), '+998901234567')
-        await user.type(screen.getByLabelText(/parol/i), 'secret')
+        await user.type(screen.getByLabelText(/^parol$/i), 'secret')
         await user.click(screen.getByRole('button', { name: /kirish/i }))
 
         expect(await screen.findByRole('alert')).toHaveTextContent(/rol/i)

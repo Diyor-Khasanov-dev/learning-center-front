@@ -16,8 +16,10 @@ export { Input } from './Input'
 export { inputClasses } from './inputClasses'
 export { Modal } from './Modal'
 export { Pagination } from './Pagination'
+export { PasswordInput } from './PasswordInput'
 export { PendingBackend, PendingTag } from './PendingBackend'
 export { Panel } from './Panel'
+export { PhoneInput } from './PhoneInput'
 export { ProfileMenu } from './ProfileMenu'
 export { SegmentedControl } from './SegmentedControl'
 export { Select, type SelectOption } from './Select'
@@ -30,6 +32,8 @@ export {
     ArrowUpIcon,
     BackIcon,
     EditIcon,
+    EyeIcon,
+    EyeOffIcon,
     MoonIcon,
     SettingsIcon,
     SignOutIcon,
