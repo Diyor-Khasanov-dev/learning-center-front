@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Input, Modal } from '@/shared/ui'
+import { Button, ErrorBox, Modal, SearchInput } from '@/shared/ui'
 import { useEntityList } from '../hooks/useEntityList'
 import {
     useAddEnrollment,
@@ -54,7 +54,7 @@ export function AssignStudentsModal({ group, onClose }: { group: AdminRow; onClo
             footer={<Button onClick={onClose}>{t('common.close')}</Button>}
         >
             <div className="flex flex-col gap-3">
-                <Input
+                <SearchInput
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder={t('admin.search', { entity: t('entity.students.plural').toLowerCase() })}

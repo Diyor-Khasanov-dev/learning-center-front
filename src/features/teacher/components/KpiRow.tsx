@@ -1,24 +1,20 @@
 import { useT } from '@/shared/i18n'
-import { cn } from '@/shared/lib'
-import { PendingTag } from '@/shared/ui'
+import { PendingTag, StatCard } from '@/shared/ui'
 import type { TranslationKey } from '@/shared/i18n'
 import type { GroupStatsDto } from '@/shared/types'
 
 interface Kpi {
     labelKey: TranslationKey
-    /** Karta ustidagi rangli chiziq — holatning og'irligini bildiradi. */
-    accent: string
     value: (stats: GroupStatsDto) => number | undefined
 }
 
 const KPIS: Kpi[] = [
-    { labelKey: 'kpi.total', accent: 'border-t-steel', value: (s) => s.totalStudents },
-    { labelKey: 'kpi.active', accent: 'border-t-success', value: (s) => s.activeStudents },
-    { labelKey: 'kpi.new', accent: 'border-t-accent', value: (s) => s.newStudents },
-    { labelKey: 'kpi.lost', accent: 'border-t-slate-fg', value: (s) => s.lostStudents },
+    { labelKey: 'kpi.total', value: (s) => s.totalStudents },
+    { labelKey: 'kpi.active', value: (s) => s.activeStudents },
+    { labelKey: 'kpi.new', value: (s) => s.newStudents },
+    { labelKey: 'kpi.lost', value: (s) => s.lostStudents },
     {
         labelKey: 'kpi.potentialFail',
-        accent: 'border-t-amber',
         value: (s) => s.potentialFailStudents,
     },
 ]
@@ -32,40 +28,13 @@ const KPIS: Kpi[] = [
  * "muammoli o'quvchi yo'q" deb tushunadi, holbuki hech kim sanamagan.
  * Shuning uchun raqam o'rnida "—" va "endpoint yo'q" belgisi turadi.
  */
-const PENDING_KPIS: { labelKey: TranslationKey; accent: string }[] = [
-    { labelKey: 'kpi.redList', accent: 'border-t-danger' },
-    { labelKey: 'kpi.blackList', accent: 'border-t-fg' },
+const PENDING_KPIS: { labelKey: TranslationKey }[] = [
+    { labelKey: 'kpi.redList' },
+    { labelKey: 'kpi.blackList' },
 ]
 
-function KpiCard({
-    label,
-    accent,
-    value,
-}: {
-    label: string
-    accent: string
-    value: number | undefined
-}) {
-    return (
-        <div
-            className={cn(
-                'rounded-lg border border-t-3 border-border-base bg-surface-card px-3 py-3',
-                accent
-            )}
-        >
-            <div className="truncate font-mono text-[0.6rem] tracking-[0.05em] text-fg-faint uppercase">
-                {label}
-            </div>
-            <div
-                className={cn(
-                    'mt-1 font-display text-xl font-semibold tabular-nums',
-                    value === undefined ? 'text-fg-faint' : 'text-fg'
-                )}
-            >
-                {value ?? '—'}
-            </div>
-        </div>
-    )
+function KpiCard({ label, value }: { label: string; value: number | undefined }) {
+    return <StatCard compact label={label} value={value ?? '—'} muted={value === undefined} />
 }
 
 /**
@@ -88,20 +57,10 @@ export function KpiRow({ stats }: { stats: GroupStatsDto | null }) {
             </div>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 xl:grid-cols-7">
                 {KPIS.map((kpi) => (
-                    <KpiCard
-                        key={kpi.labelKey}
-                        label={t(kpi.labelKey)}
-                        accent={kpi.accent}
-                        value={stats ? kpi.value(stats) : undefined}
-                    />
+                    <KpiCard key={kpi.labelKey} label={t(kpi.labelKey)} value={stats ? kpi.value(stats) : undefined} />
                 ))}
                 {PENDING_KPIS.map((kpi) => (
-                    <KpiCard
-                        key={kpi.labelKey}
-                        label={t(kpi.labelKey)}
-                        accent={kpi.accent}
-                        value={undefined}
-                    />
+                    <KpiCard key={kpi.labelKey} label={t(kpi.labelKey)} value={undefined} />
                 ))}
             </div>
         </section>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useT } from '@/shared/i18n'
-import { Button, Input } from '@/shared/ui'
+import { Button, SearchInput } from '@/shared/ui'
 import type { StudentDto } from '@/shared/types'
 import { MIN_SEARCH_LENGTH, useStudentSearch } from '../hooks/usePaymentLookup'
 
@@ -43,8 +43,7 @@ export function StudentPicker({ token, selected, onSelect }: StudentPickerProps)
 
     return (
         <div className="flex flex-col gap-2">
-            <Input
-                type="search"
+            <SearchInput
                 autoFocus
                 aria-label={t('transaction.studentSearch')}
                 placeholder={t('transaction.studentSearchPlaceholder')}

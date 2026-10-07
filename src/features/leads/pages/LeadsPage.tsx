@@ -6,7 +6,7 @@ import { errorMessage } from '@/shared/api'
 import type { LeadCreateDto, LeadDto, LeadStatus, LeadUpdateDto } from '@/shared/types'
 import { LEAD_STATUSES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
-import { AppShell, Badge, Button, EmptyState, ErrorBox, Input, Panel, Select } from '@/shared/ui'
+import { AppShell, Badge, Button, EmptyState, ErrorBox, Panel, SearchInput, Select } from '@/shared/ui'
 import { EditLeadModal } from '../components/EditLeadModal'
 import { LeadActionModal } from '../components/LeadActionModal'
 import { LeadCard } from '../components/LeadCard'
@@ -98,7 +98,7 @@ export function LeadsPage() {
             <div className="mx-auto max-w-[1600px] space-y-5">
                 <Panel className="border-0 bg-linear-to-br from-accent-soft/60 via-surface-card to-surface-card p-5 sm:p-7">
                     <div className="flex flex-wrap items-end justify-between gap-4"><div><Badge tone="accent">{t('lead.eyebrow')}</Badge><h1 className="mt-3 font-display text-3xl font-semibold text-fg">{t('lead.title')}</h1><p className="mt-1 text-sm text-fg-muted">{t('lead.description')}</p></div><div className="rounded-xl border border-border-base bg-surface-card px-4 py-3 text-right"><p className="text-xs text-fg-muted">{t('lead.total')}</p><p className="font-display text-2xl font-semibold text-fg">{total}</p></div></div>
-                    <div className="mt-6 flex flex-col gap-2 md:flex-row"><Input aria-label={t('lead.search')} placeholder={t('lead.search')} value={search} onChange={(event) => setSearch(event.target.value)} /><Select aria-label={t('lead.allStatuses')} className="md:w-52" placeholder={t('lead.allStatuses')} value={filter} options={LEAD_STATUSES.map((status) => ({ value: status, label: t(`lead.status.${status}`) }))} onChange={(event) => setFilter(event.target.value as LeadStatus | '')} /></div>
+                    <div className="mt-6 flex flex-col gap-2 md:flex-row"><SearchInput aria-label={t('lead.search')} placeholder={t('lead.search')} value={search} onChange={(event) => setSearch(event.target.value)} /><Select aria-label={t('lead.allStatuses')} className="md:w-52" placeholder={t('lead.allStatuses')} value={filter} options={LEAD_STATUSES.map((status) => ({ value: status, label: t(`lead.status.${status}`) }))} onChange={(event) => setFilter(event.target.value as LeadStatus | '')} /></div>
                 </Panel>
                 {apiError && <ErrorBox>{t('lead.loadFailed', { message: errorMessage(apiError, t('common.somethingWrong')) })}</ErrorBox>}
                 <div className="overflow-x-auto pb-2"><div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:min-w-[1040px]">

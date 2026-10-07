@@ -1,6 +1,6 @@
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { ErrorBox, Input, Pagination, Panel } from '@/shared/ui'
+import { ErrorBox, Pagination, Panel, SearchInput } from '@/shared/ui'
 import { OrganizationTable } from './OrganizationTable'
 import { useOrganizations } from '../hooks/useOrganizations'
 import type { OrganizationDto } from '@/shared/types'
@@ -33,7 +33,7 @@ export function OrganizationsPanel({
     return (
         <Panel>
             <div className="mb-3 max-w-xs">
-                <Input
+                <SearchInput
                     value={search}
                     onChange={(event) => onSearchChange(event.target.value)}
                     placeholder={t('organization.search')}

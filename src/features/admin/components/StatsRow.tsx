@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { useT } from '@/shared/i18n'
-import { cn } from '@/shared/lib'
-import { BookOpenIcon, FolderIcon, TeacherIcon, UsersIcon } from '@/shared/ui'
+import { BookOpenIcon, FolderIcon, StatCard, TeacherIcon, UsersIcon } from '@/shared/ui'
 import type { EntityConfig, EntityKey } from '../types'
 
 /**
@@ -34,28 +33,13 @@ export function StatsRow({ entities, counts }: StatsRowProps) {
     return (
         <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             {entities.map((entity) => (
-                <div
+                <StatCard
                     key={entity.key}
-                    className={cn(
-                        'flex items-center gap-4 rounded-2xl border border-border-base bg-surface-card/80 p-4 backdrop-blur-md sm:p-5',
-                        'shadow-[var(--shadow-card)] transition-transform duration-200 hover:-translate-y-0.5'
-                    )}
-                >
-                    <span
-                        className={cn(
-                            'hidden size-11 shrink-0 items-center justify-center rounded-xl sm:flex',
-                            ENTITY_ICON[entity.key].tone
-                        )}
-                    >
-                        {ENTITY_ICON[entity.key].icon}
-                    </span>
-                    <div className="min-w-0">
-                        <div className="truncate text-xs font-medium text-fg-muted">{t(entity.pluralKey)}</div>
-                        <div className="font-display text-2xl font-bold tracking-tight tabular-nums text-fg sm:text-3xl">
-                            {counts[entity.key] === null ? '—' : (counts[entity.key] ?? '···')}
-                        </div>
-                    </div>
-                </div>
+                    label={t(entity.pluralKey)}
+                    icon={ENTITY_ICON[entity.key].icon}
+                    tone={ENTITY_ICON[entity.key].tone}
+                    value={counts[entity.key] === null ? '—' : (counts[entity.key] ?? '···')}
+                />
             ))}
         </div>
     )
