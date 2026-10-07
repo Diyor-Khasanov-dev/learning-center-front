@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { useQueryClient } from '@tanstack/react-query'
 import { logout, refreshSession, toSession } from '@/features/auth/api/authApi'
 import { setTokenRefresher } from '@/shared/api'
+import { clearAllDrafts } from '@/shared/lib'
 import { AuthContext } from './auth-context'
 import type { Session } from '@/shared/types'
 
@@ -49,6 +50,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Keshda oldingi foydalanuvchining ma'lumotlari qoladi — shu
         // brauzerda keyin kirgan boshqa odam ularni bir lahza ko'rardi.
         queryClient.clear()
+        // Qoralamalarda ism va telefon bor — keyingi odamga qolmasin.
+        clearAllDrafts()
     }, [queryClient])
 
     useEffect(() => {

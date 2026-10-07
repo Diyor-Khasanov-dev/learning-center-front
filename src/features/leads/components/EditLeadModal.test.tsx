@@ -119,3 +119,21 @@ describe('EditLeadModal', () => {
         expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ phone: '+998901234567' }))
     })
 })
+
+describe('lead form drafts', () => {
+    it('keeps typed text after a refresh and drops it on cancel', async () => {
+        const onClose = vi.fn()
+        const first = renderWithProviders(<NewLeadModal token="fake-token" onClose={onClose} onSubmit={vi.fn()} />)
+        await userEvent.type(screen.getByLabelText(/F.I.Sh./i), 'Jasur')
+        first.unmount()
+
+        // Sahifa yangilangandek — oyna qaytadan ochiladi
+        renderWithProviders(<NewLeadModal token="fake-token" onClose={onClose} onSubmit={vi.fn()} />)
+        expect(screen.getByLabelText(/F.I.Sh./i)).toHaveValue('Jasur')
+        expect(screen.getByText('Oldingi qoralama tiklandi')).toBeInTheDocument()
+
+        await userEvent.click(screen.getByRole('button', { name: 'Bekor qilish' }))
+        expect(onClose).toHaveBeenCalled()
+        expect(localStorage.getItem('alia:draft:lead-new')).toBeNull()
+    })
+})

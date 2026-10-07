@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDraft } from '@/shared/hooks'
 import type { LeadCreateDto, LeadDto, LeadSource, LeadUpdateDto } from '@/shared/types'
 import { LEAD_SOURCES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
@@ -19,10 +20,14 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
     const courseOptions = useLeadCourseOptions(token)
 
     const isEdit = Boolean(lead)
-    const [fullName, setFullName] = useState(lead?.fullName ?? '')
-    const [phone, setPhone] = useState(lead?.phone ?? '')
-    const [source, setSource] = useState<LeadSource | ''>(lead?.source ?? '')
-    const [preferredCourse, setPreferredCourse] = useState(lead?.preferredCourse?.id ?? '')
+    const draft = useDraft(lead ? `lead-edit:${lead.id}` : 'lead-new', {
+        fullName: lead?.fullName ?? '',
+        phone: lead?.phone ?? '',
+        source: (lead?.source ?? '') as LeadSource | '',
+        preferredCourse: lead?.preferredCourse?.id ?? '',
+    })
+    const { fullName, phone, source, preferredCourse } = draft.value
+    const update = (patch: Partial<typeof draft.value>) => draft.setValue((current) => ({ ...current, ...patch }))
 
     // Xato faqat yuborishga urinilgandan keyin ko'rsatiladi — yozayotgan
     // paytda "noto'g'ri" deb turish bezovta qiladi.
@@ -37,6 +42,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
             setShowErrors(true)
             return
         }
+        draft.discard()
 
         const trimmedName = fullName.trim()
         const trimmedPhone = normalizePhone(phone)
@@ -67,9 +73,15 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
             eyebrow={isEdit ? t('lead.edit') : t('lead.newTitle')}
             title={isEdit ? t('lead.editTitle') : t('lead.newTitle')}
             onClose={onClose}
+            draft={draft}
             footer={
                 <>
-                    <Button onClick={onClose}>{t('common.cancel')}</Button>
+                    <Button
+                        onClick={() => {
+                            draft.discard()
+                            onClose()
+                        }}
+                    >{t('common.cancel')}</Button>
                     <Button variant="primary" onClick={handleSubmit} disabled={isPending}>
                         {t('common.save')}
                     </Button>
@@ -78,11 +90,11 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Field label={t('lead.fullName')}>
-                    <Input value={fullName} onChange={(event) => setFullName(event.target.value)} />
+                    <Input value={fullName} onChange={(event) => update({ fullName: event.target.value })} />
                     {showErrors && nameError && <ErrorBox>{t('lead.nameRequired')}</ErrorBox>}
                 </Field>
                 <Field label={t('lead.phone')}>
-                    <PhoneInput value={phone} onChange={setPhone} />
+                    <PhoneInput value={phone} onChange={(next) => update({ phone: next })} />
                     <p className="mt-1 text-xs text-fg-muted">{t('lead.phoneHint')}</p>
                     {showErrors && phoneError && <ErrorBox>{t('lead.phoneInvalid')}</ErrorBox>}
                 </Field>
@@ -91,7 +103,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
                         placeholder={t('lead.selectSource')}
                         value={source}
                         options={LEAD_SOURCES.map((src) => ({ value: src, label: t(`lead.source.${src}`) || src }))}
-                        onChange={(event) => setSource(event.target.value as LeadSource | '')}
+                        onChange={(event) => update({ source: event.target.value as LeadSource | '' })}
                     />
                 </Field>
                 <Field label={t('lead.preferredCourse')}>
@@ -99,7 +111,7 @@ export function LeadFormModal({ token, lead, isPending, onClose, onSubmit }: Lea
                         placeholder={t('lead.selectCourse')}
                         value={preferredCourse}
                         options={courseOptions.data ?? []}
-                        onChange={(event) => setPreferredCourse(event.target.value)}
+                        onChange={(event) => update({ preferredCourse: event.target.value })}
                     />
                 </Field>
             </form>

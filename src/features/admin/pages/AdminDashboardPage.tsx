@@ -265,6 +265,7 @@ export function AdminDashboardPage() {
                     mode={formModal.mode}
                     entityLabel={singular}
                     initialValues={formModal.values}
+                    draftKey={`entity:${activeTab}:${formModal.id ?? 'new'}`}
                     formConfig={formConfig}
                     fallbackColumns={columns}
                     teacherOptions={teacherOptions}

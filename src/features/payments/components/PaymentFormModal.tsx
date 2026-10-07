@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
+import { useDraft } from '@/shared/hooks'
 import { useT } from '@/shared/i18n'
 import { Button, Field, Input, Modal } from '@/shared/ui'
 import type { StudentDto, TransactionType } from '@/shared/types'
@@ -35,10 +36,15 @@ interface PaymentFormModalProps {
  */
 export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: PaymentFormModalProps) {
     const { t } = useT()
-    const [student, setStudent] = useState<StudentDto | null>(null)
-    const [pickedInvoiceId, setPickedInvoiceId] = useState('')
-    const [amount, setAmount] = useState('')
-    const [note, setNote] = useState('')
+    // Qoralama to'lov turi bo'yicha alohida: to'lov va qaytarish aralashmasin.
+    const draft = useDraft(`payment:${type}`, {
+        student: null as StudentDto | null,
+        pickedInvoiceId: '',
+        amount: '',
+        note: '',
+    })
+    const { student, pickedInvoiceId, amount, note } = draft.value
+    const update = (patch: Partial<typeof draft.value>) => draft.setValue((current) => ({ ...current, ...patch }))
     const { invoices, isLoading } = useStudentInvoices(token, student, type)
 
     // Foydalanuvchi o'zi tanlamaguncha — avtomatik tanlov. Holatga yozib
@@ -56,13 +62,13 @@ export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: P
         (!isRefund || note.trim() !== '')
 
     function selectStudent(next: StudentDto | null) {
-        setStudent(next)
-        setPickedInvoiceId('')
+        update({ student: next, pickedInvoiceId: '' })
     }
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         if (!isValid || student == null) return
+        draft.discard()
         onSubmit({ type, amount: parsedAmount, studentId: student.id, invoiceId, note })
     }
 
@@ -72,6 +78,7 @@ export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: P
             title={isRefund ? t('transaction.refundTitle') : t('transaction.newTitle')}
             onClose={onClose}
             maxWidth="max-w-2xl"
+            draft={draft}
         >
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* `Field` (ya'ni `<label>`) EMAS: label ichidagi tugma bosilib, o'rniga
@@ -93,26 +100,31 @@ export function PaymentFormModal({ token, type, isSaving, onSubmit, onClose }: P
                                 isLoading={isLoading}
                                 emptyText={isRefund ? t('transaction.noInvoices') : t('transaction.allPaid')}
                                 value={invoiceId}
-                                onChange={setPickedInvoiceId}
+                                onChange={(id) => update({ pickedInvoiceId: id })}
                             />
                         </div>
 
                         <Field label={t('invoice.amount')}>
-                            <AmountInput value={amount} suffix={t('transaction.currency')} onChange={setAmount} />
+                            <AmountInput value={amount} suffix={t('transaction.currency')} onChange={(next) => update({ amount: next })} />
                         </Field>
 
                         <Field label={isRefund ? t('transaction.reason') : t('transaction.note')}>
                             <Input
                                 value={note}
                                 placeholder={isRefund ? t('transaction.reasonPlaceholder') : undefined}
-                                onChange={(event) => setNote(event.target.value)}
+                                onChange={(event) => update({ note: event.target.value })}
                             />
                         </Field>
                     </>
                 )}
 
                 <div className="flex justify-end gap-2.5">
-                    <Button onClick={onClose}>{t('common.cancel')}</Button>
+                    <Button
+                        onClick={() => {
+                            draft.discard()
+                            onClose()
+                        }}
+                    >{t('common.cancel')}</Button>
                     <Button
                         type="submit"
                         variant={isRefund ? 'danger' : 'primary'}
