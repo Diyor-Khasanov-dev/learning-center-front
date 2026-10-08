@@ -2,7 +2,7 @@
 import type { LeadDto, LeadStatus } from '@/shared/types'
 import { LEAD_STATUSES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
-import { Badge, Button, Select } from '@/shared/ui'
+import { Badge, EditIcon, IconButton, Select, TrashIcon } from '@/shared/ui'
 
 export interface LeadCardProps {
     lead: LeadDto
@@ -51,31 +51,31 @@ export function LeadCard({
                         {lead.phone || t('lead.noPhone')}
                     </a>
                 </div>
-                <Button size="sm" onClick={() => onEdit(lead)}>
-                    {t('common.edit')}
-                </Button>
+                <div className="flex items-center gap-1">
+                    <IconButton label={t('common.edit')} onClick={() => onEdit(lead)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton label={t('common.delete')} tone="danger" onClick={() => onDelete(lead)}>
+                        <TrashIcon />
+                    </IconButton>
+                </div>
             </div>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-                {lead.source && (
-                    <Badge tone="slate">
-                        {t(`lead.source.${lead.source}`)}
-                    </Badge>
-                )}
-                {lead.preferredCourse?.name && (
-                    <Badge tone="purple">
-                        {lead.preferredCourse.name}
-                    </Badge>
-                )}
-            </div>
-            {lead.callAt && (
-                <p className="mt-3 rounded-lg bg-warning-soft px-2.5 py-2 text-xs font-medium text-warning-fg">
-                    {t('lead.callAt')}: {formatDate(lead.callAt)}
-                </p>
-            )}
-            <div className="mt-3 flex items-center gap-2 border-t border-border-base pt-3">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
+                    {lead.source && (
+                        <Badge tone="slate">
+                            {t(`lead.source.${lead.source}`)}
+                        </Badge>
+                    )}
+                    {lead.preferredCourse?.name && (
+                        <Badge tone="purple">
+                            {lead.preferredCourse.name}
+                        </Badge>
+                    )}
+                </div>
                 <Select
                     aria-label={t('lead.changeStatus')}
-                    className="text-xs"
+                    className="w-auto text-xs"
                     value={status}
                     options={LEAD_STATUSES.map((value) => ({
                         value,
@@ -85,14 +85,12 @@ export function LeadCard({
                         onStatusChange(lead, event.target.value as LeadStatus)
                     }
                 />
-                <button
-                    type="button"
-                    className="ml-auto text-xs font-medium text-danger-fg hover:underline"
-                    onClick={() => onDelete(lead)}
-                >
-                    {t('common.delete')}
-                </button>
             </div>
+            {lead.callAt && (
+                <p className="mt-3 rounded-lg bg-warning-soft px-2.5 py-2 text-xs font-medium text-warning-fg">
+                    {t('lead.callAt')}: {formatDate(lead.callAt)}
+                </p>
+            )}
         </article>
     )
 }
