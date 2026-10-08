@@ -7,6 +7,8 @@ export const auth: Record<AuthKeys, string> = {
     'auth.subtitle': 'Продолжите с того места, где остановились.',
     'auth.phone': 'Номер телефона',
     'auth.password': 'Пароль',
+    'auth.showPassword': 'Показать пароль',
+    'auth.hidePassword': 'Скрыть пароль',
     'auth.continue': 'Продолжить',
     'auth.chooseOrganization': 'Вы учитесь в нескольких центрах. В какой из них войти?',
     'auth.organization': 'Организация',

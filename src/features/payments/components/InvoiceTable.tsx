@@ -30,7 +30,7 @@ export function InvoiceTable({ invoices, isLoading, onDelete, onPrint }: Invoice
             header: t('invoice.student'),
             // Ism javobning o'zida keladi. Ilgari u yo'q edi va jadval uni
             // topish uchun butun o'quvchilar ro'yxatini yuklardi.
-            render: (invoice) => invoice.enrollmentDto?.studentFullName ?? '—',
+            render: (invoice) => invoice.enrollmentDto?.fullName ?? '—',
         },
         {
             key: 'amount',

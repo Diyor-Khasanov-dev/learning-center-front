@@ -1,7 +1,7 @@
-import type { InvoiceDto, TransactionType } from '@/shared/types'
+import type { SimpleInvoiceDto, TransactionType } from '@/shared/types'
 
 /** Yangi hisob birinchi: `issuedAt` "yyyy-MM-ddTHH:mm:ss" — satr solishtirish yetadi. */
-export function sortInvoicesNewestFirst(invoices: InvoiceDto[]): InvoiceDto[] {
+export function sortInvoicesNewestFirst<T extends SimpleInvoiceDto>(invoices: T[]): T[] {
     return [...invoices].sort((a, b) => (b.issuedAt ?? '').localeCompare(a.issuedAt ?? ''))
 }
 
@@ -14,7 +14,7 @@ export function sortInvoicesNewestFirst(invoices: InvoiceDto[]): InvoiceDto[] {
  * backend aytadi. Qaytarishda esa pul odatda to'langan hisobdan qaytadi,
  * shuning uchun shunchaki eng so'nggisi.
  */
-export function defaultInvoiceId(invoices: InvoiceDto[], type: TransactionType): string {
+export function defaultInvoiceId(invoices: SimpleInvoiceDto[], type: TransactionType): string {
     const sorted = sortInvoicesNewestFirst(invoices)
     if (type === 'PAID') {
         const unpaid = sorted.find((invoice) => invoice.paymentStatus !== 'PAID')

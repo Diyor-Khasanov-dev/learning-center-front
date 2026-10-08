@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError, errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Field, Input, Select } from '@/shared/ui'
+import { normalizePhone } from '@/shared/lib'
+import { Button, ErrorBox, Field, PasswordInput, PhoneInput, Select } from '@/shared/ui'
 import { useLogin } from '../hooks/useLogin'
 import type { Session } from '@/shared/types'
 
@@ -21,7 +22,7 @@ export function LoginForm({ onLoggedIn }: { onLoggedIn: (session: Session) => vo
             submitOrganization(organizationId)
             return
         }
-        submitCredentials({ phone, password, rememberMe })
+        submitCredentials({ phone: normalizePhone(phone), password, rememberMe })
     }
 
     // Xato turi bo'yicha xabar: `403` — telefon-parol to'g'ri, lekin odam
@@ -72,19 +73,11 @@ export function LoginForm({ onLoggedIn }: { onLoggedIn: (session: Session) => vo
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Field label={t('auth.phone')}>
-                <Input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    placeholder="+998 90 123 45 67"
-                    autoComplete="tel"
-                />
+                <PhoneInput required value={phone} onChange={setPhone} />
             </Field>
 
             <Field label={t('auth.password')}>
-                <Input
-                    type="password"
+                <PasswordInput
                     required
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}

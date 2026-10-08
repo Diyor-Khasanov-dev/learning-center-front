@@ -10,6 +10,8 @@ export const auth = {
     'auth.subtitle': "To'xtagan joyingizdan davom eting.",
     'auth.phone': 'Telefon raqami',
     'auth.password': 'Parol',
+    'auth.showPassword': 'Parolni ko‘rsatish',
+    'auth.hidePassword': 'Parolni yashirish',
     'auth.continue': 'Davom etish',
     'auth.chooseOrganization': 'Siz bir nechta o‘quv markazida o‘qiysiz. Qaysi biriga kirmoqchisiz?',
     'auth.organization': 'Tashkilot',

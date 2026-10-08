@@ -56,6 +56,8 @@ export const admin = {
     'field.branch': 'Filial',
     'field.days': 'Kunlar',
     'field.startTime': 'Boshlanish vaqti',
+    'field.hour': 'soat',
+    'field.minute': 'daqiqa',
     'field.endTime': 'Tugash vaqti',
     'field.status': 'Status',
     'field.select': '— Tanlang —',

@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { useT } from '@/shared/i18n'
 import type { TranslationKey } from '@/shared/i18n'
 import { cn } from '@/shared/lib'
+import { BookOpenIcon, FolderIcon, LayersIcon, TargetIcon, TeacherIcon, UsersIcon, WalletIcon } from '@/shared/ui'
 import type { EntityConfig, EntityKey } from '../types'
 
 /** Sidebarning pastki guruhidagi havola — tab emas, marshrutga o'tadi. */
@@ -32,54 +34,87 @@ export function AdminSidebar({ entities, activeTab, onTabChange, links }: AdminS
     const { t } = useT()
 
     return (
-        <aside className="hidden w-55 shrink-0 flex-col border-r border-white/10 bg-sidebar py-6 text-sidebar-fg shadow-[22px_0_60px_-42px_var(--fg)] lg:flex">
-            <div className="mb-3 flex items-center gap-2 border-b border-white/10 px-5 pb-6">
-                <span className="rounded-sm bg-brand px-1.5 py-0.5 font-mono text-xs tracking-[0.1em] text-brand-fg">
+        <aside className="hidden w-60 shrink-0 flex-col border-r border-white/8 bg-sidebar/95 px-3 py-6 text-sidebar-fg backdrop-blur-md lg:flex">
+            <div className="mb-6 flex items-center gap-2.5 px-3">
+                <span className="rounded-md bg-brand px-1.5 py-0.5 font-mono text-xs tracking-[0.1em] text-brand-fg">
                     ALIA
                 </span>
-                <span className="font-display text-base font-semibold">A.L.I.A.</span>
+                <span className="font-display text-base font-semibold tracking-tight">A.L.I.A.</span>
             </div>
 
-            <nav className="flex flex-1 flex-col">
+            <nav className="flex flex-1 flex-col gap-1">
                 {entities.map((entity) => (
-                    <button
+                    <NavItem
                         key={entity.key}
-                        type="button"
+                        icon={NAV_ICON[entity.key]}
+                        label={t(entity.pluralKey)}
+                        isActive={activeTab === entity.key}
                         onClick={() => onTabChange(entity.key)}
-                        className={cn(
-                            'cursor-pointer border-l-3 px-5 py-3 text-left text-sm transition-colors',
-                            activeTab === entity.key
-                                ? 'border-l-brand bg-brand/14 font-medium text-sidebar-fg shadow-[inset_14px_0_28px_-28px_var(--brand)]'
-                                : 'border-l-transparent text-sidebar-fg/65 hover:bg-sidebar-fg/8 hover:text-sidebar-fg'
-                        )}
-                    >
-                        {t(entity.pluralKey)}
-                    </button>
+                    />
                 ))}
 
                 {links.length > 0 && (
                     <>
-                        <div className="mx-5 my-3 border-t border-white/10" />
+                        <div className="mx-3 my-3 border-t border-white/8" />
                         {links.map((link) => (
-                            <button
+                            <NavItem
                                 key={link.key}
-                                type="button"
+                                icon={NAV_ICON[link.key]}
+                                label={t(link.labelKey)}
+                                isActive={false}
                                 onClick={link.onClick}
-                                className="cursor-pointer border-l-3 border-l-transparent px-5 py-3 text-left text-sm text-sidebar-fg/65 transition-colors hover:bg-sidebar-fg/8 hover:text-sidebar-fg"
-                            >
-                                {t(link.labelKey)}
-                            </button>
+                            />
                         ))}
                     </>
                 )}
             </nav>
 
-            <div className="border-t border-white/10 px-5 pt-4">
-                <div className="font-mono text-[0.68rem] tracking-[0.06em] text-sidebar-fg/45 uppercase">
+            <div className="border-t border-white/8 px-3 pt-4">
+                <div className="text-[0.68rem] font-medium tracking-[0.08em] text-sidebar-fg/45 uppercase">
                     {t('admin.role')}
                 </div>
             </div>
         </aside>
+    )
+}
+
+/** Belgisi bo'lmagan yangi bo'lim qo'shilsa, menyu buzilmaydi — faqat belgisiz chiqadi. */
+const NAV_ICON: Record<string, ReactNode> = {
+    students: <UsersIcon />,
+    teachers: <TeacherIcon />,
+    groups: <FolderIcon />,
+    lessons: <BookOpenIcon />,
+    'group-levels': <LayersIcon />,
+    leads: <TargetIcon />,
+    payments: <WalletIcon />,
+}
+
+function NavItem({
+    icon,
+    label,
+    isActive,
+    onClick,
+}: {
+    icon?: ReactNode
+    label: string
+    isActive: boolean
+    onClick: () => void
+}) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            aria-current={isActive ? 'page' : undefined}
+            className={cn(
+                'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors',
+                isActive
+                    ? 'bg-linear-to-r from-brand/25 to-brand/5 font-medium text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]'
+                    : 'text-sidebar-fg/60 hover:bg-white/5 hover:text-sidebar-fg'
+            )}
+        >
+            <span className={cn('shrink-0', isActive ? 'text-accent-fg' : 'text-sidebar-fg/50')}>{icon}</span>
+            {label}
+        </button>
     )
 }
 

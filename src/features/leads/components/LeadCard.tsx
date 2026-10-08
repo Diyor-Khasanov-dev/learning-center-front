@@ -2,7 +2,8 @@
 import type { LeadDto, LeadStatus } from '@/shared/types'
 import { LEAD_STATUSES } from '@/shared/types'
 import { useT } from '@/shared/i18n'
-import { Badge, EditIcon, IconButton, Select, TrashIcon } from '@/shared/ui'
+import { formatCallAt } from '../lib/schedule'
+import { Badge, Button, Select } from '@/shared/ui'
 
 export interface LeadCardProps {
     lead: LeadDto
@@ -12,12 +13,6 @@ export interface LeadCardProps {
     onDelete: (lead: LeadDto) => void
     onDragStart: (id: string) => void
     onDragEnd: () => void
-}
-
-function formatDate(value?: string | null) {
-    if (!value) return null
-    const date = new Date(value)
-    return Number.isNaN(date.getTime()) ? value : date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 // Lid kartochkasining alohida komponent shaklida chiqarilishi — kodni o'qilishi va qo'llab-quvvatlanishini osonlashtiradi
@@ -30,7 +25,7 @@ export function LeadCard({
     onDragStart,
     onDragEnd,
 }: LeadCardProps) {
-    const { t } = useT()
+    const { t, locale } = useT()
 
     return (
         <article
@@ -60,19 +55,12 @@ export function LeadCard({
                     </IconButton>
                 </div>
             </div>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-1.5">
-                <div className="flex flex-wrap gap-1.5">
-                    {lead.source && (
-                        <Badge tone="slate">
-                            {t(`lead.source.${lead.source}`)}
-                        </Badge>
-                    )}
-                    {lead.preferredCourse?.name && (
-                        <Badge tone="purple">
-                            {lead.preferredCourse.name}
-                        </Badge>
-                    )}
-                </div>
+            {lead.callAt && (
+                <p className="mt-3 rounded-lg bg-warning-soft px-2.5 py-2 text-xs font-medium text-warning-fg">
+                    {t('lead.callAt')}: {formatCallAt(lead.callAt, new Date(), locale, { today: t('lead.today'), tomorrow: t('lead.tomorrow') })}
+                </p>
+            )}
+            <div className="mt-3 flex items-center gap-2 border-t border-border-base pt-3">
                 <Select
                     aria-label={t('lead.changeStatus')}
                     className="w-auto text-xs"

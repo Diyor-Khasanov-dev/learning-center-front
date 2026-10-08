@@ -53,6 +53,8 @@ export const admin: Record<AdminKeys, string> = {
     'field.branch': 'Branch',
     'field.days': 'Days',
     'field.startTime': 'Start time',
+    'field.hour': 'hour',
+    'field.minute': 'minute',
     'field.endTime': 'End time',
     'field.status': 'Status',
     'field.select': '— Select —',

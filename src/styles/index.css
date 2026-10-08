@@ -14,118 +14,133 @@
  * Shundan keyin `bg-surface`, `text-fg-muted` kabi utility'lar o'zi paydo bo'ladi.
  */
 :root {
-    /* Yuzalar: sahifa foni lavanda tovlanadi, karta esa toza oq */
-    --surface: #f6f5fd;
+    /*
+     * 2026-10 UI yangilanishi: bitta asosiy rang (indigo) + bitta yordamchi
+     * (osmon ko'ki). Ilgari binafsha, pushti, yashil, to'q sariq bir vaqtda
+     * ishlatilib, dizayn "arzon" ko'rinardi. Fon — sof oq/qora emas, slate.
+     */
+    --surface: #f8fafc;
     --surface-card: #ffffff;
-    --surface-muted: #eeecfb;
-    --surface-hover: #f1effc;
+    --surface-muted: #f1f5f9;
+    --surface-hover: #f1f5f9;
 
-    --border: #e6e3f5;
-    --border-strong: #c9c3ea;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
 
-    /* Matn: asosiy → ikkilamchi → eng xira (label, eyebrow) */
-    --fg: #0f1424;
-    --fg-muted: #5a6178;
-    --fg-faint: #8b90a6;
+    /* Matn: asosiy → ikkilamchi → eng xira (label, jadval sarlavhasi) */
+    --fg: #0f172a;
+    --fg-muted: #475569;
+    --fg-faint: #94a3b8;
     --fg-inverted: #ffffff;
 
-    /* Brend — binafsha; CTA va ALIA belgisi shu rangda */
-    --brand: #7c3aed;
+    /* Brend — indigo; CTA va ALIA belgisi shu rangda */
+    --brand: #4f46e5;
     --brand-fg: #ffffff;
 
-    --accent: #6d28d9;
-    --accent-fg: #6d28d9;
-    --accent-soft: #ede9fe;
+    --accent: #4f46e5;
+    --accent-fg: #4338ca;
+    --accent-soft: #eef2ff;
 
     --success: #059669;
     --success-fg: #047857;
-    --success-soft: #d1fae5;
+    --success-soft: #dcfce7;
 
     --danger: #dc2626;
     --danger-fg: #b91c1c;
     --danger-soft: #fee2e2;
 
+    /* `warning` o'zi ilgari yo'q edi — `border-warning` rangsiz qolardi */
+    --warning: #f59e0b;
     --warning-fg: #b45309;
     --warning-soft: #fef3c7;
 
-    --neutral-soft: #eef0f6;
+    --neutral-soft: #f1f5f9;
 
-    --purple: #8b5cf6;
-    --purple-fg: #7c3aed;
-    --purple-soft: #ede9fe;
-    --magenta: #d946ef;
+    /* `purple` endi indigo'ning to'qroq tusi — gradient bir oiladan bo'lsin */
+    --purple: #4338ca;
+    --purple-fg: #4338ca;
+    --purple-soft: #eef2ff;
+    /* Yordamchi rang — osmon ko'ki */
+    --magenta: #0ea5e9;
 
-    /* Admin panelining chap ustuni — ikkala temada ham to'q */
-    --sidebar: #141123;
-    --sidebar-fg: #f4f1ff;
+    /* Chap menyu — ikkala temada ham to'q slate */
+    --sidebar: #0f172a;
+    --sidebar-fg: #e2e8f0;
 
-    /* Statistika kartalari va status nishonlari uchun qo'shimcha ranglar */
     --sage-fg: #047857;
-    --sage-soft: #d1fae5;
-    --amber: #f97316;
-    --amber-fg: #c2410c;
-    --amber-soft: #ffedd5;
-    --steel: #0891b2;
-    --steel-fg: #0e7490;
-    --steel-soft: #cffafe;
-    --slate-fg: #64748b;
-    --slate-soft: #e9edf5;
+    --sage-soft: #dcfce7;
+    --amber: #f59e0b;
+    --amber-fg: #b45309;
+    --amber-soft: #fef3c7;
+    --steel: #0ea5e9;
+    --steel-fg: #0369a1;
+    --steel-soft: #e0f2fe;
+    --slate-fg: #475569;
+    --slate-soft: #f1f5f9;
+
+    /* Kartalar soyasi — yumshoq, ko'p qatlamli; to'q rangli "dog'" emas */
+    --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.12);
 }
 
 .dark {
-    /* Deyarli qora, binafsha tovlanishi bilan — A.L.I.A. ko'rinishi */
-    --surface: #08070f;
-    --surface-card: #12111d;
-    --surface-muted: #191828;
-    --surface-hover: #1d1c2e;
+    /* Sof qora emas — chuqurlik beruvchi slate-navy */
+    --surface: #0b1120;
+    --surface-card: #111a2e;
+    --surface-muted: #162036;
+    /* Qator hover — oq 5% (shisha ustida yumshoq yorishish) */
+    --surface-hover: #ffffff0d;
 
-    --border: #262438;
-    --border-strong: #3a3752;
+    /* Ingichka, deyarli ko'rinmas chegaralar — "shisha" qirrasi */
+    --border: #ffffff12;
+    --border-strong: #ffffff24;
 
-    --fg: #f0eefb;
-    --fg-muted: #a5a2bd;
-    --fg-faint: #7c7996;
-    --fg-inverted: #08070f;
+    --fg: #f1f5f9;
+    --fg-muted: #94a3b8;
+    --fg-faint: #64748b;
+    --fg-inverted: #0b1120;
 
-    --brand: #8b5cf6;
+    --brand: #6366f1;
     --brand-fg: #ffffff;
 
     /* To'q fonda to'yingan ranglar "yonib" ketadi — ochroq variant olinadi */
-    --accent: #a78bfa;
-    --accent-fg: #c4b5fd;
-    --accent-soft: #241f3d;
+    --accent: #818cf8;
+    --accent-fg: #a5b4fc;
+    --accent-soft: #6366f126;
 
     --success: #10b981;
     --success-fg: #34d399;
-    --success-soft: #0d2b22;
+    --success-soft: #10b98126;
 
     --danger: #ef4444;
     --danger-fg: #f87171;
-    --danger-soft: #2d1517;
+    --danger-soft: #ef444426;
 
+    --warning: #fbbf24;
     --warning-fg: #fbbf24;
-    --warning-soft: #2c2210;
+    --warning-soft: #f59e0b26;
 
-    --neutral-soft: #1e1d2e;
+    --neutral-soft: #ffffff0d;
 
-    --purple: #a78bfa;
-    --purple-fg: #c4b5fd;
-    --purple-soft: #241f3d;
-    --magenta: #e879f9;
+    --purple: #4f46e5;
+    --purple-fg: #a5b4fc;
+    --purple-soft: #6366f126;
+    --magenta: #38bdf8;
 
-    --sidebar: #08070f;
-    --sidebar-fg: #f4f1ff;
+    --sidebar: #0b1120;
+    --sidebar-fg: #e2e8f0;
 
     --sage-fg: #34d399;
-    --sage-soft: #0d2b22;
-    --amber: #fb923c;
-    --amber-fg: #fdba74;
-    --amber-soft: #2d1e10;
-    --steel: #22d3ee;
-    --steel-fg: #67e8f9;
-    --steel-soft: #0c2730;
-    --slate-fg: #9ca3b8;
-    --slate-soft: #1e1d2e;
+    --sage-soft: #10b98126;
+    --amber: #fbbf24;
+    --amber-fg: #fcd34d;
+    --amber-soft: #f59e0b26;
+    --steel: #38bdf8;
+    --steel-fg: #7dd3fc;
+    --steel-soft: #0ea5e926;
+    --slate-fg: #94a3b8;
+    --slate-soft: #ffffff0d;
+
+    --shadow-card: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 12px 32px -16px rgb(0 0 0 / 0.6);
 }
 
 /*
@@ -162,6 +177,7 @@
     --color-danger-fg: var(--danger-fg);
     --color-danger-soft: var(--danger-soft);
 
+    --color-warning: var(--warning);
     --color-warning-fg: var(--warning-fg);
     --color-warning-soft: var(--warning-soft);
 

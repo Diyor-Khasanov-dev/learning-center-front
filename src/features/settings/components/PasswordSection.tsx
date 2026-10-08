@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Field, Input } from '@/shared/ui'
+import { Button, ErrorBox, Field, PasswordInput } from '@/shared/ui'
 import { useChangePassword } from '../hooks/useChangePassword'
 import { validatePasswordChange, type PasswordIssue } from '../lib/validatePassword'
 import { SettingsSection } from './SettingsSection'
@@ -41,24 +41,21 @@ export function PasswordSection() {
         <SettingsSection title={t('settings.password')} description={t('settings.passwordHint')}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
                 <Field label={t('settings.currentPassword')}>
-                    <Input
-                        type="password"
+                    <PasswordInput
                         autoComplete="current-password"
                         value={current}
                         onChange={(event) => setCurrent(event.target.value)}
                     />
                 </Field>
                 <Field label={t('settings.newPassword')}>
-                    <Input
-                        type="password"
+                    <PasswordInput
                         autoComplete="new-password"
                         value={next}
                         onChange={(event) => setNext(event.target.value)}
                     />
                 </Field>
                 <Field label={t('settings.repeatPassword')}>
-                    <Input
-                        type="password"
+                    <PasswordInput
                         autoComplete="new-password"
                         value={repeat}
                         onChange={(event) => setRepeat(event.target.value)}

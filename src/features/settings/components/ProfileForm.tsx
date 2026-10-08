@@ -2,7 +2,8 @@ import { useState, type FormEvent } from 'react'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Field, Input } from '@/shared/ui'
+import { normalizePhone } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, PhoneInput } from '@/shared/ui'
 import { useUpdateProfile } from '../hooks/useUpdateProfile'
 import type { UserDto } from '@/shared/types'
 
@@ -26,7 +27,7 @@ export function ProfileForm({ user }: { user: UserDto }) {
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        save.mutate({ fullName, phone, birthDate })
+        save.mutate({ fullName, phone: normalizePhone(phone), birthDate })
     }
 
     return (
@@ -35,7 +36,7 @@ export function ProfileForm({ user }: { user: UserDto }) {
                 <Input value={fullName} onChange={(event) => setFullName(event.target.value)} />
             </Field>
             <Field label={t('field.phone')}>
-                <Input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} />
+                <PhoneInput value={phone} onChange={setPhone} />
             </Field>
             <Field label={t('field.birthDate')}>
                 <Input

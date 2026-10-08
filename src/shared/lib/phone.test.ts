@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatPhone, isValidPhone, normalizePhone } from './phone'
+import { formatPhone, formatUzPhone, isCompleteUzPhone, isValidPhone, normalizePhone } from './phone'
 
 describe('normalizePhone', () => {
     it('bo‘shliq, chiziqcha va qavslarni olib tashlaydi', () => {
@@ -47,3 +47,43 @@ describe('formatPhone', () => {
         expect(formatPhone('+9989012345678888')).toBe('+998 90 123 45 67')
     })
 })
+
+describe('formatUzPhone', () => {
+    it('always keeps the +998 prefix', () => {
+        expect(formatUzPhone('')).toBe('+998 ')
+        expect(formatUzPhone('+99')).toBe('+998 ')
+    })
+
+    it('formats pasted local and full numbers', () => {
+        expect(formatUzPhone('901234567')).toBe('+998 90 123 45 67')
+        expect(formatUzPhone('+998 (90) 123-45-67')).toBe('+998 90 123 45 67')
+    })
+
+    // Login maydoniga cheksiz raqam yozib bo'lardi.
+    // Maydonda "+998 " turgan holda to'liq raqam joylansa ikkilanmasin.
+    it('does not double the prefix when a full number is pasted', () => {
+        expect(formatUzPhone('+998 +998 90 123 45 67')).toBe('+998 90 123 45 67')
+        // Mahalliy raqam ham 99 bilan boshlanishi mumkin (Uzmobile).
+        expect(formatUzPhone('+998 998123456')).toBe('+998 99 812 34 56')
+    })
+
+    it('caps the number at nine local digits', () => {
+        expect(formatUzPhone('+99833333333333333333333')).toBe('+998 33 333 33 33')
+    })
+})
+
+describe('isCompleteUzPhone', () => {
+    it('accepts only a full Uzbek number', () => {
+        expect(isCompleteUzPhone('+998 90 123 45 67')).toBe(true)
+        expect(isCompleteUzPhone('+998 90 123')).toBe(false)
+        expect(isCompleteUzPhone('+998 ')).toBe(false)
+    })
+})
+
+describe('normalizePhone prefix only', () => {
+    // Tegilmagan ixtiyoriy maydon serverga "+998" bo'lib ketmasin.
+    it('treats a bare +998 as empty', () => {
+        expect(normalizePhone('+998 ')).toBe('')
+    })
+})
+

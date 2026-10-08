@@ -1,12 +1,15 @@
-import { useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
 import { useSession } from '@/app/providers/useAuth'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { formatHeader, formatPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
-import { Button, ErrorBox, Field, Input, Modal, Select, type SelectOption } from '@/shared/ui'
+import { formatHeader, normalizePhone } from '@/shared/lib'
+import { Button, ErrorBox, Field, Input, Modal, PhoneInput, Select, type SelectOption } from '@/shared/ui'
+import { useEntityDraft } from '../hooks/useEntityDraft'
 import { useGroupTeacherOptions } from '../hooks/useGroupTeacherOptions'
 import { usePhoneLookup } from '../hooks/usePhoneLookup'
+import { NoFieldsModal } from './NoFieldsModal'
 import { PhoneLookupHints } from './PhoneLookupHints'
+import { TimeSelect } from './TimeSelect'
 import type { EntityFormConfig, FormField, FormValues, ModalMode } from '../types'
 
 interface EntityFormModalProps {
@@ -14,6 +17,8 @@ interface EntityFormModalProps {
     /** Sarlavhada ko'rinadigan bo'lim nomi (birlikda, tarjima qilingan). */
     entityLabel: string
     initialValues: FormValues
+    /** Qoralama kaliti — bo'lim va qator bo'yicha (`entity:students:new`). */
+    draftKey: string
     formConfig?: EntityFormConfig
     /** Konfiguratsiyasiz rejimda maydonlar shu kalitlardan yasaladi. */
     fallbackColumns: string[]
@@ -36,6 +41,7 @@ export function EntityFormModal({
     mode,
     entityLabel,
     initialValues,
+    draftKey,
     formConfig,
     fallbackColumns,
     teacherOptions,
@@ -48,13 +54,8 @@ export function EntityFormModal({
 }: EntityFormModalProps) {
     const { t } = useT()
     const session = useSession()
-    const [values, setValues] = useState<FormValues>(() =>
-        // Yangi odam qo'shayotganda har safar "+998" ni qo'lda terish shart
-        // emas. Chet el raqami bo'lsa uni o'chirib yozaveradi.
-        mode === 'create' && formConfig?.lookupByPhone && !initialValues.phone
-            ? { ...initialValues, phone: UZ_PHONE_PREFIX }
-            : initialValues
-    )
+    const draft = useEntityDraft(draftKey, mode, formConfig, initialValues)
+    const { value: values, setValue: setValues } = draft
 
     /*
      * Telefon bo'yicha qidiruv — faqat yangi odam qo'shayotganda.
@@ -106,8 +107,15 @@ export function EntityFormModal({
         setValues((current) => ({ ...current, [key]: value }))
     }
 
+    // "Bekor qilish" — ongli tanlov: qoralama so'ramasdan o'chadi.
+    const cancel = () => {
+        draft.discard()
+        onClose()
+    }
+
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        draft.discard()
         // Bo'shliqlar faqat ko'rinish uchun edi: serverga tozalangan
         // ko'rinishda ketmasa, "+998 90 …" va "+99890…" ikki xil raqam
         // bo'lib qoladi va yagonalik sharti ishlamaydi.
@@ -122,20 +130,11 @@ export function EntityFormModal({
     }
 
     if (!formConfig && fallbackColumns.length === 0) {
-        return (
-            <Modal
-                eyebrow={eyebrow}
-                title={title}
-                onClose={onClose}
-                footer={<Button onClick={onClose}>{t('common.close')}</Button>}
-            >
-                <p className="text-sm leading-relaxed text-fg-muted">{t('admin.noFields')}</p>
-            </Modal>
-        )
+        return <NoFieldsModal eyebrow={eyebrow} title={title} onClose={onClose} />
     }
 
     return (
-        <Modal eyebrow={eyebrow} title={title} onClose={onClose}>
+        <Modal eyebrow={eyebrow} title={title} onClose={onClose} draft={draft}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
                 {formConfig
                     ? fields
@@ -175,7 +174,7 @@ export function EntityFormModal({
                 {error != null && <ErrorBox>{errorMessage(error)}</ErrorBox>}
 
                 <div className="mt-1 flex justify-end gap-2.5">
-                    <Button onClick={onClose}>{t('common.cancel')}</Button>
+                    <Button onClick={cancel}>{t('common.cancel')}</Button>
                     <Button type="submit" variant="primary" disabled={isSaving}>
                         {isSaving ? t('common.saving') : t('common.save')}
                     </Button>
@@ -204,11 +203,30 @@ export function EntityFormModal({
             )
         }
 
+        if (field.type === 'time') {
+            return (
+                <TimeSelect
+                    label={t(field.labelKey)}
+                    value={(values[field.key] as string | undefined) ?? ''}
+                    onChange={(next) => setValue(field.key, next)}
+                />
+            )
+        }
+
         return renderTextInput(field.key, field.type)
     }
 
     function renderTextInput(key: string, type: string = 'text') {
         const raw = values[key]
+        if (type === 'tel') {
+            return (
+                <PhoneInput
+                    disabled={isLookup && found !== null && decision === null && key !== 'phone'}
+                    value={typeof raw === 'string' ? raw : ''}
+                    onChange={(next) => setValue(key, next)}
+                />
+            )
+        }
         return (
             <Input
                 type={type}
@@ -216,16 +234,12 @@ export function EntityFormModal({
                 // aks holda administrator yozib bo'lgach ustiga boshqa ism
                 // tushadi va nima o'zgarganini sezmaydi.
                 disabled={isLookup && found !== null && decision === null && key !== 'phone'}
-                // `time` inputi 24 soatlik ko'rinishda chiqsin
-                lang={type === 'time' ? 'ru-RU' : undefined}
                 value={
                     typeof raw === 'object' && raw !== null
                         ? JSON.stringify(raw)
                         : ((raw as string | number | undefined) ?? '')
                 }
-                onChange={(event) =>
-                    setValue(key, type === 'tel' ? formatPhone(event.target.value) : event.target.value)
-                }
+                onChange={(event) => setValue(key, event.target.value)}
             />
         )
     }

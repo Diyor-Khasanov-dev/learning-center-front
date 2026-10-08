@@ -58,7 +58,8 @@ export const queryKeys = {
 
     invoices: (params: Record<string, unknown>) => ['invoice', 'list', params] as const,
     /** `invoice` prefiksi bilan — to'lov yozilgach `['invoice']` invalidatsiyasi buni ham yangilaydi. */
-    studentInvoices: (studentId: string) => ['invoice', 'byStudent', studentId] as const,
+    /** `type` ham kalitda: to'lov va qaytarish hisoblarni turli endpointdan oladi. */
+    studentInvoices: (studentId: string, type: string) => ['invoice', 'byStudent', studentId, type] as const,
     studentSearch: (search: string) => ['student', 'search', search] as const,
     transactions: (params: Record<string, unknown>) => ['transaction', 'list', params] as const,
 

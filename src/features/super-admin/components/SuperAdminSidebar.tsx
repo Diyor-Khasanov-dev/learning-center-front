@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { useT } from '@/shared/i18n'
 import type { TranslationKey } from '@/shared/i18n'
 import { cn } from '@/shared/lib'
+import { BuildingIcon, ChartIcon, LayersIcon, ShieldIcon, TeacherIcon, UsersIcon } from '@/shared/ui'
 
 export type SuperAdminSection =
     | 'analytics'
@@ -13,6 +15,7 @@ export type SuperAdminSection =
 interface SectionItem {
     key: SuperAdminSection
     labelKey: TranslationKey
+    icon: ReactNode
 }
 
 /**
@@ -23,15 +26,15 @@ interface SectionItem {
  * ochadi.
  */
 const PEOPLE: SectionItem[] = [
-    { key: 'analytics', labelKey: 'superAdmin.section.analytics' },
-    { key: 'students', labelKey: 'superAdmin.section.students' },
-    { key: 'teachers', labelKey: 'superAdmin.section.teachers' },
-    { key: 'administrators', labelKey: 'superAdmin.section.administrators' },
+    { key: 'analytics', labelKey: 'superAdmin.section.analytics', icon: <ChartIcon /> },
+    { key: 'students', labelKey: 'superAdmin.section.students', icon: <UsersIcon /> },
+    { key: 'teachers', labelKey: 'superAdmin.section.teachers', icon: <TeacherIcon /> },
+    { key: 'administrators', labelKey: 'superAdmin.section.administrators', icon: <ShieldIcon /> },
 ]
 
 const SETTINGS: SectionItem[] = [
-    { key: 'branches', labelKey: 'superAdmin.section.branches' },
-    { key: 'organization', labelKey: 'superAdmin.section.organization' },
+    { key: 'branches', labelKey: 'superAdmin.section.branches', icon: <LayersIcon /> },
+    { key: 'organization', labelKey: 'superAdmin.section.organization', icon: <BuildingIcon /> },
 ]
 
 interface SuperAdminSidebarProps {
@@ -54,9 +57,9 @@ function itemClasses(isActive: boolean) {
         // 44px — telefonda barmoq uchun eng kam o'lcham.
         // `cursor-pointer` ataylab yozilgan: Tailwind 4 da tugmalarga u
         // avtomatik qo'yilmaydi va ular bosilmaydigandek ko'rinadi.
-        'min-h-11 w-full cursor-pointer rounded-lg px-3 text-left text-sm transition-colors',
+        'min-h-11 cursor-pointer rounded-xl px-3 text-left text-sm transition-colors',
         isActive
-            ? 'bg-accent-soft font-medium text-accent-fg'
+            ? 'bg-linear-to-r from-brand/20 to-brand/5 font-medium text-fg ring-1 ring-border-base'
             : 'text-fg-muted hover:bg-surface-hover hover:text-fg'
     )
 }
@@ -83,8 +86,11 @@ export function SuperAdminSidebar({
                     isLocked && 'cursor-not-allowed opacity-40'
                 )}
             >
-                <span className="flex items-center justify-between gap-2">
-                    {t(item.labelKey)}
+                <span className="flex items-center gap-3">
+                    <span className={cn('shrink-0', active === item.key ? 'text-accent-fg' : 'text-fg-faint')}>
+                        {item.icon}
+                    </span>
+                    <span className="flex-1">{t(item.labelKey)}</span>
                     {needsAttention.includes(item.key) && (
                         <span
                             aria-label={t('superAdmin.needsAttention')}
@@ -96,18 +102,20 @@ export function SuperAdminSidebar({
         )
     }
 
-    const renderGroup = (items: SectionItem[]) => items.map((item) => renderItem(item))
+    // Kompyuterda to'liq kenglik, telefonda tasma ichida o'z kengligi —
+    // ikkisi bitta elementga birga tushmasin (`w-full` + `w-auto`).
+    const renderGroup = (items: SectionItem[]) => items.map((item) => renderItem(item, 'w-full'))
 
     return (
         <>
             {/* Kompyuterda chap ustun */}
             <nav className="hidden w-52 shrink-0 flex-col gap-1 lg:flex">
-                <p className="px-3 pb-1 font-mono text-[0.6rem] tracking-[0.05em] text-fg-faint uppercase">
+                <p className="px-3 pb-1 text-[0.68rem] font-semibold tracking-[0.08em] text-fg-faint uppercase">
                     {t('superAdmin.group.people')}
                 </p>
                 {renderGroup(PEOPLE)}
 
-                <p className="mt-4 px-3 pb-1 font-mono text-[0.6rem] tracking-[0.05em] text-fg-faint uppercase">
+                <p className="mt-4 px-3 pb-1 text-[0.68rem] font-semibold tracking-[0.08em] text-fg-faint uppercase">
                     {t('superAdmin.group.settings')}
                 </p>
                 {renderGroup(SETTINGS)}
@@ -115,7 +123,7 @@ export function SuperAdminSidebar({
 
             {/* Telefonda gorizontal tasma — chap ustun ekranning yarmini yeydi */}
             <nav className="-mx-1 mb-4 flex gap-1 overflow-x-auto px-1 pb-1 lg:hidden">
-                {[...PEOPLE, ...SETTINGS].map((item) => renderItem(item, 'w-auto shrink-0'))}
+                {[...PEOPLE, ...SETTINGS].map((item) => renderItem(item, 'shrink-0 whitespace-nowrap'))}
             </nav>
         </>
     )

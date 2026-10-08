@@ -62,7 +62,7 @@ describe('EditLeadModal', () => {
         const phoneInput = screen.getByLabelText(/Telefon/i) as HTMLInputElement
 
         expect(nameInput.value).toBe('Ali Valiyev')
-        expect(phoneInput.value).toBe('+998901234567')
+        expect(phoneInput.value).toBe('+998 90 123 45 67')
 
         await userEvent.clear(nameInput)
         await userEvent.type(nameInput, 'Ali Karimov')
@@ -117,5 +117,23 @@ describe('EditLeadModal', () => {
         await userEvent.click(screen.getByRole('button', { name: /saqlash/i }))
 
         expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ phone: '+998901234567' }))
+    })
+})
+
+describe('lead form drafts', () => {
+    it('keeps typed text after a refresh and drops it on cancel', async () => {
+        const onClose = vi.fn()
+        const first = renderWithProviders(<NewLeadModal token="fake-token" onClose={onClose} onSubmit={vi.fn()} />)
+        await userEvent.type(screen.getByLabelText(/F.I.Sh./i), 'Jasur')
+        first.unmount()
+
+        // Sahifa yangilangandek — oyna qaytadan ochiladi
+        renderWithProviders(<NewLeadModal token="fake-token" onClose={onClose} onSubmit={vi.fn()} />)
+        expect(screen.getByLabelText(/F.I.Sh./i)).toHaveValue('Jasur')
+        expect(screen.getByText('Oldingi qoralama tiklandi')).toBeInTheDocument()
+
+        await userEvent.click(screen.getByRole('button', { name: 'Bekor qilish' }))
+        expect(onClose).toHaveBeenCalled()
+        expect(localStorage.getItem('alia:draft:lead-new')).toBeNull()
     })
 })

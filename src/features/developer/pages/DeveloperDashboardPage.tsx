@@ -4,7 +4,7 @@ import { useAuth, useSession } from '@/app/providers/useAuth'
 import { useTheme } from '@/app/providers/useTheme'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { AppShell, Button, ErrorBox, Input, Pagination, Panel, SegmentedControl } from '@/shared/ui'
+import { AppShell, Button, ErrorBox, Pagination, Panel, SearchInput, SegmentedControl } from '@/shared/ui'
 import { fetchOrganizationOptions } from '../api/developerApi'
 import { NewSubscriptionModal } from '../components/NewSubscriptionModal'
 import { OrganizationFormModal } from '../components/OrganizationFormModal'
@@ -142,7 +142,7 @@ export function DeveloperDashboardPage() {
             {tab === 'subscriptions' && (
                 <Panel>
                     <div className="mb-3 max-w-xs">
-                        <Input
+                        <SearchInput
                             value={search}
                             onChange={(event) => {
                                 setSearch(event.target.value)

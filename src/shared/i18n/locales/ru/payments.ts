@@ -51,6 +51,8 @@ export const payments: Record<PaymentsKeys, string> = {
     'transaction.invoice': 'Счёт',
     'transaction.invoicesLoading': 'Загрузка счетов…',
     'transaction.noInvoices': 'У этого ученика ещё нет счёта — платёж записать нельзя.',
+    'transaction.allPaid': 'У этого ученика нет неоплаченных счетов — все оплачены или счёт ещё не создан.',
+    'transaction.paidSoFar': 'Оплачено: {{amount}}',
     'transaction.note': 'Комментарий (необязательно)',
     'transaction.reason': 'Причина возврата',
     'transaction.reasonPlaceholder': 'Например: прекратил обучение',

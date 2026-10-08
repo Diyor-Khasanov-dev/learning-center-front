@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
+import { useDraft } from '@/shared/hooks'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { Button, ErrorBox, Field, Input, Modal } from '@/shared/ui'
@@ -33,7 +34,8 @@ export function GroupLevelFormModal({
     row,
 }: GroupLevelFormModalProps) {
     const { t } = useT()
-    const [values, setValues] = useState<GroupLevelFormValues>(initialValues)
+    const draft = useDraft(`group-level:${row?.id ?? 'new'}`, initialValues)
+    const { value: values, setValue: setValues } = draft
 
     function setValue(key: keyof GroupLevelFormValues, value: string) {
         setValues((current) => ({ ...current, [key]: value }))
@@ -41,6 +43,7 @@ export function GroupLevelFormModal({
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        draft.discard()
         onSubmit(values)
     }
 
@@ -49,6 +52,7 @@ export function GroupLevelFormModal({
             eyebrow={mode === 'create' ? t('groupLevel.new') : t('groupLevel.edit')}
             title={mode === 'create' ? t('groupLevel.newTitle') : t('groupLevel.editTitle')}
             onClose={onClose}
+            draft={draft}
         >
             <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
                 <Field label={t('groupLevel.name')}>
@@ -101,7 +105,14 @@ export function GroupLevelFormModal({
                 {error != null && <ErrorBox>{errorMessage(error)}</ErrorBox>}
 
                 <div className="mt-1 flex justify-end gap-2.5">
-                    <Button onClick={onClose}>{t('common.cancel')}</Button>
+                    <Button
+                        onClick={() => {
+                            draft.discard()
+                            onClose()
+                        }}
+                    >
+                        {t('common.cancel')}
+                    </Button>
                     <Button type="submit" variant="primary" disabled={isSaving}>
                         {isSaving ? t('common.saving') : t('common.save')}
                     </Button>

@@ -5,13 +5,14 @@ import { useTheme } from '@/app/providers/useTheme'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { GROUP_STATUSES } from '@/shared/types'
-import { Button, ErrorBox, Eyebrow, Input, Pagination, Panel, Select } from '@/shared/ui'
+import { Button, ErrorBox, Eyebrow, Pagination, Panel, SearchInput, Select } from '@/shared/ui'
 import { AdminSidebar, AdminTabStrip } from '../components/AdminSidebar'
 import type { AdminSidebarLink } from '../components/AdminSidebar'
 import { AssignStudentsModal } from '../components/AssignStudentsModal'
 import { EntityFormModal } from '../components/EntityFormModal'
 import { EntityTable } from '../components/EntityTable'
 import { CredentialsModal, type CreatedCredentials } from '../components/CredentialsModal'
+import { createdCredentials } from '../lib/createdCredentials'
 import { OnboardingSteps } from '../components/OnboardingSteps'
 import { StatsRow } from '../components/StatsRow'
 import { COLUMN_CONFIGS, inferColumns } from '../config/columns'
@@ -127,8 +128,8 @@ export function AdminDashboardPage() {
             {
                 onSuccess: (created) => {
                     setFormModal(null)
-                    const user = (created as { userDto?: CreatedCredentials })?.userDto
-                    if (formModal.mode === 'create' && user?.password) setCredentials(user)
+                    const user = createdCredentials(created)
+                    if (formModal.mode === 'create' && user) setCredentials(user)
                 },
             }
         )
@@ -198,8 +199,9 @@ export function AdminDashboardPage() {
                                         }}
                                     />
                                 )}
-                                <Input
-                                    className="min-w-40 flex-1 sm:w-56 sm:flex-none"
+                                <SearchInput
+                                    className="min-w-40 flex-1 sm:w-64 sm:flex-none"
+                                    aria-label={t('admin.search', { entity: plural.toLowerCase() })}
                                     placeholder={t('admin.search', { entity: plural.toLowerCase() })}
                                     value={search}
                                     onChange={(event) => {
@@ -263,6 +265,7 @@ export function AdminDashboardPage() {
                     mode={formModal.mode}
                     entityLabel={singular}
                     initialValues={formModal.values}
+                    draftKey={`entity:${activeTab}:${formModal.id ?? 'new'}`}
                     formConfig={formConfig}
                     fallbackColumns={columns}
                     teacherOptions={teacherOptions}

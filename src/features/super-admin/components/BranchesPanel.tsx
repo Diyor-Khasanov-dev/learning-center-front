@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Button, ErrorBox, Eyebrow, Input, Pagination, Panel } from '@/shared/ui'
+import { Button, ErrorBox, Eyebrow, Pagination, Panel, SearchInput } from '@/shared/ui'
 import { BranchFormModal } from './BranchFormModal'
 import { SimpleTable, type SimpleColumn } from './SimpleTable'
 import { useBranches, useBranchMutations } from '../hooks/useSuperAdminData'
@@ -52,7 +52,7 @@ export function BranchesPanel({
                     <Eyebrow>{t('superAdmin.section.branches')}</Eyebrow>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <Input
+                    <SearchInput
                         className="min-w-40 flex-1 sm:w-56 sm:flex-none"
                         placeholder={t('superAdmin.search')}
                         value={search}

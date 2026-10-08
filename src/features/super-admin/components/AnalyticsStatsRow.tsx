@@ -1,15 +1,22 @@
+import type { ReactNode } from 'react'
 import { useT } from '@/shared/i18n'
-import { cn } from '@/shared/lib'
+import { formatAmount } from '@/shared/lib'
+import { FolderIcon, LayersIcon, StatCard, TargetIcon, TeacherIcon, UsersIcon, WalletIcon } from '@/shared/ui'
 import type { AnalyticsCategory } from '@/shared/types'
 import { ANALYTICS_CATEGORIES, type AnalyticsItemResult } from '../hooks/useAnalytics'
 
-const CATEGORY_ACCENT: Record<AnalyticsCategory, string> = {
-    student: 'border-t-emerald-500',
-    teacher: 'border-t-indigo-500',
-    lead: 'border-t-amber-500',
-    invoice: 'border-t-sky-500',
-    enrollment: 'border-t-purple-500',
-    branch: 'border-t-rose-500',
+const CATEGORY_ICON: Record<AnalyticsCategory, { icon: ReactNode; tone: string }> = {
+    student: { icon: <UsersIcon />, tone: 'bg-accent-soft text-accent-fg' },
+    teacher: { icon: <TeacherIcon />, tone: 'bg-steel-soft text-steel-fg' },
+    lead: { icon: <TargetIcon />, tone: 'bg-amber-soft text-amber-fg' },
+    invoice: { icon: <WalletIcon />, tone: 'bg-success-soft text-success-fg' },
+    enrollment: { icon: <FolderIcon />, tone: 'bg-accent-soft text-accent-fg' },
+    branch: { icon: <LayersIcon />, tone: 'bg-steel-soft text-steel-fg' },
+}
+
+/** Hisob-fakturalar — pul: "1950000" emas, "1 950 000". */
+function formatTotal(category: AnalyticsCategory, value: number): string {
+    return category === 'invoice' ? formatAmount(value) : String(value)
 }
 
 export function AnalyticsStatsRow({
@@ -20,7 +27,7 @@ export function AnalyticsStatsRow({
     const { t } = useT()
 
     return (
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {ANALYTICS_CATEGORIES.map((category) => {
                 const item = items[category]
                 const hasError = Boolean(item?.error)
@@ -30,46 +37,23 @@ export function AnalyticsStatsRow({
                       ? '—'
                       : item?.total === undefined
                         ? '···'
-                        : String(item.total)
+                        : formatTotal(category, item.total)
 
                 const thisMonthText = hasError
                     ? null
                     : item?.thisMonth === null || item?.thisMonth === undefined
                       ? null
-                      : t('analytics.thisMonth', { count: item.thisMonth })
+                      : t('analytics.thisMonth', { count: formatTotal(category, item.thisMonth) })
 
                 return (
-                    <div
+                    <StatCard
                         key={category}
-                        className={cn(
-                            'flex flex-col justify-between rounded-lg border border-t-3 border-border-base bg-surface-card p-4',
-                            'shadow-[0_6px_16px_-10px_rgba(31,42,61,0.25)] transition-transform hover:-translate-y-0.5',
-                            CATEGORY_ACCENT[category]
-                        )}
-                    >
-                        <div>
-                            <div className="mb-1 truncate font-mono text-[0.62rem] tracking-[0.06em] text-fg-faint uppercase">
-                                {t(`analytics.${category}` as Parameters<typeof t>[0])}
-                            </div>
-                            <div
-                                // `cn` klasslarni birlashtirmaydi, faqat qo'shadi — shuning
-                                // uchun o'lcham va rang bir-birini bosmasin deb ikki holat
-                                // alohida yoziladi (`text-fg` + `text-danger-fg` birga tursa
-                                // qaysi yutishi CSS tartibiga qolardi).
-                                className={
-                                    hasError
-                                        ? 'font-display text-xs font-normal text-danger-fg'
-                                        : 'font-display text-2xl font-semibold tabular-nums text-fg sm:text-3xl'
-                                }
-                            >
-                                {totalText}
-                            </div>
-                        </div>
-
-                        <div className="mt-2 min-h-5 text-xs font-medium text-success-fg">
-                            {thisMonthText ?? (item?.isLoading ? '···' : '')}
-                        </div>
-                    </div>
+                        label={t(`analytics.${category}` as Parameters<typeof t>[0])}
+                        icon={CATEGORY_ICON[category].icon}
+                        tone={CATEGORY_ICON[category].tone}
+                        value={hasError ? <span className="text-sm font-normal text-danger-fg">{totalText}</span> : totalText}
+                        hint={thisMonthText ?? (item?.isLoading ? '···' : null)}
+                    />
                 )
             })}
         </div>

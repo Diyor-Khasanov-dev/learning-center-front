@@ -1,4 +1,5 @@
 import { formatDate, formatTime } from '@/shared/lib'
+import { snapTime } from '../lib/timeStep'
 import { DAY_TYPES, GROUP_STATUSES } from '@/shared/types'
 import type { EntityFormConfig, EntityKey, FormField } from '../types'
 
@@ -145,8 +146,10 @@ export const FORM_CONFIGS: Partial<Record<EntityKey, EntityFormConfig>> = {
                 startDate: formatDate(row?.startDate) || new Date().toISOString().slice(0, 10),
                 teacherId: row?.teacher?.id ?? '',
                 dayType: row?.timeTable?.dayType ?? 'ODD',
-                startTime: formatTime(row?.timeTable?.startTime),
-                endTime: formatTime(row?.timeTable?.endTime),
+                // Ekranda 10 daqiqaga yaxlitlangan vaqt ko'rinadi — saqlanadigani
+                // ham aynan shu bo'lsin (eski "10:14" jimgina qolib ketmasin).
+                startTime: snapTime(formatTime(row?.timeTable?.startTime)),
+                endTime: snapTime(formatTime(row?.timeTable?.endTime)),
                 status: row?.status ?? 'STARTING',
             }
         },

@@ -111,6 +111,8 @@ Batafsil qoidalar: [`docs/architecture.md`](docs/architecture.md).
    panel/tab/tugmani ko'rsatish uchun (`useHasPermission`,
    `RequirePermission`). Avtorizatsiya — backendning ishi.
 3. Token faqat React state'da yashaydi, `localStorage` da **emas**.
+4. Chiqishda keshdan tashqari forma qoralamalari ham o'chiriladi — ularda
+   ism va telefon bor (`useDraft`, [docs/state-management.md](docs/state-management.md)).
 
 ## Hujjatlar
 

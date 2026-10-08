@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
-import { Avatar, Button, ErrorBox, Input, Pagination, Panel } from '@/shared/ui'
+import { Avatar, Button, ErrorBox, Pagination, Panel, SearchInput } from '@/shared/ui'
 import type { UserCreatedResponseDto } from '@/shared/types'
 import { AdminCreateModal } from './AdminCreateModal'
 import { AdminCredentialsModal } from './AdminCredentialsModal'
@@ -70,7 +70,7 @@ export function PeoplePanel({
                         name={row.userDto?.fullName}
                         src={row.userDto?.imageUrl}
                         size="sm"
-                        fallback="silhouette"
+                        colorful
                     />
                     <span className="font-medium text-fg">{row.userDto?.fullName || '—'}</span>
                 </div>
@@ -93,7 +93,7 @@ export function PeoplePanel({
     return (
         <Panel>
             <div className="mb-3 flex flex-wrap items-center gap-2">
-                <Input
+                <SearchInput
                     className="max-w-xs flex-1"
                     value={search}
                     onChange={(event) => onSearchChange(event.target.value)}
