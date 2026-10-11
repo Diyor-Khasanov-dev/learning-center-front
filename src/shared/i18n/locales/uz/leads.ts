@@ -34,6 +34,7 @@ export const leads = {
     'lead.search': 'ism yoki telefon…',
     'lead.allStatuses': 'Barcha holatlar',
     'lead.empty': 'Lid topilmadi',
+    'lead.emptyHint': "Boshqa so'z bilan qidirib ko'ring yoki birinchi lidni qo'shing.",
     'lead.loadFailed': 'Lidlarni yuklab bo‘lmadi: {{message}}',
     'lead.deleteConfirm': '{{name}} o‘chirilsinmi? Buni qaytarib bo‘lmaydi.',
     'lead.status.NEW': 'Yangi',
