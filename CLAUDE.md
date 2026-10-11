@@ -202,6 +202,11 @@ src/
                               mockApi/ ichida endpointlar bo'lim-bo'lim
 ```
 
+`landing/` — ochiq sahifa (Next.js 16, `alia.uz`), alohida loyiha: o'z
+`package.json`, `eslint`, `next build`; ildizdagi lint/test unga tegmaydi,
+CI'da alohida `landing` job. Unda **faqat ilovada bor imkoniyat** yoziladi.
+Qoidalari — [`landing/README.md`](landing/README.md).
+
 Ildizda: `Dockerfile` + `Caddyfile` (production, `/api` proxysi),
 `railway.json`, `netlify.toml` (muqobil), `vite.config.ts` (+ test sozlamasi),
 `vite.demo.config.ts`, `eslint.config.js`, `tsconfig.app.json`.

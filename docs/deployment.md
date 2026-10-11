@@ -107,6 +107,17 @@ Bitta loyiha (project) ichida uchta xizmat:
 | `frontend` | shu repo (Dockerfile o'zi topiladi) | **Ha** |
 | `backend` | Java repo | Yo'q — kerak emas |
 | `postgres` | Railway plagini | Yo'q |
+| `landing` | shu repo, **Root Directory = `landing`** | **Ha** (`alia.uz`) |
+
+Monorepo bo'lgani uchun har xizmatga **Watch Paths** qo'yiladi — aks holda
+landing'dagi o'zgarish ilovani ham qayta deploy qiladi:
+
+- `frontend`: `/**` va `!/landing/**`
+- `landing`: `/landing/**`
+
+`landing` — oddiy Next.js (`npm run build`, `npm start`); `.dockerignore`
+uni ilova obrazidan chiqarib tashlaydi. Ilovani `alia.uz/app` ga ko'chirish
+va `/api` ni bitta domenda uzatish — keyingi bosqich.
 
 ### 1. Frontend xizmati
 
