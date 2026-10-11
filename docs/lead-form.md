@@ -47,16 +47,14 @@ ko'rinish o'zgarmaydi, faqat ma'lumot (markaz nomi, kurslar) haqiqiysi bo'ladi.
 
 Shakllar: `src/shared/types/leadForm.ts`. Ochiq javobda markaz nomi `orgName`.
 
-### Backendda hali ochiq
+### Backend holati (8736634)
 
-- `POST /public/lead-forms/{key}` da `@RequestBody` yo'q — JSON tana
-  o'qilmaydi, lid saqlanmaydi (400). **Asosiy to'siq.**
-- `PublicLeadFormDto` da `courseRequired` va `logoUrl` yo'q. Frontend
-  `courseRequired` kelmasa kursni ixtiyoriy deb oladi; backend ham uni
-  tekshirmaydi.
-- `getUnhiddenLevels` — `not in (:hidLev)` bo'sh to'plam bilan (yangi forma)
-  sinab ko'rilishi kerak.
-- Takroriy telefon — formadan kelganda xato emas, jimgina "qabul qilindi"
-  bo'lishi kerak; hozir 409 va xabar kaliti (`lead.already.exists`)
-  `messages*.properties` da yo'q.
-- Rate limit va honeypot (`website`) hali yo'q.
+- `@RequestBody` qo'shildi; ochiq javobda kurs majburiyligi — `isLevelRequired`.
+- **Xato:** `autoCreateLead` dagi shart teskari — kurs majburiy bo'lsa,
+  kurs TANLANGANDA 404 beradi, tanlanmaganda o'tkazadi. To'g'risi:
+  `if (courseRequired && (id == null || id.isBlank())) throw …`.
+- Takroriy telefon — 409 qoladi (Nurulloh qarori: jim qabul qilinsa mijoz
+  qo'ng'iroq kutib qoladi). Frontend 409 da o'z matnini ko'rsatadi:
+  "raqam avval ro'yxatdan o'tgan, administrator bilan bog'laning".
+- `logoUrl`, rate limit, honeypot (`website`) — hali yo'q.
+- `getUnhiddenLevels` — `not in (:hidLev)` bo'sh to'plam bilan sinab ko'rilishi kerak.

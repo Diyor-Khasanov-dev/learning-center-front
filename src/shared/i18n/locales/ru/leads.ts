@@ -76,6 +76,7 @@ export const leads: Record<LeadsKeys, string> = {
     'leadForm.notFoundText': "Ссылка устарела или форма отключена. Попросите у учебного центра новую ссылку.",
     'leadForm.loadFailed': "Не удалось открыть форму. Проверьте интернет и попробуйте снова.",
     'leadForm.submitFailed': "Не удалось отправить: {{message}}",
+    'leadForm.alreadyRegistered': "Этот номер телефона уже зарегистрирован. Пожалуйста, свяжитесь с администратором учебного центра.",
     'leadForm.retry': "Повторить",
     'leadForm.open': "Ссылка на форму",
     'leadForm.settingsEyebrow': "Автоматические лиды",

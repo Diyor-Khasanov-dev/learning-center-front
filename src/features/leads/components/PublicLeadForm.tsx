@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { errorMessage } from '@/shared/api'
+import { ApiError, errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { isCompleteUzPhone, normalizePhone, UZ_PHONE_PREFIX } from '@/shared/lib'
 import type { LeadSource, PublicLeadFormDto, PublicLeadSubmitDto } from '@/shared/types'
@@ -29,7 +29,7 @@ export function PublicLeadForm({ form, source, isSending, error, onSubmit }: Pub
 
     const nameError = fullName.trim() === ''
     const phoneError = !isCompleteUzPhone(phone)
-    const courseRequired = form.courseRequired === true
+    const courseRequired = form.isLevelRequired === true || form.levelRequired === true
     const courseError = courseRequired && courseId === ''
     const courseLabel = courseRequired ? t('leadForm.course') : t('leadForm.courseOptional')
 
@@ -91,7 +91,16 @@ export function PublicLeadForm({ form, source, isSending, error, onSubmit }: Pub
                     <input tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
                 </label>
             </div>
-            {error != null && <ErrorBox>{t('leadForm.submitFailed', { message: errorMessage(error) })}</ErrorBox>}
+            {error != null && (
+                <ErrorBox>
+                    {/* 409 — bu telefon markazda allaqachon lid. Jim "qabul qilindi" desak,
+                        mijoz qo'ng'iroq kutib qolar, administrator esa uni yangi deb
+                        bilmasdi (Nurulloh). Backend xabari hali tarjimasiz keladi. */}
+                    {error instanceof ApiError && error.status === 409
+                        ? t('leadForm.alreadyRegistered')
+                        : t('leadForm.submitFailed', { message: errorMessage(error) })}
+                </ErrorBox>
+            )}
             {/* Oddiy to'liq rangli tugma — ilovadagi gradientli `primary` bu yerda ortiqcha. */}
             <button
                 type="submit"

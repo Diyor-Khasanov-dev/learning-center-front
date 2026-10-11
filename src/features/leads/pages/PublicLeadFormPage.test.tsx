@@ -9,7 +9,7 @@ const FORM = {
     orgName: 'Cornerstone Education',
     title: null,
     description: null,
-    courseRequired: true,
+    isLevelRequired: true,
     levels: [{ id: 'lvl-1', name: 'Elementary' }],
 }
 
@@ -69,12 +69,33 @@ describe('PublicLeadFormPage', () => {
     })
 
     // Backend hozircha `courseRequired` ni qaytarmaydi — kurs ixtiyoriy bo'lishi kerak.
-    it('treats the course as optional when the backend omits courseRequired', async () => {
+    it('treats the course as optional when the backend omits isLevelRequired', async () => {
         const withoutFlag: Record<string, unknown> = { ...FORM }
-        delete withoutFlag.courseRequired
+        delete withoutFlag.isLevelRequired
         vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(response(200, withoutFlag))))
         renderAt('/f/abc')
         await waitFor(() => expect(screen.getByRole('group', { name: /ixtiyoriy/ })).toBeInTheDocument())
+    })
+})
+
+describe('PublicLeadFormPage duplicate phone', () => {
+    it('tells the client to contact the center when the phone is already a lead', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn((_url: string, init?: RequestInit) =>
+                Promise.resolve(
+                    init?.method === 'POST'
+                        ? response(409, { errorCode: 'AlreadyExists', message: 'MessageKey not found: lead.already.exists' })
+                        : response(200, { ...FORM, isLevelRequired: false })
+                )
+            )
+        )
+        renderAt('/f/abc')
+        await userEvent.type(await screen.findByLabelText(/^Ism va familiya/), 'Jasur')
+        await userEvent.type(screen.getByLabelText(/^Telefon raqami/), '901234567')
+        await userEvent.click(screen.getByRole('button', { name: 'Yuborish' }))
+        expect(await screen.findByText(/avval ro'yxatdan o'tgan/)).toBeInTheDocument()
+        expect(screen.queryByText(/MessageKey/)).not.toBeInTheDocument()
     })
 })
 
