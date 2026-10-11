@@ -31,6 +31,7 @@ export const leads: Record<LeadsKeys, string> = {
     'lead.search': 'имя или телефон…',
     'lead.allStatuses': 'Все статусы',
     'lead.empty': 'Лиды не найдены',
+    'lead.emptyHint': 'Попробуйте другой запрос или добавьте первого лида.',
     'lead.loadFailed': 'Не удалось загрузить лиды: {{message}}',
     'lead.deleteConfirm': 'Удалить {{name}}? Это необратимо.',
     'lead.status.NEW': 'Новый',
