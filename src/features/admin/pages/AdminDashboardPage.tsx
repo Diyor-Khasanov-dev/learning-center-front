@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth, useSession } from '@/app/providers/useAuth'
 import { useTheme } from '@/app/providers/useTheme'
 import { errorMessage } from '@/shared/api'
 import { useT } from '@/shared/i18n'
 import { GROUP_STATUSES } from '@/shared/types'
 import { Button, ErrorBox, Eyebrow, Pagination, Panel, SearchInput, Select } from '@/shared/ui'
-import { AdminSidebar, AdminTabStrip } from '../components/AdminSidebar'
-import type { AdminSidebarLink } from '../components/AdminSidebar'
+import { AdminTabStrip } from '../components/AdminSidebar'
+import { useAdminNav } from '../hooks/useAdminNav'
 import { AssignStudentsModal } from '../components/AssignStudentsModal'
 import { EntityFormModal } from '../components/EntityFormModal'
 import { EntityTable } from '../components/EntityTable'
@@ -40,7 +39,6 @@ export function AdminDashboardPage() {
     const session = useSession()
     const { signOut } = useAuth()
     const { theme, toggleTheme } = useTheme()
-    const navigate = useNavigate()
 
     const { visibleEntities, hasLeadPermission, hasInvoicePermission } = useAdminPermissions()
 
@@ -73,15 +71,6 @@ export function AdminDashboardPage() {
 
     const columns = columnConfigs ? columnConfigs.map((column) => column.key) : inferColumns(list.rows)
 
-    const sidebarLinks: AdminSidebarLink[] = [
-        { key: 'group-levels', labelKey: 'groupLevel.title', onClick: () => navigate('/group-levels') },
-        hasLeadPermission && { key: 'leads', labelKey: 'lead.title', onClick: () => navigate('/leads') },
-        hasInvoicePermission && {
-            key: 'payments',
-            labelKey: 'invoice.title',
-            onClick: () => navigate('/payments'),
-        },
-    ].filter((link): link is AdminSidebarLink => Boolean(link))
 
     /** Tab almashganda sahifalash va filtrlarni tozalaymiz — aks holda yangi
      *  bo'limda "3-sahifa, qidiruv: Ali" holati qolib ketadi. */
@@ -91,6 +80,11 @@ export function AdminDashboardPage() {
         setSearch('')
         setStatusFilter('STARTING')
     }
+
+    const { nav, links } = useAdminNav(visibleEntities, activeTab, changeTab, {
+        leads: hasLeadPermission,
+        invoices: hasInvoicePermission,
+    })
 
     function openCreate() {
         const values = formConfig
@@ -141,121 +135,112 @@ export function AdminDashboardPage() {
     }
 
     return (
-        <div className="flex min-h-screen bg-surface">
-            <AdminSidebar
-                entities={visibleEntities}
-                activeTab={activeTab}
+        <>
+        <AppShell
+            subtitle={plural}
+            nav={nav}
+            onSignOut={signOut}
+            token={session.token}
+            theme={theme}
+            toggleTheme={toggleTheme}
+            secondary={
+                <AdminTabStrip
+                    entities={visibleEntities}
+                    activeTab={activeTab}
+                    onTabChange={changeTab}
+                    links={links}
+                />
+            }
+        >
+            <StatsRow entities={visibleEntities} counts={counts} />
+
+            <OnboardingSteps
+                levelCount={groupLevelNames.data?.length ?? 0}
+                teacherCount={counts.teachers ?? 0}
+                groupCount={counts.groups ?? 0}
+                studentCount={counts.students ?? 0}
                 onTabChange={changeTab}
-                links={sidebarLinks}
             />
 
-            {/* `min-w-0` shart: busiz keng jadval flex elementni cho'zib yuboradi */}
-            <div className="min-w-0 flex-1">
-                <AppShell
-                    subtitle={t('admin.role')}
-                    onSignOut={signOut}
-                    token={session.token}
-                    theme={theme}
-                    toggleTheme={toggleTheme}
-                    secondary={
-                        <AdminTabStrip
-                            entities={visibleEntities}
-                            activeTab={activeTab}
-                            onTabChange={changeTab}
-                            links={sidebarLinks}
-                        />
-                    }
-                >
-                    <StatsRow entities={visibleEntities} counts={counts} />
+            <Panel>
+                <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                    <div className="min-w-0">
+                        <Eyebrow>{t('admin.records')}</Eyebrow>
+                        <h1 className="mt-1 font-display text-2xl font-semibold text-fg">{plural}</h1>
+                    </div>
 
-                    <OnboardingSteps
-                        levelCount={groupLevelNames.data?.length ?? 0}
-                        teacherCount={counts.teachers ?? 0}
-                        groupCount={counts.groups ?? 0}
-                        studentCount={counts.students ?? 0}
-                        onTabChange={changeTab}
-                    />
-
-                    <Panel>
-                        <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
-                            <div className="min-w-0">
-                                <Eyebrow>{t('admin.records')}</Eyebrow>
-                                <h1 className="mt-1 font-display text-2xl font-semibold text-fg">{plural}</h1>
-                            </div>
-
-                            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-                                {activeTab === 'groups' && (
-                                    <Select
-                                        aria-label={t('admin.filterStatus')}
-                                        className="w-full sm:w-auto"
-                                        options={GROUP_STATUSES.map((status) => ({
-                                            value: status,
-                                            label: t(`status.${status}`),
-                                        }))}
-                                        value={statusFilter}
-                                        onChange={(event) => {
-                                            setStatusFilter(event.target.value)
-                                            setPage(0)
-                                        }}
-                                    />
-                                )}
-                                <SearchInput
-                                    className="min-w-40 flex-1 sm:w-64 sm:flex-none"
-                                    aria-label={t('admin.search', { entity: plural.toLowerCase() })}
-                                    placeholder={t('admin.search', { entity: plural.toLowerCase() })}
-                                    value={search}
-                                    onChange={(event) => {
-                                        setSearch(event.target.value)
-                                        setPage(0)
-                                    }}
-                                />
-                                <Button variant="primary" onClick={openCreate}>
-                                    {t('admin.new', { entity: singular.toLowerCase() })}
-                                </Button>
-                            </div>
-                        </header>
-
-                        {list.error && (
-                            <div className="mb-4">
-                                <ErrorBox>
-                                    {t('admin.loadFailed', {
-                                        entity: plural.toLowerCase(),
-                                        message: errorMessage(list.error),
-                                    })}
-                                </ErrorBox>
-                            </div>
-                        )}
-
-                        {remove.error && (
-                            <div className="mb-4">
-                                <ErrorBox>
-                                    {t('admin.deleteFailed', { message: errorMessage(remove.error) })}
-                                </ErrorBox>
-                            </div>
-                        )}
-
-                        {!list.error && (
-                            <EntityTable
-                                rows={list.rows}
-                                columns={columns}
-                                columnConfigs={columnConfigs}
-                                isLoading={list.isLoading}
-                                entityLabel={plural.toLowerCase()}
-                                onAssignStudents={activeTab === 'groups' ? setAssignGroup : undefined}
-                                onEdit={openEdit}
-                                onDelete={handleDelete}
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+                        {activeTab === 'groups' && (
+                            <Select
+                                aria-label={t('admin.filterStatus')}
+                                className="w-full sm:w-auto"
+                                options={GROUP_STATUSES.map((status) => ({
+                                    value: status,
+                                    label: t(`status.${status}`),
+                                }))}
+                                value={statusFilter}
+                                onChange={(event) => {
+                                    setStatusFilter(event.target.value)
+                                    setPage(0)
+                                }}
                             />
                         )}
-
-                        <Pagination
-                            page={page}
-                            totalPages={list.totalPages}
-                            totalElements={list.totalElements}
-                            onPageChange={setPage}
+                        <SearchInput
+                            className="min-w-40 flex-1 sm:w-64 sm:flex-none"
+                            aria-label={t('admin.search', { entity: plural.toLowerCase() })}
+                            placeholder={t('admin.search', { entity: plural.toLowerCase() })}
+                            value={search}
+                            onChange={(event) => {
+                                setSearch(event.target.value)
+                                setPage(0)
+                            }}
                         />
-                    </Panel>
-                </AppShell>
-            </div>
+                        <Button variant="primary" onClick={openCreate}>
+                            {t('admin.new', { entity: singular.toLowerCase() })}
+                        </Button>
+                    </div>
+                </header>
+
+                {list.error && (
+                    <div className="mb-4">
+                        <ErrorBox>
+                            {t('admin.loadFailed', {
+                                entity: plural.toLowerCase(),
+                                message: errorMessage(list.error),
+                            })}
+                        </ErrorBox>
+                    </div>
+                )}
+
+                {remove.error && (
+                    <div className="mb-4">
+                        <ErrorBox>
+                            {t('admin.deleteFailed', { message: errorMessage(remove.error) })}
+                        </ErrorBox>
+                    </div>
+                )}
+
+                {!list.error && (
+                    <EntityTable
+                        rows={list.rows}
+                        columns={columns}
+                        columnConfigs={columnConfigs}
+                        isLoading={list.isLoading}
+                        entityLabel={plural.toLowerCase()}
+                        onAssignStudents={activeTab === 'groups' ? setAssignGroup : undefined}
+                        onEdit={openEdit}
+                        onDelete={handleDelete}
+                    />
+                )}
+
+                <Pagination
+                    page={page}
+                    totalPages={list.totalPages}
+                    totalElements={list.totalElements}
+                    onPageChange={setPage}
+                />
+            </Panel>
+        </AppShell>
 
             {formModal && (
                 <EntityFormModal
@@ -285,6 +270,6 @@ export function AdminDashboardPage() {
             {assignGroup && (
                 <AssignStudentsModal group={assignGroup} onClose={() => setAssignGroup(null)} />
             )}
-        </div>
+        </>
     )
 }

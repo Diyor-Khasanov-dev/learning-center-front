@@ -1,41 +1,8 @@
-import type { ReactNode } from 'react'
 import { useT } from '@/shared/i18n'
-import type { TranslationKey } from '@/shared/i18n'
 import { cn } from '@/shared/lib'
-import { BuildingIcon, ChartIcon, LayersIcon, ShieldIcon, TeacherIcon, UsersIcon } from '@/shared/ui'
+import { PEOPLE_SECTIONS as PEOPLE, SETTINGS_SECTIONS as SETTINGS, type SectionItem, type SuperAdminSection } from '../lib/sections'
 
-export type SuperAdminSection =
-    | 'analytics'
-    | 'students'
-    | 'teachers'
-    | 'administrators'
-    | 'branches'
-    | 'organization'
-
-interface SectionItem {
-    key: SuperAdminSection
-    labelKey: TranslationKey
-    icon: ReactNode
-}
-
-/**
- * Bo'limlar ikki guruhga bo'lingan: odamlar va sozlama.
- *
- * Tashkilotlar RO'YXATI ataylab yo'q — super-admin bitta markazning egasi
- * va boshqalarnikini ko'rmasligi kerak. "Tashkilot" bo'limi faqat o'zinikini
- * ochadi.
- */
-const PEOPLE: SectionItem[] = [
-    { key: 'analytics', labelKey: 'superAdmin.section.analytics', icon: <ChartIcon /> },
-    { key: 'students', labelKey: 'superAdmin.section.students', icon: <UsersIcon /> },
-    { key: 'teachers', labelKey: 'superAdmin.section.teachers', icon: <TeacherIcon /> },
-    { key: 'administrators', labelKey: 'superAdmin.section.administrators', icon: <ShieldIcon /> },
-]
-
-const SETTINGS: SectionItem[] = [
-    { key: 'branches', labelKey: 'superAdmin.section.branches', icon: <LayersIcon /> },
-    { key: 'organization', labelKey: 'superAdmin.section.organization', icon: <BuildingIcon /> },
-]
+export type { SuperAdminSection }
 
 interface SuperAdminSidebarProps {
     active: SuperAdminSection
@@ -88,7 +55,7 @@ export function SuperAdminSidebar({
             >
                 <span className="flex items-center gap-3">
                     <span className={cn('shrink-0', active === item.key ? 'text-brand-fg' : 'text-fg-faint')}>
-                        {item.icon}
+                        <item.Icon />
                     </span>
                     <span className="flex-1">{t(item.labelKey)}</span>
                     {needsAttention.includes(item.key) && (
@@ -102,30 +69,11 @@ export function SuperAdminSidebar({
         )
     }
 
-    // Kompyuterda to'liq kenglik, telefonda tasma ichida o'z kengligi —
-    // ikkisi bitta elementga birga tushmasin (`w-full` + `w-auto`).
-    const renderGroup = (items: SectionItem[]) => items.map((item) => renderItem(item, 'w-full'))
-
     return (
-        <>
-            {/* Kompyuterda chap ustun */}
-            {/* Namunadagidek alohida oq (dark'da navy) ustun — kontentdan ajralib turadi */}
-            <nav className="hidden w-56 shrink-0 flex-col gap-1 self-start rounded-2xl border border-border-base bg-sidebar p-3 shadow-[var(--shadow-card)] lg:flex">
-                <p className="px-3 pb-1 text-[0.68rem] font-semibold tracking-[0.08em] text-fg-faint uppercase">
-                    {t('superAdmin.group.people')}
-                </p>
-                {renderGroup(PEOPLE)}
-
-                <p className="mt-4 px-3 pb-1 text-[0.68rem] font-semibold tracking-[0.08em] text-fg-faint uppercase">
-                    {t('superAdmin.group.settings')}
-                </p>
-                {renderGroup(SETTINGS)}
-            </nav>
-
-            {/* Telefonda gorizontal tasma — chap ustun ekranning yarmini yeydi */}
-            <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:hidden">
-                {[...PEOPLE, ...SETTINGS].map((item) => renderItem(item, 'shrink-0 whitespace-nowrap'))}
-            </nav>
-        </>
+        // Telefonda gorizontal tasma. Kompyuterda bo'limlar umumiy chap
+        // menyuda (`AppShell` `nav`, `useSuperAdminNav`).
+        <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1 lg:hidden">
+            {[...PEOPLE, ...SETTINGS].map((item) => renderItem(item, 'shrink-0 whitespace-nowrap'))}
+        </nav>
     )
 }

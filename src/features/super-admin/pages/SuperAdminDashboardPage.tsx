@@ -13,6 +13,7 @@ import { PeoplePanel } from '../components/PeoplePanel'
 import { SuperAdminSidebar, type SuperAdminSection } from '../components/SuperAdminSidebar'
 import { useAdminCount, useBranches } from '../hooks/useSuperAdminData'
 import { useMySubscription } from '../hooks/useMySubscription'
+import { useSuperAdminNav } from '../hooks/useSuperAdminNav'
 
 /**
  * Markaz egasining paneli.
@@ -53,6 +54,8 @@ export function SuperAdminDashboardPage() {
         ...(!needsBranch && adminCount === 0 ? (['administrators'] as const) : []),
     ]
 
+    const nav = useSuperAdminNav(activeSection, (next) => changeSection(next), needsAttention, needsBranch ? 'branches' : undefined)
+
     function changeSection(next: SuperAdminSection) {
         // Qidiruv va sahifa bo'limga tegishli — almashganda tozalanadi,
         // aks holda yangi ro'yxat eski qidiruv bilan bo'sh chiqadi.
@@ -63,7 +66,8 @@ export function SuperAdminDashboardPage() {
 
     return (
         <AppShell
-            subtitle={t('superAdmin.role')}
+            subtitle={t(`superAdmin.section.${activeSection}`)}
+            nav={nav}
             onSignOut={signOut}
             token={session.token}
             theme={theme}

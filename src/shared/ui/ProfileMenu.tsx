@@ -66,8 +66,20 @@ export function ProfileMenu({ token, theme, toggleTheme, onSignOut }: ProfileMen
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-label={t('nav.menu')}
-                className="cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="flex cursor-pointer items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
+                {/* Namunadagidek ism va lavozim avatar yonida — kompyuterda.
+                    Ism backenddan, tarjima qilinmaydi. */}
+                {me?.fullName && (
+                    <span className="hidden flex-col items-end leading-tight lg:flex">
+                        <span className="max-w-40 truncate text-sm font-semibold text-fg">{me.fullName}</span>
+                        {me.role && (
+                            <span className="mt-0.5 rounded-full bg-accent-soft px-2 py-px text-[0.68rem] font-semibold text-accent-fg">
+                                {t(ROLE_LABEL_KEY[me.role])}
+                            </span>
+                        )}
+                    </span>
+                )}
                 <Avatar name={me?.fullName} src={me?.imageUrl} />
             </button>
 

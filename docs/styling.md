@@ -73,6 +73,12 @@ Nurulloh ikki namuna tanladi: **light — "ERP" uslubi**, **dark — "PulseBoard
 - **Ochiladigan narsalar soyasi** — `shadow-[var(--shadow-pop)]` (doim qora).
   Soyaga `--fg` ishlatilmaydi: dark'da u oq bo'lib, menyu atrofida "nur" chiqardi.
 - **Tanlangan segment/tab** — `bg-brand text-brand-fg` (oq/qora emas).
+- **Ikonkalar** — menyu, statistika va amallar uchun to'liq bo'yalgan
+  Material Icons (`shared/ui/icons.tsx`, shakllar `@mui/icons-material` dan,
+  MIT). Paketning o'zi o'rnatilmagan. Yangi ikonka kerak bo'lsa — rasmiy npm
+  paketidan shaklini oling.
+- **Karkas** — Atoyo ERP namunasi: chap menyu + oq tepa panel (ism va
+  lavozim avatar yonida). Batafsil: `docs/architecture.md`.
 
 ## Dark rejim
 

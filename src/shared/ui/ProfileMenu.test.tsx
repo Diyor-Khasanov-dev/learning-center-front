@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/renderWithProviders'
 import { ProfileMenu } from './ProfileMenu'
@@ -23,7 +23,8 @@ describe('ProfileMenu', () => {
         await user.click(screen.getByRole('button', { name: /menyu/i }))
 
         expect(screen.getByRole('menu')).toBeInTheDocument()
-        expect(screen.getByText('Aziza Karimova')).toBeInTheDocument()
+        // Ism endi avatar yonida ham bor (kompyuterda) — menyu ichidagisini tekshiramiz
+        expect(within(screen.getByRole('menu')).getByText('Aziza Karimova')).toBeInTheDocument()
     })
 
     it('"Chiqish" bosilganda onSignOut chaqiriladi', async () => {

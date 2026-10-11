@@ -32,6 +32,7 @@ export const common = {
     'nav.attendance': 'Davomat',
     'nav.settings': 'Sozlamalar',
     'nav.menu': 'Menyu',
+    'nav.group.sections': "Bo'limlar",
     'nav.theme': 'Tema',
     'nav.theme.dark': 'To’q',
     'nav.theme.light': 'Yorug’',

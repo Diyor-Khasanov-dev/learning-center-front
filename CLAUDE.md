@@ -212,6 +212,9 @@ Ildizda: `Dockerfile` + `Caddyfile` (production, `/api` proxysi),
 `/leads` · `/settings` (`src/app/routes/AppRoutes.tsx`).
 `/f/:key` — ochiq lid formasi, tizimga kirmasdan ([docs/lead-form.md](docs/lead-form.md)).
 
+Chap menyu: sahifa bo'limlari — `AppShell` `nav`; umumiy havolalar —
+`src/app/routes/AppNavigation.tsx` (rolga qarab).
+
 Rol tekshiruvi `RequireRole` orqali (`src/app/routes/RequireRole.tsx`).
 **Diqqat: bu himoya EMAS, faqat qulaylik.** Backendda `@PreAuthorize`
 endi bor, lekin faqat bir qismida — `Invoice`, `Lead`, `Student`, `Teacher`,
