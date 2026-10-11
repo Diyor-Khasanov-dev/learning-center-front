@@ -79,6 +79,7 @@ export const leads = {
     'leadForm.notFoundText': "Havola eskirgan yoki forma o'chirilgan. O'quv markazidan yangi havolani so'rang.",
     'leadForm.loadFailed': "Formani ochib bo'lmadi. Internetni tekshirib, qaytadan urinib ko'ring.",
     'leadForm.submitFailed': "Yuborib bo'lmadi: {{message}}",
+    'leadForm.alreadyRegistered': "Bu telefon raqami avval ro'yxatdan o'tgan. Iltimos, o'quv markazi administratori bilan bog'laning.",
     'leadForm.retry': "Qayta urinish",
     'leadForm.open': "Forma havolasi",
     'leadForm.settingsEyebrow': "Avtomatik lidlar",

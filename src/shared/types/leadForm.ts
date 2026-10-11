@@ -17,10 +17,12 @@ export interface PublicLeadFormDto {
     title?: string | null
     description?: string | null
     /**
-     * Hali yo'q — backendga so'ralgan. Kelmaguncha kurs ixtiyoriy deb olinadi:
-     * majburiy deb olsak, kurssiz markaz formasi hech qachon yuborilmasdi.
+     * Kurs majburiymi. Backend record'ida `isLevelRequired` — Jackson boolean
+     * `is…` ni ba'zan `levelRequired` qilib chiqaradi, shuning uchun ikkalasi.
+     * Kelmasa — ixtiyoriy: aks holda kurssiz markaz formasi yuborilmasdi.
      */
-    courseRequired?: boolean
+    isLevelRequired?: boolean
+    levelRequired?: boolean
     /** Yashirilgan va o'chirilganlarsiz — faqat ko'rsatiladiganlar. */
     levels: GroupLevelNameDto[]
 }

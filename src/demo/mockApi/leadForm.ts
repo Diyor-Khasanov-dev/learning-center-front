@@ -18,6 +18,7 @@ function randomKey() {
 function publicView(current: LeadFormDto): PublicLeadFormDto {
     return {
         orgName: 'Cornerstone Education',
+        isLevelRequired: current.courseRequired,
         title: current.title,
         description: current.description,
         levels: db.groupLevels
