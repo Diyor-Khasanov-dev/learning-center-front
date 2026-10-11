@@ -29,8 +29,9 @@ export function PublicLeadForm({ form, source, isSending, error, onSubmit }: Pub
 
     const nameError = fullName.trim() === ''
     const phoneError = !isCompleteUzPhone(phone)
-    const courseError = form.courseRequired && courseId === ''
-    const courseLabel = form.courseRequired ? t('leadForm.course') : t('leadForm.courseOptional')
+    const courseRequired = form.courseRequired === true
+    const courseError = courseRequired && courseId === ''
+    const courseLabel = courseRequired ? t('leadForm.course') : t('leadForm.courseOptional')
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
