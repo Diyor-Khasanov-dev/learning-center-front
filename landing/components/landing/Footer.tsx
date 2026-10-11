@@ -37,8 +37,6 @@ export function Footer() {
           <ul className='space-y-2 text-xs font-medium'>
             <li><a href='#features' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{navT.modules}</a></li>
             <li><a href='#features' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{navT.tour}</a></li>
-            <li><a href='#roi' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{navT.roi}</a></li>
-            <li><a href='#pricing' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{navT.pricing}</a></li>
             <li><a href='#faq' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{navT.faq}</a></li>
           </ul>
         </div>
@@ -48,7 +46,7 @@ export function Footer() {
           <div className='text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white'>{t.solutionsTitle}</div>
           <ul className='space-y-2 text-xs font-medium'>
             {t.solutions.map((item, idx) => (
-              <li key={idx}><a href='#' className='hover:text-blue-600 dark:hover:text-white transition-colors'>{item}</a></li>
+              <li key={idx}>{item}</li>
             ))}
           </ul>
         </div>
@@ -67,12 +65,7 @@ export function Footer() {
       </div>
 
       <div className='mx-auto max-w-7xl px-6 pt-12 mt-12 border-t border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 font-medium gap-4'>
-        <div>© {new Date().getFullYear()} A.L.I.A Inc. {t.allRightsReserved}</div>
-        <div className='flex gap-6'>
-          <a href='#' className='hover:text-blue-600 dark:hover:text-neutral-300'>{t.privacy}</a>
-          <a href='#' className='hover:text-blue-600 dark:hover:text-neutral-300'>{t.terms}</a>
-          <a href='#' className='hover:text-blue-600 dark:hover:text-neutral-300'>{t.securityLink}</a>
-        </div>
+        <div>© {new Date().getFullYear()} A.L.I.A. {t.allRightsReserved}</div>
       </div>
     </footer>
   )

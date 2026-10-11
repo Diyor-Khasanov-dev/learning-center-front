@@ -74,18 +74,6 @@ export function Navbar() {
             {t.team}
           </a>
           <a
-            href='#roi'
-            className='px-3 py-1.5 rounded-md hover:text-blue-600 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all whitespace-nowrap'
-          >
-            {t.roi}
-          </a>
-          <a
-            href='#pricing'
-            className='px-3 py-1.5 rounded-md hover:text-blue-600 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all whitespace-nowrap'
-          >
-            {t.pricing}
-          </a>
-          <a
             href='#faq'
             className='px-3 py-1.5 rounded-md hover:text-blue-600 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all whitespace-nowrap'
           >
@@ -161,20 +149,6 @@ export function Navbar() {
             className='block px-3 py-2 text-base font-semibold text-neutral-800 dark:text-neutral-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors'
           >
             {t.team}
-          </a>
-          <a
-            href='#roi'
-            onClick={() => setMobileMenuOpen(false)}
-            className='block px-3 py-2 text-base font-semibold text-neutral-800 dark:text-neutral-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors'
-          >
-            {t.roi}
-          </a>
-          <a
-            href='#pricing'
-            onClick={() => setMobileMenuOpen(false)}
-            className='block px-3 py-2 text-base font-semibold text-neutral-800 dark:text-neutral-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors'
-          >
-            {t.pricing}
           </a>
           <a
             href='#faq'

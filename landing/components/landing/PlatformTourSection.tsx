@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { BarChart3, ArrowRight, Bell, Sparkles, CheckCircle2 } from 'lucide-react'
+import { BarChart3, ArrowRight, Sparkles } from 'lucide-react'
 import { useDemoModal } from '@/context/DemoModalContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { TRANSLATIONS } from '@/data/translations'
 import { AnimateOnScroll } from '@/components/ui/AnimateOnScroll'
+import { TourMockup } from './TourMockups'
 
 export function PlatformTourSection() {
   const [activeTourTab, setActiveTourTab] = useState('crm')
@@ -105,138 +106,7 @@ export function PlatformTourSection() {
                   </span>
                 </div>
 
-                {/* Dynamic Content Views */}
-                {activeTourTab === 'crm' && (
-                  <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 animate-in fade-in duration-300'>
-                    <div className='bg-neutral-950 p-3 rounded-lg border border-neutral-800 space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center justify-between'>
-                        <span>New Leads</span>
-                        <span className='bg-blue-950 border border-blue-900 px-1.5 rounded text-[10px]'>12</span>
-                      </div>
-                      <div className='bg-neutral-900 p-2.5 rounded-md text-xs border border-neutral-800 space-y-1'>
-                        <div className='font-bold text-white'>Anvar K.</div>
-                        <div className='text-[10px] text-neutral-400'>General English</div>
-                        <span className='inline-block text-[9px] font-bold bg-blue-950 text-blue-400 px-1.5 py-0.5 rounded border border-blue-900'>Instagram</span>
-                      </div>
-                      <div className='bg-neutral-900 p-2.5 rounded-md text-xs border border-neutral-800 space-y-1'>
-                        <div className='font-bold text-white'>Malika S.</div>
-                        <div className='text-[10px] text-neutral-400'>IELTS Intensive</div>
-                        <span className='inline-block text-[9px] font-bold bg-neutral-800 text-neutral-300 px-1.5 py-0.5 rounded'>Website</span>
-                      </div>
-                    </div>
-
-                    <div className='bg-neutral-950 p-3 rounded-lg border border-neutral-800 space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center justify-between'>
-                        <span>Trial Class</span>
-                        <span className='bg-blue-950 border border-blue-900 px-1.5 rounded text-[10px]'>8</span>
-                      </div>
-                      <div className='bg-neutral-900 p-2.5 rounded-md text-xs border border-neutral-800 space-y-1'>
-                        <div className='font-bold text-white'>Rustam T.</div>
-                        <div className='text-[10px] text-neutral-400'>Trial: Today 15:00</div>
-                        <span className='inline-block text-[9px] font-bold bg-blue-950 text-blue-400 px-1.5 py-0.5 rounded border border-blue-900'>SMS Sent</span>
-                      </div>
-                    </div>
-
-                    <div className='bg-neutral-950 p-3 rounded-lg border border-neutral-800 space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center justify-between'>
-                        <span>Enrolled</span>
-                        <span className='bg-blue-950 border border-blue-900 px-1.5 rounded text-[10px]'>5</span>
-                      </div>
-                      <div className='bg-neutral-900 p-2.5 rounded-md text-xs border border-blue-900 space-y-1'>
-                        <div className='font-bold text-blue-400'>Shahzod B.</div>
-                        <div className='text-[10px] text-neutral-400'>Tuition Paid</div>
-                        <span className='inline-block text-[9px] font-bold bg-blue-950 text-blue-400 px-1.5 py-0.5 rounded border border-blue-900'>Contract Active</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTourTab === 'attendance' && (
-                  <div className='space-y-3 pt-2 animate-in fade-in duration-300'>
-                    <div className='flex items-center justify-between bg-neutral-950 p-3.5 rounded-lg border border-neutral-800 hover:border-blue-800 transition-colors'>
-                      <div className='flex items-center gap-3'>
-                        <div className='h-10 w-10 rounded-md bg-blue-950 flex items-center justify-center text-blue-400 font-bold text-xs border border-blue-900 animate-pulse'>
-                          QR
-                        </div>
-                        <div>
-                          <div className='text-xs font-bold text-white'>Kamila Y. — IELTS Group #4</div>
-                          <div className='text-[10px] text-neutral-400 font-mono'>Pass ID: #884192</div>
-                        </div>
-                      </div>
-                      <span className='text-xs font-bold text-blue-400 bg-blue-950 px-3 py-1 rounded-md border border-blue-900 flex items-center gap-1'>
-                        <CheckCircle2 className='h-3.5 w-3.5 text-blue-400' /> Checked In 14:02
-                      </span>
-                    </div>
-
-                    <div className='bg-neutral-950 border border-neutral-800 p-3.5 rounded-lg text-xs space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='font-bold text-blue-400 flex items-center gap-2'>
-                        <Bell className='h-4 w-4 text-blue-400 animate-bell-ring' />
-                        <span>Automated Parent SMS Dispatch</span>
-                      </div>
-                      <div className='text-neutral-300 text-[11px] bg-neutral-900 p-2.5 rounded-md border border-neutral-800 font-mono'>
-                        “Dear parent, Kamila checked in at Bright Academy branch #1 at 14:02.”
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTourTab === 'payments' && (
-                  <div className='space-y-3 pt-2 animate-in fade-in duration-300'>
-                    <div className='grid grid-cols-2 gap-3'>
-                      <div className='bg-neutral-950 p-3.5 rounded-lg border border-neutral-800 hover:border-blue-800 transition-colors'>
-                        <div className='text-[10px] text-neutral-400 font-medium'>Tuition Collected</div>
-                        <div className='text-xl font-black text-blue-400 mt-1'>$42,850</div>
-                        <div className='text-[10px] text-neutral-400 mt-0.5'>890 Students Paid</div>
-                      </div>
-                      <div className='bg-neutral-950 p-3.5 rounded-lg border border-neutral-800 hover:border-blue-800 transition-colors'>
-                        <div className='text-[10px] text-neutral-400 font-medium'>Overdue Debts</div>
-                        <div className='text-xl font-black text-white mt-1'>$1,120</div>
-                        <div className='text-[10px] text-neutral-400 mt-0.5'>Auto SMS Active</div>
-                      </div>
-                    </div>
-                    <div className='bg-neutral-950 p-3 rounded-lg border border-neutral-800 text-xs space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='flex justify-between font-bold text-neutral-200'>
-                        <span>Recent Online Transactions</span>
-                        <span className='text-blue-400 text-[11px] font-mono'>Auto-Receipts</span>
-                      </div>
-                      <div className='flex justify-between text-[11px] text-neutral-300 border-t border-neutral-800 pt-2'>
-                        <span>Student: Sardor M.</span>
-                        <span className='text-blue-400 font-bold'>+$120 (Payme / Click)</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTourTab === 'app' && (
-                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 animate-in fade-in duration-300'>
-                    <div className='bg-neutral-950 p-3.5 rounded-lg border border-neutral-800 space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='text-xs font-bold text-neutral-200'>Parent App Interface</div>
-                      <div className='bg-neutral-900 p-3 rounded-md space-y-1.5 text-[11px] border border-neutral-800'>
-                        <div className='flex justify-between font-bold text-white'>
-                          <span>Jasur (9th Grade)</span>
-                          <span className='text-blue-400'>98% Attendance</span>
-                        </div>
-                        <div className='text-[10px] text-neutral-400'>Homework Score: 95/100</div>
-                        <div className='mt-2 bg-blue-950 text-blue-300 p-2 rounded text-[10px] border border-blue-900'>
-                          Teacher Note: “Great progress in fluency today!”
-                        </div>
-                      </div>
-                    </div>
-                    <div className='bg-neutral-950 p-3.5 rounded-lg border border-neutral-800 space-y-2 hover:border-blue-800 transition-colors'>
-                      <div className='text-xs font-bold text-neutral-200'>1-Click Mobile Payment</div>
-                      <div className='bg-neutral-900 p-3 rounded-md space-y-2 text-[11px] text-center border border-neutral-800'>
-                        <div className='text-neutral-400'>Tuition Due</div>
-                        <div className='text-lg font-black text-white'>$120.00</div>
-                        <button
-                          onClick={openDemoModal}
-                          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-md text-xs cursor-pointer transition-colors active:scale-95'
-                        >
-                          Pay via Payme / Click / Card
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <TourMockup tab={activeTourTab} mock={t.mock} />
               </div>
 
             </div>

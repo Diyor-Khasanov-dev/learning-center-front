@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // `landing/` — alohida Next.js loyihasi, o'z ESLint sozlamasi bilan.
+  globalIgnores(['dist', 'dist-demo', 'landing']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

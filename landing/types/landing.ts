@@ -2,12 +2,6 @@ import React from 'react'
 
 export type RoleFilter = 'all' | 'admin' | 'teacher' | 'student' | 'sales'
 
-export interface StatItem {
-  value: string
-  label: string
-  sub: string
-}
-
 export interface OldVsNewItem {
   category: string
   oldWay: string
@@ -38,27 +32,6 @@ export interface TourTab {
   title: string
   desc: string
   metrics: TourTabMetric[]
-}
-
-export interface Testimonial {
-  quote: string
-  author: string
-  role: string
-  company: string
-  stats: string
-  image: string
-}
-
-export interface PricingPlan {
-  name: string
-  desc: string
-  monthlyPrice: number
-  annualPrice: number
-  studentsLimit: string
-  branchesLimit: string
-  features: string[]
-  highlight: boolean
-  cta: string
 }
 
 export interface FaqItem {

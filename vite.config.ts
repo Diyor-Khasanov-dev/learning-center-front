@@ -24,6 +24,8 @@ export default defineConfig({
         // Testlarda CSS kerak emas — Tailwind'ni har testda kompilyatsiya
         // qilish sekin, natijaga esa ta'sir qilmaydi.
         css: false,
+        // Faqat ilova testlari — `landing/` o'z vositalari bilan tekshiriladi.
+        include: ['src/**/*.test.{ts,tsx}'],
         coverage: {
             provider: 'v8',
             include: ['src/**/*.{ts,tsx}'],

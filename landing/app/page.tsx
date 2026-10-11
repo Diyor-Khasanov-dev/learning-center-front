@@ -1,85 +1,49 @@
 import { DemoModalProvider } from '@/context/DemoModalContext'
 import { Navbar } from '@/components/landing/Navbar'
 import { HeroSection } from '@/components/landing/HeroSection'
-import { StatsSection } from '@/components/landing/StatsSection'
 import { ComparisonSection } from '@/components/landing/ComparisonSection'
 import { FeatureModulesSection } from '@/components/landing/FeatureModulesSection'
 import { PlatformTourSection } from '@/components/landing/PlatformTourSection'
-import { RoiCalculatorSection } from '@/components/landing/RoiCalculatorSection'
 import { TeamSection } from '@/components/landing/TeamSection'
-import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
-import { PricingSection } from '@/components/landing/PricingSection'
 import { FaqSection } from '@/components/landing/FaqSection'
 import { CtaSection } from '@/components/landing/CtaSection'
 import { Footer } from '@/components/landing/Footer'
 import { DemoModal } from '@/components/landing/DemoModal'
+import { TRANSLATIONS } from '@/data/translations'
 
 export default function Home() {
+  // Google uchun tuzilgan ma'lumot. Faqat haqiqat: ilgari bu yerda soxta
+  // reyting (4.9, 350 ta baho) va narxlar bor edi — Google buning uchun
+  // saytni jazolashi mumkin.
+  const faqs = TRANSLATIONS.uz.faq.faqs
+
   const jsonLdSoftwareApp = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'A.L.I.A - Academic Lead & Intelligence Assistant',
-    operatingSystem: 'All (Web, iOS, Android)',
-    applicationCategory: 'EducationalApplication',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      ratingCount: '350',
-    },
-    offers: {
-      '@type': 'AggregateOffer',
-      priceCurrency: 'USD',
-      lowPrice: '39',
-      highPrice: '199',
-      offerCount: '3',
-    },
+    operatingSystem: 'Web',
+    applicationCategory: 'BusinessApplication',
     description:
-      "O'quv markazlari, til akademiyalari va IT maktablar uchun #1 ERP va CRM boshqaruv tizimi. CRM для учебных центров, языковых школ и IT академий.",
-    url: 'https://alia.app',
+      "O'quv markazlari uchun boshqaruv tizimi: lidlar, o'quvchilar, guruhlar, davomat va to'lovlar bir joyda.",
+    url: 'https://alia.uz',
   }
 
   const jsonLdOrganization = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'A.L.I.A',
-    url: 'https://alia.app',
-    logo: 'https://alia.app/favicon.ico',
-    description: 'Yangi avlod ta\'lim markazini boshqarish platformasi. All-in-one ERP & CRM for learning centers.',
-    sameAs: [
-      'https://t.me/alia_app',
-      'https://instagram.com/alia_app',
-    ],
+    url: 'https://alia.uz',
+    description: "O'quv markazlari uchun boshqaruv tizimi.",
   }
 
   const jsonLdFaq = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: "Ma'lumotlarni Excel yoki boshqa tizimdan ko'chirish qancha vaqt oladi?",
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: "Ma'lumotlarni ko'chirish 30 daqiqadan kamroq vaqt oladi! Tayyor Excel shablonlari orqali barcha o'quvchilar va guruhlarni bepul ko'chirish mumkin.",
-        },
-      },
-      {
-        '@type': 'Question',
-        name: "Ota-onalar to'lovlarni tizim orqali onlayn amalga oshirishlari mumkinmi?",
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: "Ha, A.L.I.A Payme, Click va bank kartalari bilan integratsiyalashgan. Ota-onalar SMS orqali to'lov havolasini oladilar.",
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'QR kodli davomat tizimi qanday ishlaydi?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: "Har bir o'quvchi unikal QR kod oladi. Resepshn yoki o'qituvchi skanerlaganda ota-onaga avtomatik SMS boradi.",
-        },
-      },
-    ],
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
   }
 
   return (
@@ -100,14 +64,10 @@ export default function Home() {
         <Navbar />
         <main>
           <HeroSection />
-          <StatsSection />
           <ComparisonSection />
           <FeatureModulesSection />
           <PlatformTourSection />
           <TeamSection />
-          <RoiCalculatorSection />
-          <TestimonialsSection />
-          <PricingSection />
           <FaqSection />
           <CtaSection />
         </main>

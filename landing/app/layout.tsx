@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadataBase = new URL(
-  process.env.NEXT_PUBLIC_APP_URL || "https://alia.app"
+  process.env.NEXT_PUBLIC_APP_URL || "https://alia.uz"
 );
 
 export const viewport: Viewport = {
@@ -24,11 +24,10 @@ export const metadata: Metadata = {
     template: "%s | A.L.I.A",
   },
   description:
-    "A.L.I.A (Academic Lead & Intelligence Assistant) — O'quv markazlari, til akademiyalari va IT maktablar uchun #1 ERP va CRM boshqaruv tizimi. Sotuvlar CRM, QR davomat, oylik to'lovlar, avto-SMS va ko'p filialli analitika. CRM для учебных центров, языковых школ и IT академий.",
+    "A.L.I.A (Academic Lead & Intelligence Assistant) — o'quv markazlari uchun CRM va boshqaruv tizimi: lidlar va ochiq ariza formasi, talabalar, guruhlar, davomat, to'lovlar va filiallar kesimidagi hisobotlar. CRM для учебных центров.",
   keywords: [
     // Uzbek keywords
     "alia",
-    "alia app",
     "academic lead intelligence assistant",
     "o'quv markaz dasturi",
     "ta'lim markazini boshqarish",
@@ -37,27 +36,19 @@ export const metadata: Metadata = {
     "modme muqobili",
     "o'quv markazi avtomatlashtirish",
     "talabalar davomati",
-    "QR davomat",
-    "o'qituvchilar maoshi hisobi",
     "o'quv markaz to'lovlari",
     "kurslar uchun CRM",
     "til markazi dasturi",
     "IT akademiya dasturi",
-    "avto SMS ota-onalarga",
     "filiallar boshqaruvi",
     "ta'lim tizimi",
     // Russian keywords
     "CRM для учебного центра",
-    "ERP для школ",
     "автоматизация учебных центров",
     "программа для языковой школы",
     "учет студентов",
-    "учет посещаемости QR",
     "система управления курсами",
     "CRM для IT академии",
-    "расписание уроков",
-    "расчет зарплаты преподавателей",
-    "CRM для детских центров",
     "CRM Uzbekistan",
     "CRM Tashkent",
     // English keywords
@@ -73,9 +64,9 @@ export const metadata: Metadata = {
     "multi branch education platform",
     "alia app",
   ],
-  authors: [{ name: "A.L.I.A Team", url: "https://alia.app" }],
+  authors: [{ name: "A.L.I.A Team", url: "https://alia.uz" }],
   creator: "A.L.I.A",
-  publisher: "A.L.I.A Inc.",
+  publisher: "A.L.I.A",
   category: "Education & Business Management Software",
   applicationName: "A.L.I.A",
   icons: {
@@ -95,30 +86,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "A.L.I.A - Academic Lead & Intelligence Assistant | Ta'lim ERP va CRM",
     description:
-      "O'quv markazlari, til akademiyalari va IT maktablar uchun 1-raqamli ERP va CRM platformasi. Sotuvlar, QR davomat, avto-SMS, to'lovlar va filiallar tahlili.",
-    url: "https://alia.app",
+      "O'quv markazlari uchun CRM: lidlar, talabalar, guruhlar, davomat, to'lovlar va filiallar hisobotlari bitta tizimda.",
+    url: "https://alia.uz",
     siteName: "A.L.I.A",
     locale: "uz_UZ",
     alternateLocale: ["ru_RU", "en_US"],
     type: "website",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=630&auto=format&fit=crop&q=80",
-        width: 1200,
-        height: 630,
-        alt: "A.L.I.A - Academic Lead & Intelligence Assistant — Ta'lim markazlarini boshqarish platformasi",
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "A.L.I.A - Academic Lead & Intelligence Assistant",
     description:
-      "O'quv markazlari uchun eng ilg'or ERP va CRM platformasi. Sotuvlar, davomat, to'lovlar va filiallar boshqaruvi.",
-    images: [
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=630&auto=format&fit=crop&q=80",
-    ],
-    creator: "@alia_app",
+      "O'quv markazlari uchun CRM: lidlar, davomat, to'lovlar va filiallar boshqaruvi.",
   },
   robots: {
     index: true,

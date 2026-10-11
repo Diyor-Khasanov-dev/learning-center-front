@@ -32,37 +32,15 @@ interface NotificationItem {
   type: 'payment' | 'qr' | 'lead' | 'sms'
 }
 
+// Namuna hodisalar — faqat tizimda haqiqatan bor ish turlari
+// (formadan lid, qo'lda kiritilgan to'lov, o'qituvchi belgilagan davomat).
 const REAL_NOTIFICATIONS_POOL: Omit<NotificationItem, 'id' | 'time'>[] = [
-  {
-    title: "To'lov qabul qilindi",
-    detail: "Azizbek T. — $120.00 (Payme)",
-    type: 'payment',
-  },
-  {
-    title: 'QR Davomat tasdiqlandi',
-    detail: 'Malika S. — IELTS Intensive #2',
-    type: 'qr',
-  },
-  {
-    title: 'Yangi soʻrov tushdi',
-    detail: 'Sardor B. — Telegram Bot (+998 90...)',
-    type: 'lead',
-  },
-  {
-    title: 'Ota-onaga SMS yuborildi',
-    detail: 'Jasur K. markazga yetib keldi',
-    type: 'sms',
-  },
-  {
-    title: "To'lov qabul qilindi",
-    detail: 'Gulnora M. — $150.00 (Click)',
-    type: 'payment',
-  },
-  {
-    title: 'QR Davomat tasdiqlandi',
-    detail: 'Rustam A. — General English #5',
-    type: 'qr',
-  },
+  { title: "To'lov qabul qilindi", detail: "Azizbek T. — 450 000 so'm", type: 'payment' },
+  { title: 'Davomat belgilandi', detail: 'IELTS Intensive #2 — 12/14', type: 'qr' },
+  { title: 'Formadan yangi lid', detail: 'Sardor B. — Instagram havolasi', type: 'lead' },
+  { title: "To'lov qabul qilindi", detail: "Gulnora M. — 600 000 so'm", type: 'payment' },
+  { title: 'Davomat belgilandi', detail: 'General English #5 — 9/10', type: 'qr' },
+  { title: 'Formadan yangi lid', detail: 'Malika S. — Telegram havolasi', type: 'lead' },
 ]
 
 export function HeroSection() {
@@ -75,22 +53,22 @@ export function HeroSection() {
     {
       id: '1',
       title: "To'lov qabul qilindi",
-      detail: "Azizbek T. — $120.00 (Payme)",
-      time: '1m ago',
+      detail: "Azizbek T. — 450 000 so'm",
+      time: '14:02',
       type: 'payment',
     },
     {
       id: '2',
-      title: 'QR Davomat tasdiqlandi',
-      detail: 'Malika S. — IELTS Intensive',
-      time: '3m ago',
+      title: 'Davomat belgilandi',
+      detail: 'IELTS Intensive #2 — 12/14',
+      time: '13:58',
       type: 'qr',
     },
     {
       id: '3',
-      title: 'Yangi soʻrov tushdi',
-      detail: 'Sardor B. — Instagram Lead',
-      time: '5m ago',
+      title: 'Formadan yangi lid',
+      detail: 'Sardor B. — Instagram havolasi',
+      time: '13:51',
       type: 'lead',
     },
   ])
@@ -109,7 +87,7 @@ export function HeroSection() {
     const newItem: NotificationItem = {
       ...template,
       id: Date.now().toString(),
-      time: 'Just now',
+      time: '14:05',
     }
 
     setFeedItems((prev) => [newItem, ...prev.slice(0, 3)])
@@ -269,16 +247,6 @@ export function HeroSection() {
                   </div>
 
                   <div className='flex items-center gap-2'>
-                    {/* Interactive Notification Test Trigger */}
-                    <button
-                      onClick={triggerNewNotification}
-                      className='inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/80 dark:hover:bg-blue-900 border border-blue-200 dark:border-blue-800 px-2.5 py-1 rounded-md text-[11px] font-bold text-blue-600 dark:text-blue-400 transition-colors cursor-pointer active:scale-95'
-                      title='Simulate Incoming Real Notification'
-                    >
-                      <Zap className='h-3 w-3 text-blue-600 dark:text-blue-400 animate-pulse' />
-                      <span className='hidden sm:inline'>Test Notification</span>
-                    </button>
-
                     {/* AutoPlay Toggle Button */}
                     <button
                       onClick={() => setIsAutoPlay(!isAutoPlay)}
@@ -314,7 +282,7 @@ export function HeroSection() {
                   <div className='rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-3 hover:border-blue-500/50 transition-colors'>
                     <div className='text-[11px] font-semibold text-neutral-500 truncate'>{t.monthlyTuition}</div>
                     <div className='text-xl font-black text-blue-600 dark:text-blue-400 mt-1'>
-                      <CountUp prefix='$' end={48920} />
+                      <CountUp end={48.9} decimals={1} suffix=' mln' />
                     </div>
                     <div className='text-[10px] font-bold text-neutral-500 dark:text-neutral-400 mt-1'>{t.collected}</div>
                   </div>
@@ -347,12 +315,13 @@ export function HeroSection() {
 
                     {/* Histogram Bars */}
                     <div className='h-28 w-full flex items-end gap-1.5 border-b border-neutral-200 dark:border-neutral-800 pb-1'>
-                      {[38, 52, 60, 48, 72, 80, 92, 68, 88, 98, 108, 124].map((height, idx) => (
-                        <div key={idx} className='flex-1 flex flex-col items-center gap-1 group/bar relative'>
+                      {/* "oxirgi 6 oy" — 6 ta ustun; foiz ishlashi uchun ota-element to'liq balandlikda */}
+                      {[48, 60, 56, 72, 84, 100].map((height, idx) => (
+                        <div key={idx} className='flex-1 h-full flex flex-col justify-end items-center gap-1 group/bar relative'>
                           <div
                             style={{ height: `${height}%` }}
                             className={`w-full rounded-t-sm transition-all duration-500 ${
-                              idx === 11
+                              idx === 5
                                 ? 'bg-blue-600 shadow-xs'
                                 : 'bg-neutral-300 dark:bg-neutral-800 group-hover/bar:bg-blue-500/50'
                             }`}
@@ -361,12 +330,7 @@ export function HeroSection() {
                       ))}
                     </div>
 
-                    <div className='flex justify-between text-[10px] font-semibold text-neutral-400 pt-2'>
-                      <span>Jan</span>
-                      <span>Mar</span>
-                      <span>May</span>
-                      <span>Jul</span>
-                      <span>Sep</span>
+                    <div className='flex justify-end text-[10px] font-semibold text-neutral-400 pt-2'>
                       <span className='text-blue-600 dark:text-blue-400 font-bold'>{t.chartCurrent}</span>
                     </div>
                   </div>
@@ -410,7 +374,6 @@ export function HeroSection() {
                   className={`absolute -bottom-4 -left-4 hidden sm:flex items-center gap-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 shadow-xl cursor-pointer hover:border-blue-500 transition-all active:scale-95 select-none ${
                     isRinging ? 'border-blue-600 ring-2 ring-blue-500/20' : ''
                   }`}
-                  title='Click to trigger live notification'
                 >
                   <div className='relative flex h-10 w-10 items-center justify-center rounded-md bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 shrink-0'>
                     <Bell

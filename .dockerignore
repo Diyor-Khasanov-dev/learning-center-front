@@ -4,3 +4,5 @@ dist-demo
 .git
 .github
 *.tsbuildinfo
+# Landing alohida servis — ilova image'iga kerak emas
+landing
