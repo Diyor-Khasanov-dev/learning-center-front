@@ -19,65 +19,6 @@ interface AdminNavProps {
     links?: AdminSidebarLink[]
 }
 
-interface AdminSidebarProps extends AdminNavProps {
-    links: AdminSidebarLink[]
-}
-
-/**
- * Bo'limlar navigatsiyasi.
- *
- * Kompyuterda chap ustun, mobil ekranda gorizontal siljiydigan tasma.
- * Ikkita alohida komponent — bitta komponentni CSS bilan ikki xil qilishdan
- * ko'ra shu tushunarliroq va har biri o'z holatida to'g'ri ishlaydi.
- */
-export function AdminSidebar({ entities, activeTab, onTabChange, links }: AdminSidebarProps) {
-    const { t } = useT()
-
-    return (
-        <aside className="hidden w-60 shrink-0 flex-col border-r border-border-base bg-sidebar px-3 py-6 text-sidebar-fg backdrop-blur-md lg:flex">
-            <div className="mb-6 flex items-center gap-2.5 px-3">
-                <span className="rounded-md bg-brand px-1.5 py-0.5 font-mono text-xs tracking-[0.1em] text-brand-fg">
-                    ALIA
-                </span>
-                <span className="font-display text-base font-semibold tracking-tight">A.L.I.A.</span>
-            </div>
-
-            <nav className="flex flex-1 flex-col gap-1">
-                {entities.map((entity) => (
-                    <NavItem
-                        key={entity.key}
-                        icon={NAV_ICON[entity.key]}
-                        label={t(entity.pluralKey)}
-                        isActive={activeTab === entity.key}
-                        onClick={() => onTabChange(entity.key)}
-                    />
-                ))}
-
-                {links.length > 0 && (
-                    <>
-                        <div className="mx-3 my-3 border-t border-border-base" />
-                        {links.map((link) => (
-                            <NavItem
-                                key={link.key}
-                                icon={NAV_ICON[link.key]}
-                                label={t(link.labelKey)}
-                                isActive={false}
-                                onClick={link.onClick}
-                            />
-                        ))}
-                    </>
-                )}
-            </nav>
-
-            <div className="border-t border-border-base px-3 pt-4">
-                <div className="text-[0.68rem] font-medium tracking-[0.08em] text-sidebar-fg/45 uppercase">
-                    {t('admin.role')}
-                </div>
-            </div>
-        </aside>
-    )
-}
-
 /** Belgisi bo'lmagan yangi bo'lim qo'shilsa, menyu buzilmaydi — faqat belgisiz chiqadi. */
 const NAV_ICON: Record<string, ReactNode> = {
     students: <UsersIcon />,
@@ -89,34 +30,9 @@ const NAV_ICON: Record<string, ReactNode> = {
     payments: <WalletIcon />,
 }
 
-function NavItem({
-    icon,
-    label,
-    isActive,
-    onClick,
-}: {
-    icon?: ReactNode
-    label: string
-    isActive: boolean
-    onClick: () => void
-}) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            aria-current={isActive ? 'page' : undefined}
-            className={cn(
-                'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors',
-                isActive
-                    // Faol — to'liq rangli kapsula (light: ko'k, dark: moviy→binafsha)
-                    ? 'bg-linear-to-r from-brand to-brand-2 font-medium text-brand-fg shadow-[0_6px_16px_-8px_var(--brand)]'
-                    : 'text-sidebar-fg/70 hover:bg-surface-hover hover:text-sidebar-fg'
-            )}
-        >
-            <span className={cn('shrink-0', isActive ? 'text-brand-fg' : 'text-sidebar-fg/50')}>{icon}</span>
-            {label}
-        </button>
-    )
+/** Bo'lim ikonkasi — umumiy chap menyu (`AppShell` `nav`) uchun. */
+export function AdminNavIcon({ navKey }: { navKey: string }) {
+    return <>{NAV_ICON[navKey] ?? null}</>
 }
 
 /** Mobil variant — sarlavha ostidagi tasma. */

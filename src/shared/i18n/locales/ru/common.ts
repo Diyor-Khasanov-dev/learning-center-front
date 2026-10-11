@@ -29,6 +29,7 @@ export const common: Record<CommonKeys, string> = {
     'nav.attendance': 'Посещаемость',
     'nav.settings': 'Настройки',
     'nav.menu': 'Меню',
+    'nav.group.sections': "Разделы",
     'nav.theme': 'Тема',
     'nav.theme.dark': 'Тёмная',
     'nav.theme.light': 'Светлая',

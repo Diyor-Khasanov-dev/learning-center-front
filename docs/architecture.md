@@ -65,3 +65,18 @@ Ilgari har sahifada o'zining `authFetch` nusxasi bor edi — uchta nusxa,
 uchtasida ham bir xil xatolik ehtimoli. Endi HTTP qatlami bitta
 (`shared/api/httpClient.ts`), bo'limlar esa faqat **qaysi endpoint** ekanini
 biladi.
+
+## Chap menyu (umumiy karkas)
+
+Hamma sahifa `AppShell` ichida: chapda butun balandlikdagi menyu, o'ngda tepa
+panel va kontent; telefonda menyu gamburger tugmasi bilan yon tomondan chiqadi.
+
+- **Sahifaning o'z bo'limlari** — `AppShell` `nav` prop (admin:
+  `useAdminNav`, super-admin: `useSuperAdminNav`). Ular menyuning tepasida.
+- **Umumiy havolalar** (Bosh sahifa, Darajalar, Lidlar, To'lovlar, Davomat,
+  Sozlamalar) — `app/routes/AppNavigation.tsx`, rol va ruxsatga qarab,
+  `AppNavContext` orqali. `shared` `app` dan import qilmaydi — shuning uchun
+  context. Faqat `AppRoutes` ruxsat bergan marshrutlar qo'shiladi.
+- Sahifa `nav` bersa, umumiy "Bosh sahifa" bandi chiqmaydi (sahifaning o'zi
+  bosh sahifa).
+

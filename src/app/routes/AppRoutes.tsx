@@ -7,6 +7,7 @@ import { LeadsPage } from '@/features/leads/pages/LeadsPage'
 import { PublicLeadFormPage } from '@/features/leads/pages/PublicLeadFormPage'
 import { PaymentsPage } from '@/features/payments/pages/PaymentsPage'
 import { SettingsPage } from '@/features/settings/pages/SettingsPage'
+import { AppNavigation } from './AppNavigation'
 import { NotFoundPage } from './NotFoundPage'
 import { RequirePermission } from './RequirePermission'
 import { RequireRole } from './RequireRole'
@@ -44,53 +45,55 @@ export function AppRoutes() {
     if (!session) return <LoginPage onLoggedIn={signIn} />
 
     return (
-        <Routes>
-            <Route
-                path="/attendance"
-                element={
-                    <RequireRole roles={['ADMINISTRATOR', 'TEACHER']}>
-                        <AttendancePage />
-                    </RequireRole>
-                }
-            />
-            <Route
-                path="/payments"
-                element={
-                    <RequireRole roles={['ADMINISTRATOR', 'TEACHER', 'SUPER_ADMIN']}>
-                        <RequirePermission permission="INVOICE_MANAGEMENT">
-                            <PaymentsPage />
-                        </RequirePermission>
-                    </RequireRole>
-                }
-            />
-            <Route
-                path="/group-levels"
-                element={
-                    <RequireRole roles={['ADMINISTRATOR', 'SUPER_ADMIN']}>
-                        <GroupLevelsPage />
-                    </RequireRole>
-                }
-            />
-            <Route
-                path="/leads"
-                element={
-                    <RequireRole roles={['ADMINISTRATOR', 'SUPER_ADMIN']}>
-                        <RequirePermission permission="LEAD_MANAGEMENT">
-                            <LeadsPage />
-                        </RequirePermission>
-                    </RequireRole>
-                }
-            />
-            <Route
-                path="/settings"
-                element={
-                    <RequireRole roles={['SUPER_ADMIN', 'ADMINISTRATOR', 'TEACHER', 'STUDENT', 'DEVELOPER']}>
-                        <SettingsPage />
-                    </RequireRole>
-                }
-            />
-            <Route path="/" element={<RoleDashboard />} />
-            <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <AppNavigation>
+            <Routes>
+                <Route
+                    path="/attendance"
+                    element={
+                        <RequireRole roles={['ADMINISTRATOR', 'TEACHER']}>
+                            <AttendancePage />
+                        </RequireRole>
+                    }
+                />
+                <Route
+                    path="/payments"
+                    element={
+                        <RequireRole roles={['ADMINISTRATOR', 'TEACHER', 'SUPER_ADMIN']}>
+                            <RequirePermission permission="INVOICE_MANAGEMENT">
+                                <PaymentsPage />
+                            </RequirePermission>
+                        </RequireRole>
+                    }
+                />
+                <Route
+                    path="/group-levels"
+                    element={
+                        <RequireRole roles={['ADMINISTRATOR', 'SUPER_ADMIN']}>
+                            <GroupLevelsPage />
+                        </RequireRole>
+                    }
+                />
+                <Route
+                    path="/leads"
+                    element={
+                        <RequireRole roles={['ADMINISTRATOR', 'SUPER_ADMIN']}>
+                            <RequirePermission permission="LEAD_MANAGEMENT">
+                                <LeadsPage />
+                            </RequirePermission>
+                        </RequireRole>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <RequireRole roles={['SUPER_ADMIN', 'ADMINISTRATOR', 'TEACHER', 'STUDENT', 'DEVELOPER']}>
+                            <SettingsPage />
+                        </RequireRole>
+                    }
+                />
+                <Route path="/" element={<RoleDashboard />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+        </AppNavigation>
     )
 }
