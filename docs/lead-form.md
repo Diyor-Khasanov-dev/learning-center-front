@@ -2,8 +2,8 @@
 
 Instagram/Telegram'dan kelgan mijoz `https://<domen>/f/<kalit>` ni ochib,
 ism, telefon va kursni yozadi — lid avtomatik o'sha markazga "Yangi" bo'lib
-tushadi. Reja Nurulloh bilan kelishilgan; **backend hali yozilmagan**,
-frontend demo mock bilan ishlaydi (`src/demo/mockApi/leadForm.ts`).
+tushadi. Reja Nurulloh bilan kelishilgan. Backend `main` 378b591 da
+yozildi; demo mock — `src/demo/mockApi/leadForm.ts`.
 
 ## Qayerda
 
@@ -36,18 +36,27 @@ ko'rinish o'zgarmaydi, faqat ma'lumot (markaz nomi, kurslar) haqiqiysi bo'ladi.
 - `website` — botlar uchun yashirin maydon (honeypot).
 - Lidlar ro'yxati 30 soniyada o'zi yangilanadi.
 
-## Endpointlar (kelishilgan)
+## Endpointlar (backend 378b591)
 
 | Metod | Yo'l | Kim |
 | --- | --- | --- |
 | GET | `/api/v1/public/lead-forms/{key}` | hamma (token yo'q) |
-| POST | `/api/v1/public/lead-forms/{key}/leads` | hamma (token yo'q) |
-| GET / POST / PUT | `/api/v1/lead-form` | administrator |
-| POST | `/api/v1/lead-form/regenerate` | administrator |
+| POST | `/api/v1/public/lead-forms/{key}` | hamma (token yo'q) — rejadagi `/leads` qo'shimchasisiz |
+| GET / POST / PUT | `/api/v1/lead-form` | administrator (`LEAD_MANAGEMENT`) yoki super-admin |
+| POST | `/api/v1/lead-form/regenerate` | administrator yoki super-admin |
 
-Shakllar: `src/shared/types/leadForm.ts`. Backend boshqacha qilsa —
-avval shu fayl va `features/leads/api/leadFormApi.ts` moslanadi.
+Shakllar: `src/shared/types/leadForm.ts`. Ochiq javobda markaz nomi `orgName`.
 
-Backenddan qo'shimcha: rate limit, bir telefon 24 soatda bir marta,
-`LeadSource.WEBSITE`, `courseRequired=false` da `preferredCourseId` null
-bo'lishi mumkin.
+### Backendda hali ochiq
+
+- `POST /public/lead-forms/{key}` da `@RequestBody` yo'q — JSON tana
+  o'qilmaydi, lid saqlanmaydi (400). **Asosiy to'siq.**
+- `PublicLeadFormDto` da `courseRequired` va `logoUrl` yo'q. Frontend
+  `courseRequired` kelmasa kursni ixtiyoriy deb oladi; backend ham uni
+  tekshirmaydi.
+- `getUnhiddenLevels` — `not in (:hidLev)` bo'sh to'plam bilan (yangi forma)
+  sinab ko'rilishi kerak.
+- Takroriy telefon — formadan kelganda xato emas, jimgina "qabul qilindi"
+  bo'lishi kerak; hozir 409 va xabar kaliti (`lead.already.exists`)
+  `messages*.properties` da yo'q.
+- Rate limit va honeypot (`website`) hali yo'q.

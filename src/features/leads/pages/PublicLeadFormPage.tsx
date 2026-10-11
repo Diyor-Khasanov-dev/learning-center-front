@@ -47,7 +47,7 @@ export function PublicLeadFormPage() {
             <div className="mb-6 flex items-center gap-3">
                 {data.logoUrl && <img src={data.logoUrl} alt="" className="size-12 rounded-xl object-cover" />}
                 {/* Markaz nomi — backenddan, tarjima qilinmaydi. */}
-                <p className="font-display text-base font-semibold text-fg">{data.organizationName}</p>
+                <p className="font-display text-base font-semibold text-fg">{data.orgName}</p>
             </div>
             {submit.isSuccess ? (
                 <div role="status" className="py-6 text-center">

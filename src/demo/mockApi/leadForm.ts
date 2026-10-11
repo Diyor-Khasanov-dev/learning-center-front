@@ -17,11 +17,9 @@ function randomKey() {
 
 function publicView(current: LeadFormDto): PublicLeadFormDto {
     return {
-        organizationName: 'Cornerstone Education',
-        logoUrl: null,
+        orgName: 'Cornerstone Education',
         title: current.title,
         description: current.description,
-        courseRequired: current.courseRequired,
         levels: db.groupLevels
             .filter((level) => !current.hiddenLevelIds.includes(level.id))
             .map((level) => ({ id: level.id, name: level.name ?? level.id })),
@@ -33,7 +31,7 @@ export function handleLeadForm(path: string, method: string, body: Record<string
         const [key, tail] = path.slice('/public/lead-forms/'.length).split('/')
         if (!form || !form.enabled || decodeURIComponent(key) !== form.key) return json({ message: 'Form not found' }, 404)
         if (!tail && method === 'GET') return json(publicView(form))
-        if (tail === 'leads' && method === 'POST') {
+        if (!tail && method === 'POST') {
             // Honeypot: bot to'ldirgan bo'lsa — "muvaffaqiyat", lekin saqlanmaydi.
             if (body.website) return noContent()
             const level = db.groupLevels.find((item) => item.id === String(body.preferredCourseId))

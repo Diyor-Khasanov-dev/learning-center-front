@@ -6,7 +6,7 @@ import { renderWithProviders } from '@/test/renderWithProviders'
 import { PublicLeadFormPage } from './PublicLeadFormPage'
 
 const FORM = {
-    organizationName: 'Cornerstone Education',
+    orgName: 'Cornerstone Education',
     title: null,
     description: null,
     courseRequired: true,
@@ -30,8 +30,8 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe('PublicLeadFormPage', () => {
     it('sends the lead with the source from the link and shows thanks', async () => {
-        const fetchMock = vi.fn((url: string) =>
-            Promise.resolve(String(url).endsWith('/leads') ? response(200) : response(200, FORM))
+        const fetchMock = vi.fn((_url: string, init?: RequestInit) =>
+            Promise.resolve(init?.method === 'POST' ? response(204) : response(200, FORM))
         )
         vi.stubGlobal('fetch', fetchMock)
         renderAt('/f/abc?src=instagram')
@@ -50,7 +50,7 @@ describe('PublicLeadFormPage', () => {
 
         expect(await screen.findByText('Rahmat!')).toBeInTheDocument()
         const [url, init] = fetchMock.mock.calls[1] as unknown as [string, RequestInit]
-        expect(url).toBe('/api/v1/public/lead-forms/abc/leads')
+        expect(url).toBe('/api/v1/public/lead-forms/abc')
         expect(JSON.parse(String(init.body))).toEqual({
             fullName: 'Jasur Bek',
             phone: '+998901234567',
@@ -68,8 +68,11 @@ describe('PublicLeadFormPage', () => {
         expect(await screen.findByText('Forma topilmadi')).toBeInTheDocument()
     })
 
-    it('marks the course optional when the center allows it', async () => {
-        vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(response(200, { ...FORM, courseRequired: false }))))
+    // Backend hozircha `courseRequired` ni qaytarmaydi — kurs ixtiyoriy bo'lishi kerak.
+    it('treats the course as optional when the backend omits courseRequired', async () => {
+        const withoutFlag: Record<string, unknown> = { ...FORM }
+        delete withoutFlag.courseRequired
+        vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(response(200, withoutFlag))))
         renderAt('/f/abc')
         await waitFor(() => expect(screen.getByRole('group', { name: /ixtiyoriy/ })).toBeInTheDocument())
     })

@@ -9,8 +9,9 @@ export function fetchPublicLeadForm(key: string) {
     return apiFetch<PublicLeadFormDto>(`${PUBLIC}/${encodeURIComponent(key)}`)
 }
 
+/** Backend yo'li — `/{key}` (rejadagi `/{key}/leads` emas). */
 export function submitPublicLead(key: string, body: PublicLeadSubmitDto) {
-    return apiFetch<void>(`${PUBLIC}/${encodeURIComponent(key)}/leads`, { method: 'POST', body })
+    return apiFetch<void>(`${PUBLIC}/${encodeURIComponent(key)}`, { method: 'POST', body })
 }
 
 /** 404 — markazda hali forma yaratilmagan; bu xato emas, `null`. */
